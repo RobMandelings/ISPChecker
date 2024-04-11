@@ -25,7 +25,10 @@ source-repository head
 
 library
   exposed-modules:
+      Constraints
+      Courses
       Lib
+      StudyProgram
   other-modules:
       Paths_ISPChecker
   autogen-modules:

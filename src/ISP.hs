@@ -8,9 +8,9 @@ type CoursesByYear = Map.Map Year [Course]
 
 type OptionName = String
 type OptionValue = String
-type Options = Map.Map OptionName OptionValue
+type ISPOptions = Map.Map OptionName OptionValue
 
 data ISP = ISP
   { coursesByYear :: CoursesByYear
-  , options :: Options -- Valid options are customised for each study program. For example, backgroundEducation or specialisation
+  , options :: ISPOptions -- Valid options are customised for each study program. For example, backgroundEducation or specialisation
   }

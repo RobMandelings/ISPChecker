@@ -1,9 +1,16 @@
 module Constraints where
 
 data Constraint =
-  NandConstraint Constraint Constraint
+  NandConstraint Constraint Constraint |
+  MinSPConstraint Integer |
+  MaxSPConstraint Integer
 
 nandConstraint c1 c2 = NandConstraint c1 c2
+minSPConstraint sp = MinSPConstraint sp
+maxSPConstraint sp = MaxSPConstraint sp
+
+rangeSPConstraint :: Integer -> Constraint
+rangeSPConstraint sp = andConstraint (minSPConstraint sp) (maxSPConstraint sp)
 
 andConstraint :: Constraint -> Constraint -> Constraint
 andConstraint c1 c2 =

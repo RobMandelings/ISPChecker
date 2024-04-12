@@ -3,6 +3,7 @@ module ConstraintChecker where
 import qualified Data.Map.Strict as Map
 import Data.Maybe (mapMaybe)
 import Control.Monad.Reader
+import qualified Data.Set as Set
 
 import Courses
 import Constraints
@@ -16,6 +17,9 @@ data Env = Env
 type ConstraintChecker = ReaderT Env Maybe
 
 checkConstraint :: Constraint -> ConstraintChecker Bool
+--
+--checkConstraint (IncludedConstraint code) = do
+--  env <-
 
 checkConstraint (NandConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
@@ -41,6 +45,13 @@ checkConstraint (ScopedConstraint constraint newScope) = do
   env <- ask
   let newEnv = env { scope = newScope }
   local (const newEnv) (checkConstraint constraint)
+
+
+filterISP :: ISP -> Scope -> ISP
+filterISP isp scope =
+  let scopeSet = Set.fromList scope -- More efficient lookups. TODO: maybe scope should always be a set if possible?
+      filteredCourses = Map.filterWithKey (\key _ -> Set.member key scopeSet) (courses isp)
+  in isp { courses = filteredCourses }
 
 -- Returns the corresponding
 getCoursesWithYearFromCodes :: [CourseCode] -> ISP -> [CourseWithYear]

@@ -23,7 +23,7 @@ remainingSPConstraint sp = RemainingSPConstraint sp
 -- Derived constraints
 
 rangeSPConstraint :: Int -> Int -> Constraint
-rangeSPConstraint minSp maxSP = andConstraint (minSPConstraint minSP) (maxSPConstraint maxSP)
+rangeSPConstraint minSP maxSP = andConstraint (minSPConstraint minSP) (maxSPConstraint maxSP)
 
 andConstraint :: Constraint -> Constraint -> Constraint
 andConstraint c1 c2 =

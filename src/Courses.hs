@@ -1,8 +1,10 @@
 module Courses where
 
 type Year = Int
-type CourseWithYear = (Course, Year)
+type ISPCourse = (Course, Year)
 type CourseCode = String
+
+--data Status = Finished | Planned Int
 
 data Semester = First | Second deriving (Show, Eq, Ord)
 data Course = Course

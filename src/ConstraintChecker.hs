@@ -49,8 +49,8 @@ checkConstraint (SameYearConstraint code1 code2) = do
     (Just (_, year1), Just (_, year2)) -> year1 == year2
     _ -> False -- TODO THIS SHOULD BE NOTHING INSTEAD!!! If nothing is returned, then something went wrong here
 
-
-
+--remainingSPConstraint (RemainingSPConstraint sp) = do
+--  isp <- ask
 
 filterISP :: ISP -> Scope -> ISP
 filterISP isp scope =
@@ -58,5 +58,5 @@ filterISP isp scope =
       filteredSelection = Map.filterWithKey (\key _ -> Set.member key scopeSet) (courseSelection isp) -- Underscore ignores the value associated with that key. Is a wildcard.
   in isp { courseSelection = filteredSelection }
 
-getCourses :: [CourseWithYear] -> [Course]
-getCourses coursesWithYears = fmap fst coursesWithYears
+getCourses :: [ISPCourse] -> [Course]
+getCourses ispCourses = fmap fst ispCourses

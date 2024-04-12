@@ -1,5 +1,8 @@
 module Courses where
 
+type Year = Int
+type CourseWithYear = (Course, Year)
+
 data Semester = First | Second deriving (Show, Eq, Ord)
 data Course = Course
   { name :: String

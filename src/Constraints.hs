@@ -1,13 +1,19 @@
 module Constraints where
 
+import Courses
+
 data Constraint =
   NandConstraint Constraint Constraint |
   MinSPConstraint Integer |
-  MaxSPConstraint Integer
+  MaxSPConstraint Integer |
+  EqualityConstraint Int Int
 
+equalityConstraint a b = EqualityConstraint a b
 nandConstraint c1 c2 = NandConstraint c1 c2
 minSPConstraint sp = MinSPConstraint sp
 maxSPConstraint sp = MaxSPConstraint sp
+
+-- Derived constraints
 
 rangeSPConstraint :: Integer -> Constraint
 rangeSPConstraint sp = andConstraint (minSPConstraint sp) (maxSPConstraint sp)
@@ -33,3 +39,6 @@ xorConstraint c1 c2 =
     n2 = nandConstraint c1 n1
     n3 = nandConstraint n1 c2
   in nandConstraint n2 n3
+
+equalYearConstraint :: CourseWithYear -> CourseWithYear -> Constraint
+equalYearConstraint c1 c2 = equalityConstraint (snd c1) (snd c2)

@@ -16,6 +16,7 @@ data Course = Course
 bedrijfskunde :: Course
 bedrijfskunde = Course
   { name = "Bedrijfskunde en Entrepreneurship"
+  , code = "H01F2A"
   , description = "Voor bedrijfskunde te leren"
   , semester = First
   , studyPoints = 6

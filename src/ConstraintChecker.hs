@@ -6,10 +6,22 @@ import Control.Monad.Reader
 import qualified Data.Set as Set
 
 import Courses
+import StudyProgram
 import Constraints
 import ISP
 
 type ConstraintChecker = ReaderT ISP Maybe
+
+-- check whether module is active
+-- evaluate subModules
+
+-- create and constraint merging all constraints together
+-- get the scope (course codes)
+-- wrap the andConstraint in a scopedConstraint (todo for organisational purposes maybe its better to iterate over the constraints?)
+-- evaluate this constraint
+checkModule :: Module -> ConstraintChecker Bool
+checkModule mod = do
+  return False
 
 checkConstraint :: Constraint -> ConstraintChecker Bool
 checkConstraint (IncludedConstraint code) = do
@@ -52,6 +64,9 @@ checkConstraint (SameYearConstraint code1 code2) = do
 
 --remainingSPConstraint (RemainingSPConstraint sp) = do
 --  isp <- ask
+
+getScope :: Module -> ISP -> [CourseCode]
+getScope mod isp = undefined
 
 filterISP :: ISP -> Scope -> ISP
 filterISP isp scope =

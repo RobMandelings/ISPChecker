@@ -22,6 +22,9 @@ remainingSPConstraint sp = RemainingSPConstraint sp
 
 -- Derived constraints
 
+createAggregateAndConstraint :: [Constraint] -> Constraint
+createAggregateAndConstraint constraints = undefined
+
 rangeSPConstraint :: Int -> Int -> Constraint
 rangeSPConstraint minSP maxSP = andConstraint (minSPConstraint minSP) (maxSPConstraint maxSP)
 

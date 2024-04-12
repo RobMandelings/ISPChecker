@@ -27,7 +27,7 @@ backgroundEduActivator bgEdu ispOptions = optionAndNameActivator "backgroundEduc
 
 data Module = Module
   { name :: String
-  , courses :: [Course] -- Along with the activated modules in sub, this becomes the scope
+  , courses :: [CourseCode] -- Along with the activated modules in sub, this becomes the scope
   , constraints :: [Constraint] -- All constraints should hold
   , subModules :: [Module]
   , moduleActivator :: ModuleActivator

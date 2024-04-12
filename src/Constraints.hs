@@ -2,13 +2,18 @@ module Constraints where
 
 import Courses
 
+type Scope = [CourseCode]
+
 data Constraint =
+  IncludedConstraint CourseCode |
   NandConstraint Constraint Constraint |
   MinSPConstraint Int |
   MaxSPConstraint Int |
   RemainingSPConstraint Int |
-  EqualityConstraint Int Int
+  EqualityConstraint Int Int |
+  ScopedConstraint Constraint Scope -- Nested constraint only applies to given scope
 
+includedConstraint code = IncludedConstraint code
 nandConstraint c1 c2 = NandConstraint c1 c2
 minSPConstraint sp = MinSPConstraint sp
 maxSPConstraint sp = MaxSPConstraint sp

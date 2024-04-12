@@ -10,14 +10,14 @@ data Constraint =
   MinSPConstraint Int |
   MaxSPConstraint Int |
   RemainingSPConstraint Int |
-  EqualityConstraint Int Int |
+  SameYearConstraint CourseCode CourseCode |
   ScopedConstraint Constraint Scope -- Nested constraint only applies to given scope
 
 includedConstraint code = IncludedConstraint code
 nandConstraint c1 c2 = NandConstraint c1 c2
 minSPConstraint sp = MinSPConstraint sp
 maxSPConstraint sp = MaxSPConstraint sp
-equalityConstraint a b = EqualityConstraint a b
+sameYearConstraint code1 code2 = SameYearConstraint code1 code2
 remainingSPConstraint sp = RemainingSPConstraint sp
 
 -- Derived constraints
@@ -46,6 +46,3 @@ xorConstraint c1 c2 =
     n2 = nandConstraint c1 n1
     n3 = nandConstraint n1 c2
   in nandConstraint n2 n3
-
-equalYearConstraint :: CourseWithYear -> CourseWithYear -> Constraint -- For example: this course should be taken in the same year as the master's thesis
-equalYearConstraint c1 c2 = equalityConstraint (snd c1) (snd c2)

@@ -46,6 +46,12 @@ checkConstraint (ScopedConstraint constraint newScope) = do
   env <- ask
   let newEnv = env { scope = newScope }
   local (const newEnv) (checkConstraint constraint)
+--
+--checkConstraint (SameYearConstraint code1 code2) = do
+--  (scope, isp) <- asks (\env -> (scope env, isp env))
+--  let scopedCourseMap = courses $ filterISP isp scope
+--
+
 
 
 filterISP :: ISP -> Scope -> ISP

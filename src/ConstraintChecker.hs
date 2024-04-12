@@ -17,9 +17,8 @@ type ConstraintChecker = ReaderT Env Maybe
 
 checkConstraint :: Constraint -> ConstraintChecker Bool
 checkConstraint (MinSPConstraint sp) = do
-  courseCodes <- asks scope
-  isp <- asks isp
-  let courses = getCourses $ getCoursesWithYearFromCodes courseCodes isp
+  (scope, isp) <- asks (\env -> (scope env, isp env))
+  let courses = getCourses $ getCoursesWithYearFromCodes scope isp
   let totalSP = sum $ map (studyPoints) courses
   return (totalSP >= sp)
 

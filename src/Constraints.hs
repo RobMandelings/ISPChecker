@@ -4,18 +4,20 @@ import Courses
 
 data Constraint =
   NandConstraint Constraint Constraint |
-  MinSPConstraint Integer |
-  MaxSPConstraint Integer |
+  MinSPConstraint Int |
+  MaxSPConstraint Int |
+  RemainingSPConstraint Int |
   EqualityConstraint Int Int
 
-equalityConstraint a b = EqualityConstraint a b
 nandConstraint c1 c2 = NandConstraint c1 c2
 minSPConstraint sp = MinSPConstraint sp
 maxSPConstraint sp = MaxSPConstraint sp
+equalityConstraint a b = EqualityConstraint a b
+remainingSPConstraint sp = RemainingSPConstraint sp
 
 -- Derived constraints
 
-rangeSPConstraint :: Integer -> Constraint
+rangeSPConstraint :: Int -> Constraint
 rangeSPConstraint sp = andConstraint (minSPConstraint sp) (maxSPConstraint sp)
 
 andConstraint :: Constraint -> Constraint -> Constraint
@@ -40,5 +42,5 @@ xorConstraint c1 c2 =
     n3 = nandConstraint n1 c2
   in nandConstraint n2 n3
 
-equalYearConstraint :: CourseWithYear -> CourseWithYear -> Constraint
+equalYearConstraint :: CourseWithYear -> CourseWithYear -> Constraint -- For example: this course should be taken in the same year as the master's thesis
 equalYearConstraint c1 c2 = equalityConstraint (snd c1) (snd c2)

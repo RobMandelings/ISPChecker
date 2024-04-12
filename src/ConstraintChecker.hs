@@ -29,10 +29,9 @@ checkConstraint (MinSPConstraint sp) = do
 
 checkConstraint (MaxSPConstraint sp) = do
   isp <- ask
-  return False
---  let courses = getCourses $ Map.elems $ courses isp
---  let totalSP = sum $ map (studyPoints) courses
---  return (totalSP <= sp)
+  let courses = getCourses $ Map.elems $ courseSelection isp
+  let totalSP = sum $ map (studyPoints) courses
+  return (totalSP <= sp)
 
 -- Const is a function that ignores its argument and returns a constant value.
 -- We require const here because local expects a function that takes in an env and returns an adjusted environment.

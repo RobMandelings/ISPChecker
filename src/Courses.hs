@@ -1,7 +1,8 @@
 module Courses where
 
-type Year = Int
-type ISPCourse = (Course, Year)
+data Status = Passed | Planned Int
+
+type ISPCourse = (Course, Status)
 type CourseCode = String
 
 --data Status = Finished | Planned Int

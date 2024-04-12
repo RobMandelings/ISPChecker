@@ -2,10 +2,12 @@ module Courses where
 
 type Year = Int
 type CourseWithYear = (Course, Year)
+type CourseCode = String
 
 data Semester = First | Second deriving (Show, Eq, Ord)
 data Course = Course
   { name :: String
+  , code :: CourseCode
   , description :: String
   , semester :: Semester
   , studyPoints :: Int

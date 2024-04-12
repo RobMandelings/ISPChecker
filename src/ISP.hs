@@ -3,7 +3,7 @@ module ISP where
 import Courses
 import Data.Map.Strict as Map -- TODO: should I use Map.Strict or Map.Lazy?
 
-type Courses = Map.Map String [CourseWithYear]
+type Courses = Map.Map CourseCode [CourseWithYear]
 
 type OptionName = String
 type OptionValue = String

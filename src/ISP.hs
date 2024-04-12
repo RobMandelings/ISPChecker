@@ -10,6 +10,6 @@ type OptionValue = String
 type ISPOptions = Map.Map OptionName OptionValue
 
 data ISP = ISP
-  { courses :: ISPCourseSelection
+  { courseSelection :: ISPCourseSelection
   , options :: ISPOptions -- Valid options are customised for each study program. For example, backgroundEducation or specialisation
   }

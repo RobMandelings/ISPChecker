@@ -17,9 +17,10 @@ data Env = Env
 type ConstraintChecker = ReaderT Env Maybe
 
 checkConstraint :: Constraint -> ConstraintChecker Bool
---
---checkConstraint (IncludedConstraint code) = do
---  env <-
+checkConstraint (IncludedConstraint code) = do
+  (scope, isp) <- asks (\env -> (scope env, isp env))
+  let scopedCourseMap = courses $ filterISP isp scope
+  return (Map.member code scopedCourseMap)
 
 checkConstraint (NandConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
@@ -50,7 +51,7 @@ checkConstraint (ScopedConstraint constraint newScope) = do
 filterISP :: ISP -> Scope -> ISP
 filterISP isp scope =
   let scopeSet = Set.fromList scope -- More efficient lookups. TODO: maybe scope should always be a set if possible?
-      filteredCourses = Map.filterWithKey (\key _ -> Set.member key scopeSet) (courses isp)
+      filteredCourses = Map.filterWithKey (\key _ -> Set.member key scopeSet) (courses isp) -- Underscore ignores the value associated with that key. Is a wildcard.
   in isp { courses = filteredCourses }
 
 -- Returns the corresponding

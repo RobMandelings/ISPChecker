@@ -19,9 +19,16 @@ type ConstraintChecker = ReaderT ISP Maybe
 -- get the scope (course codes)
 -- wrap the andConstraint in a scopedConstraint (todo for organisational purposes maybe its better to iterate over the constraints?)
 -- evaluate this constraint
+
+isActive :: Module -> ISP -> Bool
+isActive mod isp = (activator mod) (options isp)
+
 checkModule :: Module -> ConstraintChecker Bool
 checkModule mod = do
-  return False
+  isp <- ask
+  if isActive mod isp
+  then return False
+  else return True
 
 checkConstraint :: Constraint -> ConstraintChecker Bool
 checkConstraint (IncludedConstraint code) = do
@@ -67,8 +74,7 @@ checkConstraint (SameYearConstraint code1 code2) = do
 
 getScope :: Module -> ISP -> [CourseCode]
 getScope mod isp =
-  let active = (activator mod) (options isp) in
-  if active
+  if isActive mod isp
   then courses mod ++ concatMap (\subMod -> getScope subMod isp) (subModules mod)
   else []
 

@@ -31,6 +31,7 @@ checkModule mod = do
     let scope = getScope mod isp
     -- Not only applies checkConstraint to each constraint in the list, but also sequences the results in a single monadic action that
     -- Produces all results. If at least one result returned Nothing, the binding fails and checkModule will return Nothing as well.
+    subModuleResults <- mapM checkModule (subModules mod)
     results <- mapM (\c -> checkConstraint (ScopedConstraint c scope)) (constraints mod)
     return $ all id results -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
   else return True

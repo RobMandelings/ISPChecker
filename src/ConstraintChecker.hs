@@ -66,7 +66,11 @@ checkConstraint (SameYearConstraint code1 code2) = do
 --  isp <- ask
 
 getScope :: Module -> ISP -> [CourseCode]
-getScope mod isp = courses mod ++ concatMap (\subMod -> getScope subMod isp) (subModules mod)
+getScope mod isp =
+  let active = (activator mod) (options isp) in
+  if active
+  then courses mod ++ concatMap (\subMod -> getScope subMod isp) (subModules mod)
+  else []
 
 filterISP :: ISP -> Scope -> ISP
 filterISP isp scope =

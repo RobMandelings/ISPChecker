@@ -10,7 +10,7 @@ import StudyProgram
 import Constraints
 import ISP
 
-type ConstraintChecker = ReaderT ISP Maybe
+type ConstraintChecker = ReaderT ISP Maybe Bool
 
 -- check whether module is active
 -- evaluate subModules
@@ -23,14 +23,19 @@ type ConstraintChecker = ReaderT ISP Maybe
 isActive :: Module -> ISP -> Bool
 isActive mod isp = (activator mod) (options isp)
 
-checkModule :: Module -> ConstraintChecker Bool
+checkModule :: Module -> ConstraintChecker
 checkModule mod = do
   isp <- ask
   if isActive mod isp
-  then return False
+  then do
+    let scope = getScope mod isp
+    -- Not only applies checkConstraint to each constraint in the list, but also sequences the results in a single monadic action that
+    -- Produces all results
+    results <- mapM (\c -> checkConstraint (ScopedConstraint c scope)) (constraints mod)
+    return $ all id results
   else return True
 
-checkConstraint :: Constraint -> ConstraintChecker Bool
+checkConstraint :: Constraint -> ConstraintChecker
 checkConstraint (IncludedConstraint code) = do
   isp <- ask
   return (Map.member code (courseSelection isp))

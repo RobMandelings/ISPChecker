@@ -29,8 +29,11 @@ oneOf = Constraint : {
 
 ING_CS = StudyProgram : {
     modules: {
-        ING_CS_bachelor_verbredend
-
+        ING_CS_bachelor_verbredend,
+        Obligatory,
+        Hoofdoptie,
+        Verdere_optie,
+        Masterproef
     }
     constraints: {
         IncludedSP = 120

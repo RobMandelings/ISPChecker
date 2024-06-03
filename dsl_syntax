@@ -41,7 +41,8 @@ ING_CS = StudyProgram : {
 }
 
 AllIncluded = Constraint: {
-    All c -> Included(c)
+    All c -> Included(c),
+    error_msg = "Niet alle opleidingsonderdelen zijn opgenomen"
 }
 
 ING_CS_bachelor_verbredend = Module : {
@@ -85,12 +86,14 @@ Hoofdoptie_Gedistribueerde_Systemen = Module : {
             name: "Plichtgedeelte"
             description: "Alle opleidingsonderdelen zijn verplicht"
             courses: [HO4IOA, GOK31B, HO4G7A]
+            constraints: AllIncluded
         }
         Module : {
             name: "Keuzegedeelte"
             description: ""
             courses: [H02H4A, HO4L2A, H04G4A, HOA12A]
         }
+        error_msg = "De vereisten van de hoofdoptie gedistribueerde systemen zijn niet voldaan."
     }
 }
 
@@ -99,6 +102,7 @@ Verdere_Optie = Module : {
     courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A]
     constraints: {
         Included(A04D5A) XOR Included(A08C4A)
+
     }
 }
 
@@ -106,7 +110,10 @@ Masterproef = Module : {
     name: "Masterproef"
     description: "De masterproef is verplicht"
     courses: [H04J4A]
-    constraints: RemainingSP (Period(H04J4A)) <= 72 // Unsure of this yet. Remaining study points at the moment you include the master thesis should be maximally 72.
+    constraints: {
+        RemainingSP(Period(H04J4A)) <= 72 // Unsure of this yet. Remaining study points at the moment you include the master thesis should be maximally 72.
+        error_msg = ""
+    }
 }
 
 // Constraints

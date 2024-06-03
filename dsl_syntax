@@ -1,0 +1,115 @@
+isp = ISP: {
+	studyProgram: ING_CS,
+	specialisation: A.I,
+	courseSelection: {
+	    passed: [H01F2A, H01F2A, H01F2A],
+        plannedSemesters: {
+         [H01F2A, H04I0A, G0K31B],
+         [H04G7A, H04L2A, H0A12A],
+         [H01F2A, H01F2A, H01F2A]
+	}
+}
+
+eval(isp);
+
+H01F2A = Course: {
+    name: "",
+    code: "This is a course on databases",
+    period: First, Second, AllYear,
+    studyPoints: 5
+}
+
+/*
+Constraints are written like this
+*/
+oneOf = Constraint : {
+    Selected (H01F2A) OR
+    Selected (H02F2B)
+}
+
+ING_CS = StudyProgram : {
+    modules: {
+        ING_CS_bachelor_verbredend
+
+    }
+    constraints: {
+        IncludedSP = 120
+    }
+}
+
+AllIncluded = Constraint: {
+    All c -> Included(c)
+}
+
+ING_CS_bachelor_verbredend = Module : {
+    name: "Bachelor verbredend pakket"
+    description: ""
+    modules: {
+        Module: {
+            name: "Bachelor verbredend pakket voor studenten met een bachelor in de ingenieurswetenschappen"
+            courses: [H04H5B, H04J9B, H0O07A, H04H0B]
+            active: ISP.background = "bachelor ingenieurswetenschappen"
+            constraints: AllIncluded
+        }
+        Module: {
+            name: "Bachelor verbredend pakket voor studenten met een bachelor informatica"
+            courses: [H01F2A, G0Q57A, H01L1A]
+            active: ISP.background = "bachelor informatica"
+            constrains: AllIncluded
+        }
+    }
+}
+
+Obligatory = Module : {
+    name: "Verplicht deel"
+    description: "Alle opleidingsonderdelen zijn verplicht voor alle studenten"
+    courses: [H04I4A, HOE96A, GOB23A, H09B5B, H0415A]
+    constraints: AllIncluded
+}
+
+Hoofdoptie = Module : {
+    name: "Hoofdoptie"
+    description: "De student kiest 1 van 6 mogelijke opties"
+    modules: {
+        Hoofdoptie_Gedistribueerde_Systemen,
+    }
+}
+
+Hoofdoptie_Gedistribueerde_Systemen = Module : {
+    name: "Hoofdoptie Gedistribueerde Systemen"
+    modules: {
+        Module: {
+            name: "Plichtgedeelte"
+            description: "Alle opleidingsonderdelen zijn verplicht"
+            courses: [HO4IOA, GOK31B, HO4G7A]
+        }
+        Module : {
+            name: "Keuzegedeelte"
+            description: ""
+            courses: [H02H4A, HO4L2A, H04G4A, HOA12A]
+        }
+    }
+}
+
+Verdere_Optie = Module : {
+    name: "Verdere optie"
+    courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A]
+    constraints: {
+        Included(A04D5A) XOR Included(A08C4A)
+    }
+}
+
+Masterproef = Module : {
+    name: "Masterproef"
+    description: "De masterproef is verplicht"
+    courses: [H04J4A]
+    constraints: RemainingSP (Period(H04J4A)) <= 72
+}
+
+// Constraints
+
+Each c -> Included (c) // For all s.t.
+Some c -> Included (c) // There exist s.t.
+
+// Different scope
+[H04H5B, H04J9B]: Each c -> Included (c)

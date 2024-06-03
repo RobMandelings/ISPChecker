@@ -4,6 +4,9 @@ import Courses
 
 type Scope = [CourseCode]
 
+-- TODO implement the PeriodConstraint: course can only be selected in proper period. Independent of the study program but still a constraint I think.
+--  (additional constraint can be added to studyprogram? E.g. in this program you need to do it in sem 2, even though the course is available in sem 1 as well)
+
 data Constraint =
   IncludedConstraint CourseCode |
   NandConstraint Constraint Constraint |

@@ -103,7 +103,7 @@ Masterproef = Module : {
     name: "Masterproef"
     description: "De masterproef is verplicht"
     courses: [H04J4A]
-    constraints: RemainingSP (Period(H04J4A)) <= 72
+    constraints: RemainingSP (Period(H04J4A)) <= 72 // Unsure of this yet. Remaining study points at the moment you include the master thesis should be maximally 72.
 }
 
 // Constraints

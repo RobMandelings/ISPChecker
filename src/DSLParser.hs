@@ -20,7 +20,10 @@ type Parser = Parsec Void Text
 spaceConsumer :: Parser ()
 spaceConsumer = L.space space1 empty empty
 
-{- | Returns a parser that consumes any sequence of characters followed by whitespace. -}
+{- | Returns a parser that consumes any sequence of characters followed by whitespace.
+  Takes a parser as argument and make sure the parser can also parse even though there is trailing whitespace
+  The type a could also be an int for example ('parser that produces an int')
+-}
 lexeme :: Parser a -> Parser a
 lexeme = L.lexeme spaceConsumer
 
@@ -30,6 +33,9 @@ symbol = L.symbol spaceConsumer
 stringLiteral :: Parser String
 stringLiteral = char '"' >> manyTill L.charLiteral (char '"')
 
+{- | (:) is the cons operator. Adds an element to a list at the front (prepend)
+  <$> infix form of fmap (applies function to the result of the functor) -> in this case (:) applied to result of letterChar
+-}
 identifier :: Parser String
 identifier = lexeme ((:) <$> letterChar <*> many alphaNumChar)
 

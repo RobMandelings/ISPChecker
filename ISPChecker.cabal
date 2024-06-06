@@ -21,8 +21,9 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/ISPChecker
+  location: https://github.com/g ithubuser/ISPChecker
 
+-- Library is used for when you are developing a library?
 library
   exposed-modules:
       ConstraintChecker

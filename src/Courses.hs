@@ -25,14 +25,14 @@ bedrijfskunde = Course
   , studyPoints = 6
   }
 
---H04I0A :: Course
---H04I0A = Course
---  { name = "Industrial Internet Infrastructure"
---  , code = "H04I0A"
---  , description = ""
---  , period = SecondSem
---  , studyPoints = 5
---  }
+h04I0A :: Course
+h04I0A = Course
+  { name = "Industrial Internet Infrastructure"
+  , code = "H04I0A"
+  , description = ""
+  , period = SecondSem
+  , studyPoints = 5
+  }
 --
 --G0K31B :: Course
 --G0K31B = Course

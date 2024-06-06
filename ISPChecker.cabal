@@ -21,14 +21,15 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/g ithubuser/ISPChecker
+  location: https://github.com/githubuser/ISPChecker
 
--- Library is used for when you are developing a library?
 library
   exposed-modules:
       ConstraintChecker
       Constraints
       Courses
+      DSLLexer
+      DSLParser
       ISP
       Lib
       StudyProgram
@@ -44,6 +45,7 @@ library
     , containers >=0.6.7
     , megaparsec >=9.0
     , mtl >=2.3.1
+    , text ==2.0.*
   default-language: Haskell2010
 
 executable ISPChecker-exe
@@ -61,6 +63,7 @@ executable ISPChecker-exe
     , containers >=0.6.7
     , megaparsec >=9.0
     , mtl >=2.3.1
+    , text ==2.0.*
   default-language: Haskell2010
 
 test-suite ISPChecker-test
@@ -77,5 +80,7 @@ test-suite ISPChecker-test
       ISPChecker
     , base >=4.7 && <5
     , containers >=0.6.7
+    , megaparsec >=9.0
     , mtl >=2.3.1
+    , text ==2.0.*
   default-language: Haskell2010

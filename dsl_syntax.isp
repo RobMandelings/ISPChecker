@@ -42,7 +42,7 @@ ING_CS = StudyProgram : {
 
 AllIncluded = Constraint: {
     All c -> Included(c),
-    error_msg = "Niet alle opleidingsonderdelen zijn opgenomen"
+    errorMsg = "Niet alle opleidingsonderdelen zijn opgenomen"
 }
 
 ING_CS_bachelor_verbredend = Module : {
@@ -59,7 +59,7 @@ ING_CS_bachelor_verbredend = Module : {
             name: "Bachelor verbredend pakket voor studenten met een bachelor informatica"
             courses: [H01F2A, G0Q57A, H01L1A]
             active: ISP.background = "bachelor informatica"
-            constrains: AllIncluded
+            constraints: AllIncluded
         }
     }
 }
@@ -93,7 +93,7 @@ Hoofdoptie_Gedistribueerde_Systemen = Module : {
             description: ""
             courses: [H02H4A, HO4L2A, H04G4A, HOA12A]
         }
-        error_msg = "De vereisten van de hoofdoptie gedistribueerde systemen zijn niet voldaan."
+        errorMsg = "De vereisten van de hoofdoptie gedistribueerde systemen zijn niet voldaan."
     }
 }
 

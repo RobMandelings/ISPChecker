@@ -11,6 +11,8 @@ import Data.Void
 import Data.Text (Text)
 import qualified Data.Text as T -- Qualified
 
+import StudyProgram
+
 -- Parsec is the core parser type in Megaparsec. Represents a parser that can consume input and produce a result.
 -- Void: error type (don't care about custom error information; TODO later)
 -- Text: type of input the parser works on (string/bytestring/text)
@@ -67,24 +69,27 @@ parseConstraints = lexeme $ string "constraints:" >> between (symbol "[") (symbo
 --parseActivator :: Parser String
 --parseActivator = lexeme $ string "active:" >> manyTill anySingle (try $ lookAhead (symbol "\n" <|> symbol "}"))
 
---parseModule :: Parser Module
---parseModule = do
---  _ <- lexeme $ string "Module:"
---  _ <- symbol "{"
---  n <- parseName
---  d <- optional parseDescription
---  c <- parseCourses
+parseModule :: Parser Module
+parseModule = do
+  _ <- lexeme $ string "Module:"
+  _ <- symbol "{"
+  n <- parseName
+  d <- optional parseDescription
+  c <- parseCourses
 --  a <- parseActivator
 --  cs <- optional parseConstraints
 --  subModules <- optional $ do
 --    _ <- lexeme $ string "modules:"
 --    between (symbol "{") (symbol "}") (parseModule `sepBy` symbol ",")
 --  _ <- symbol "}"
---  return Module
---    { name = n
---    , description = maybe "" id d
---    , courses = c
+  return Module
+    { name = n
+    , description = maybe "" id d
+    , courses = c
+    , activator = trueActivator
+    , constraints = []
+    , subModules = []
+--      constraints = []
 --    , constraints = maybe [] id cs
 --    , subModules = maybe [] id subModules
---    , activator = a
---    }
+    }

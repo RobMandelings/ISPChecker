@@ -28,7 +28,7 @@ oneOf = Constraint : {
     Selected (H02F2B)
 }
 
-ING_CS = StudyProgram : {
+ING_CS = Module : {
     modules: {
         ING_CS_bachelor_verbredend,
         Obligatory,

@@ -1,4 +1,4 @@
-Verdere_Optie = Module : {
-    name: "Verdere optie"
+Module : {
+    name:"Verdere optie"
     courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A]
 }

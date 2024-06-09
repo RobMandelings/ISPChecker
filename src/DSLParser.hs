@@ -36,6 +36,9 @@ symbol :: Text -> Parser Text
 -- So essentially what we do here is currying
 symbol = L.symbol spaceConsumer
 
+charLiteralExclQuotation :: Parser Char
+charLiteralExclQuotation = satisfy (\c -> c /= '"')
+
 stringLiteral :: Parser String
 
  -- >> is to discard the first monadic action and return the result of the second monadic acion (chaining two monadic actions and discarding the first one)
@@ -43,7 +46,7 @@ stringLiteral :: Parser String
 -- first version
 --stringLiteral = char '"' >> manyTill L.charLiteral (char '"')
 
-stringLiteral = between (char '"') (char '"') (many L.charLiteral)
+stringLiteral = between (char '"') (char '"') (many charLiteralExclQuotation)
 
 {- | (:) is the cons operator. Adds an element to a list at the front (prepend)
   <$> infix form of fmap (applies function to the result of the functor) -> in this case (:) applied to result of letterChar
@@ -54,14 +57,17 @@ identifier = lexeme ((:) <$> letterChar <*> many alphaNumChar)
 
 -- TODO allow parsing with spaces between the field and the value
 
+parseField :: Text -> Parser a -> Parser a
+parseField fieldName fieldParser = symbol fieldName >> symbol ":" >> (lexeme $ fieldParser) -- <* symbol "," TODO implement the separator later
+
 parseName :: Parser String
-parseName = lexeme $ string "name:" >> stringLiteral
+parseName = parseField "name" stringLiteral
 
 parseDescription :: Parser String
-parseDescription = lexeme $ string "description:" >> stringLiteral
+parseDescription = parseField "description" stringLiteral
 
 parseCourses :: Parser [String]
-parseCourses = lexeme $ string "courses:" >> between (symbol "[") (symbol "]") (identifier `sepBy` symbol ",")
+parseCourses = parseField "courses" (between (symbol "[") (symbol "]") (identifier `sepBy` symbol ","))
 
 parseConstraints :: Parser [String]
 parseConstraints = lexeme $ string "constraints:" >> between (symbol "[") (symbol "]") (identifier `sepBy` symbol ",")
@@ -71,21 +77,23 @@ parseConstraints = lexeme $ string "constraints:" >> between (symbol "[") (symbo
 
 parseModule :: Parser Module
 parseModule = do
-  _ <- lexeme $ string "Module:"
+  _ <- symbol "Module"
+  _ <- symbol ":"
   _ <- symbol "{"
   n <- parseName
-  d <- optional parseDescription
   c <- parseCourses
+--  d <- optional parseDescription
 --  a <- parseActivator
 --  cs <- optional parseConstraints
 --  subModules <- optional $ do
 --    _ <- lexeme $ string "modules:"
 --    between (symbol "{") (symbol "}") (parseModule `sepBy` symbol ",")
---  _ <- symbol "}"
+  _ <- symbol "}"
   return Module
     { name = n
-    , description = maybe "" id d
-    , courses = c
+      , description = ""
+--    , description = maybe "" id d
+    , courses = []
     , activator = trueActivator
     , constraints = []
     , subModules = []

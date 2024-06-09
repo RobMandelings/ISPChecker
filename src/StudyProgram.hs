@@ -33,3 +33,7 @@ data Module = Module
   , subModules :: [Module]
   , activator :: ModuleActivator
   }
+
+instance Show Module where
+  show (Module name description courses constraints subModules _) =
+    " Haha "

@@ -1,6 +1,7 @@
 isp = ISP: {
 	studyProgram: ING_CS,
 	specialisation: A.I,
+	background: "informatica"
 	courseSelection: {
 	    passed: [H01F2A, H01F2A, H01F2A],
         plannedSemesters: {

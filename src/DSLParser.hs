@@ -72,6 +72,12 @@ parseCourses = parseField "courses" (between (symbol "[") (symbol "]") (identifi
 parseConstraints :: Parser [String]
 parseConstraints = lexeme $ string "constraints:" >> between (symbol "[") (symbol "]") (identifier `sepBy` symbol ",")
 
+parseSubmodules :: Parser [Module]
+parseSubmodules = parseField "modules" $ parseNested (parseModule `sepBy` symbol ",")
+
+parseNested :: Parser a -> Parser a
+parseNested = between (symbol "{") (symbol "}")
+
 --parseActivator :: Parser String
 --parseActivator = lexeme $ string "active:" >> manyTill anySingle (try $ lookAhead (symbol "\n" <|> symbol "}"))
 
@@ -79,25 +85,21 @@ parseModule :: Parser Module
 parseModule = do
   _ <- symbol "Module"
   _ <- symbol ":"
-  _ <- symbol "{"
-  n <- parseName
-  c <- parseCourses
---  d <- optional parseDescription
---  a <- parseActivator
---  cs <- optional parseConstraints
---  subModules <- optional $ do
---    _ <- lexeme $ string "modules:"
---    between (symbol "{") (symbol "}") (parseModule `sepBy` symbol ",")
-  _ <- symbol "}"
-  return Module
-    { name = n
-      , description = ""
---    , description = maybe "" id d
-    , courses = []
-    , activator = trueActivator
-    , constraints = []
-    , subModules = []
---      constraints = []
---    , constraints = maybe [] id cs
---    , subModules = maybe [] id subModules
-    }
+  parseNested $ do
+    n <- parseName
+    d <- optional parseDescription
+    c <- parseCourses
+  --  a <- parseActivator
+  --  cs <- optional parseConstraints
+    subModules <- optional parseSubmodules
+    return Module
+      { name = n
+      , description = maybe "" id d
+      , courses = c
+      , activator = trueActivator
+      , constraints = []
+      , subModules = maybe [] id subModules
+  --      constraints = []
+  --    , constraints = maybe [] id cs
+  --    , subModules = maybe [] id subModules
+      }

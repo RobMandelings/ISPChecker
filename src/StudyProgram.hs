@@ -36,4 +36,7 @@ data Module = Module
 
 instance Show Module where
   show (Module name description courses constraints subModules _) =
-    " Haha "
+    "Module {\nname = " ++ show name ++
+    ", \ndescription = " ++ show description ++
+    ", \ncourses = " ++ show courses ++
+    ", \nsubModules = " ++ show subModules

@@ -27,17 +27,30 @@ spaceConsumer = L.space space1 empty empty
 lexeme :: Parser a -> Parser a
 lexeme = L.lexeme spaceConsumer
 
+{- | Creates a parser that produces a specific text
+-}
 symbol :: Text -> Parser Text
+-- L.symbol: takes a whitespace parser and a symbol (string) to parse.
+-- So essentially what we do here is currying
 symbol = L.symbol spaceConsumer
 
 stringLiteral :: Parser String
-stringLiteral = char '"' >> manyTill L.charLiteral (char '"')
+
+ -- >> is to discard the first monadic action and return the result of the second monadic acion (chaining two monadic actions and discarding the first one)
+
+-- first version
+--stringLiteral = char '"' >> manyTill L.charLiteral (char '"')
+
+stringLiteral = between (char '"') (char '"') (many L.charLiteral)
 
 {- | (:) is the cons operator. Adds an element to a list at the front (prepend)
   <$> infix form of fmap (applies function to the result of the functor) -> in this case (:) applied to result of letterChar
+  <*> : part of the applicative typeclass. Applies function wrapped in a context to an argument wrapped in a context. In this case its the partially applied (:) function with letterchar to many alphaNumChar.
 -}
 identifier :: Parser String
 identifier = lexeme ((:) <$> letterChar <*> many alphaNumChar)
+
+-- TODO allow parsing with spaces between the field and the value
 
 parseName :: Parser String
 parseName = lexeme $ string "name:" >> stringLiteral
@@ -51,8 +64,8 @@ parseCourses = lexeme $ string "courses:" >> between (symbol "[") (symbol "]") (
 parseConstraints :: Parser [String]
 parseConstraints = lexeme $ string "constraints:" >> between (symbol "[") (symbol "]") (identifier `sepBy` symbol ",")
 
-parseActivator :: Parser String
-parseActivator = lexeme $ string "active:" >> manyTill anySingle (try $ lookAhead (symbol "\n" <|> symbol "}"))
+--parseActivator :: Parser String
+--parseActivator = lexeme $ string "active:" >> manyTill anySingle (try $ lookAhead (symbol "\n" <|> symbol "}"))
 
 --parseModule :: Parser Module
 --parseModule = do

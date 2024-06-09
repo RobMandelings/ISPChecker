@@ -28,7 +28,6 @@ library
       ConstraintChecker
       Constraints
       Courses
-      DSLLexer
       DSLParser
       ISP
       Lib

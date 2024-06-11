@@ -64,6 +64,12 @@ parseField fieldName fieldParser = symbol fieldName >> symbol ":" >> (lexeme $ f
 parseStringField :: Text -> Parser String
 parseStringField fieldName = parseField fieldName stringLiteral
 
+parseIdentifierField :: Text -> Parser String
+parseIdentifierField fieldName = parseField fieldName identifier
+
+parseListField :: Text -> Parser a -> Parser [a]
+parseListField fieldName parser = parseField fieldName $ parseList $ parser
+
 parseName :: Parser String
 parseName = parseField "name" stringLiteral
 
@@ -71,16 +77,16 @@ parseDescription :: Parser String
 parseDescription = parseField "description" stringLiteral
 
 parseCourses :: Parser [String]
-parseCourses = parseField "courses" $ parseList (identifier `sepBy` symbol ",")
+parseCourses = parseListField "courses" identifier
 
 parseConstraints :: Parser [String]
 parseConstraints = lexeme $ string "constraints:" >> between (symbol "[") (symbol "]") (identifier `sepBy` symbol ",")
 
 parseSubmodules :: Parser [Module]
-parseSubmodules = parseField "modules" $ parseList (parseModule `sepBy` symbol ",")
+parseSubmodules = parseListField "modules" parseModule
 
-parseList :: Parser a -> Parser a
-parseList = between (symbol "[") (symbol "]")
+parseList :: Parser a -> Parser [a]
+parseList p = between (symbol "[") (symbol "]") (p `sepBy` symbol ",")
 
 parseObject :: Text -> Parser a -> Parser a
 parseObject name p = do
@@ -114,6 +120,14 @@ parseModule = do
   --    , subModules = maybe [] id subModules
       }
 
-parseISP :: Parser ISP
-parseISP = parseObject "ISP" $ do
-  error "Not implemented yet"
+--parseCourseSelection :: Parser [[String]]
+--parseCourseSelection = do
+--  passed <-
+--
+--parseISP :: Parser ISP
+--parseISP = parseObject "ISP" $ do
+--  identifier <- parseIdentifierField "studyProgram"
+--  spec <- parseStringField "specialisation"
+--  bg <- parseStringField "background"
+--  courseSel <- parseObject "courseSelection" $
+

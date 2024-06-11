@@ -1,4 +1,4 @@
-isp = ISP: {
+isp = ISP {
 	studyProgram: ING_CS,
 	specialisation: A.I,
 	background: "informatica"
@@ -8,7 +8,8 @@ isp = ISP: {
          [H01F2A, H04I0A, G0K31B],
          [H04G7A, H04L2A, H0A12A],
          [H01F2A, H01F2A, H01F2A]
-	]
+	    ],
+    }
 }
 
 eval(isp);

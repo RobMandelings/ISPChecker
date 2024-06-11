@@ -92,3 +92,6 @@ filterISP isp scope =
 
 getCourses :: [ISPCourse] -> [Course]
 getCourses ispCourses = fmap fst ispCourses
+
+runCheckModule :: Module -> ISP -> Maybe Bool
+runCheckModule mod isp = runReaderT (checkModule mod) isp

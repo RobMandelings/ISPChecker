@@ -11,6 +11,7 @@ import Data.Void
 import Data.Text (Text)
 import qualified Data.Text as T -- Qualified
 
+import ISP
 import StudyProgram
 
 -- Parsec is the core parser type in Megaparsec. Represents a parser that can consume input and produce a result.
@@ -60,6 +61,9 @@ identifier = lexeme ((:) <$> letterChar <*> many alphaNumChar)
 parseField :: Text -> Parser a -> Parser a
 parseField fieldName fieldParser = symbol fieldName >> symbol ":" >> (lexeme $ fieldParser) <* symbol ","
 
+parseStringField :: Text -> Parser String
+parseStringField fieldName = parseField fieldName stringLiteral
+
 parseName :: Parser String
 parseName = parseField "name" stringLiteral
 
@@ -78,8 +82,10 @@ parseSubmodules = parseField "modules" $ parseList (parseModule `sepBy` symbol "
 parseList :: Parser a -> Parser a
 parseList = between (symbol "[") (symbol "]")
 
-parseNested :: Parser a -> Parser a
-parseNested = between (symbol "{") (symbol "}")
+parseObject :: Text -> Parser a -> Parser a
+parseObject name p = do
+  _ <- symbol name
+  between (symbol "{") (symbol "}") p -- No need to use the return keyword because this is already a monadic action that results the result
 
 parseComma :: Parser Text
 parseComma = symbol ","
@@ -89,8 +95,7 @@ parseComma = symbol ","
 
 parseModule :: Parser Module
 parseModule = do
-  _ <- symbol "Module"
-  parseNested $ do
+  parseObject "Module" $ do
     n <- parseName
     d <- optional parseDescription
     c <- optional parseCourses
@@ -108,3 +113,7 @@ parseModule = do
   --    , constraints = maybe [] id cs
   --    , subModules = maybe [] id subModules
       }
+
+parseISP :: Parser ISP
+parseISP = parseObject "ISP" $ do
+  error "Not implemented yet"

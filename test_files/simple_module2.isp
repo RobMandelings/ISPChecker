@@ -12,7 +12,7 @@
 //    }
 //}
 
-Module {
+ Module {
     name: "ingenieurswetenschappen",
     modules: [
         Module {

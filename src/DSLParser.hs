@@ -116,6 +116,13 @@ parsePeriod = choice
 --parseActivator :: Parser String
 --parseActivator = lexeme $ string "active:" >> manyTill anySingle (try $ lookAhead (symbol "\n" <|> symbol "}"))
 
+parseAssignment :: Parser a -> Parser (String, a)
+parseAssignment p = do
+  lhs <- identifier
+  _ <- symbol "="
+  rhs <- p
+  return (lhs, rhs)
+
 parseModule :: Parser Module
 parseModule = do
   _ <- spaceConsumer
@@ -167,3 +174,10 @@ parseISP = parseObject "ISP" $ do
   bg <- parseStringField "background"
   courseSel <- parseField "courseSelection" $ parseNested $ parseCourseSelection
   error "Not implemented yet"
+
+data ParseRes = ISPRes ISP | ModuleRes Module | CourseRes Courses.Course
+
+parseFile :: Parser ParseRes
+parseFile = do
+  _ <- spaceConsumer
+  error "how"

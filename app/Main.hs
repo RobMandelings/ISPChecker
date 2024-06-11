@@ -21,4 +21,4 @@ main = do
       case result of
         Left err -> putStrLn $ errorBundlePretty err
         Right moduleData -> print moduleData
-    _ -> putStrLn "Usage: stack run <file-path>"
+    _ -> putStrLn "ISPChecker usage: stack run <file-path>"

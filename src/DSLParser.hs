@@ -12,8 +12,8 @@ import Data.Text (Text)
 import qualified Data.Text as T -- Qualified
 
 import qualified Courses
-import ISP
-import StudyProgram
+import qualified ISP
+import qualified StudyProgram
 
 -- Parsec is the core parser type in Megaparsec. Represents a parser that can consume input and produce a result.
 -- Void: error type (don't care about custom error information; TODO later)
@@ -86,7 +86,7 @@ parseDescription = parseField "description" stringLiteral
 parseConstraints :: Parser [String]
 parseConstraints = lexeme $ string "constraints:" >> between (symbol "[") (symbol "]") (identifier `sepBy` symbol ",")
 
-parseSubmodules :: Parser [Module]
+parseSubmodules :: Parser [StudyProgram.Module]
 parseSubmodules = parseListField "modules" parseModule
 
 parseList :: Parser a -> Parser [a]
@@ -123,7 +123,7 @@ parseAssignment p = do
   rhs <- p
   return (lhs, rhs)
 
-parseModule :: Parser Module
+parseModule :: Parser StudyProgram.Module
 parseModule = do
   _ <- spaceConsumer
   parseObject "Module" $ do
@@ -133,13 +133,13 @@ parseModule = do
   --  a <- parseActivator
   --  cs <- optional parseConstraints
     subModules <- optional parseSubmodules
-    return Module
-      { name = n
-      , description = maybe "" id d
-      , courses = maybe [] id c
-      , activator = trueActivator
-      , constraints = []
-      , subModules = maybe [] id subModules
+    return StudyProgram.Module
+      { StudyProgram.name = n
+      , StudyProgram.description = maybe "" id d
+      , StudyProgram.courses = maybe [] id c
+      , StudyProgram.activator = StudyProgram.trueActivator
+      , StudyProgram.constraints = []
+      , StudyProgram.subModules = maybe [] id subModules
   --      constraints = []
   --    , constraints = maybe [] id cs
   --    , subModules = maybe [] id subModules
@@ -167,7 +167,7 @@ parseCourseSelection = do
   planned <- optional $ parseListField "planned" $ parseList $ identifier -- Contains a list of lists of course identifiers
   return ((maybe [] id passed) : (maybe [] id planned))
 
-parseISP :: Parser ISP
+parseISP :: Parser ISP.ISP
 parseISP = parseObject "ISP" $ do
   identifier <- parseIdentifierField "studyProgram"
   spec <- parseStringField "specialisation"
@@ -175,7 +175,7 @@ parseISP = parseObject "ISP" $ do
   courseSel <- parseField "courseSelection" $ parseNested $ parseCourseSelection
   error "Not implemented yet"
 
-data ParseRes = ISPRes ISP | ModuleRes Module | CourseRes Courses.Course
+data ParseRes = ISPRes ISP.ISP | ModuleRes StudyProgram.Module | CourseRes Courses.Course
 
 parseFile :: Parser ParseRes
 parseFile = do

@@ -61,7 +61,7 @@ stringLiteral = between (char '"') (char '"') (many charLiteralExclQuotation)
   <*> : part of the applicative typeclass. Applies function wrapped in a context to an argument wrapped in a context. In this case its the partially applied (:) function with letterchar to many alphaNumChar.
 -}
 identifier :: Parser String
-identifier = lexeme ((:) <$> letterChar <*> many alphaNumChar)
+identifier = lexeme ((:) <$> letterChar <*> many (alphaNumChar <|> char '_'))
 
 -- TODO allow parsing with spaces between the field and the value
 
@@ -175,9 +175,14 @@ parseISP = parseObject "ISP" $ do
   courseSel <- parseField "courseSelection" $ parseNested $ parseCourseSelection
   error "Not implemented yet"
 
-data ParseRes = ISPRes ISP.ISP | ModuleRes StudyProgram.Module | CourseRes Courses.Course
+data ParseObj = ISPObj ISP.ISP | ModuleObj StudyProgram.Module | CourseObj Courses.Course deriving (Show)
 
-parseFile :: Parser ParseRes
+parseFile :: Parser [(String, ParseObj)]
 parseFile = do
   _ <- spaceConsumer
-  error "how"
+  parsedObjs <- many $ parseAssignment $ choice
+    [ ISPObj <$> parseISP
+    , ModuleObj <$> parseModule
+    , CourseObj <$> parseCourse
+    ]
+  return parsedObjs

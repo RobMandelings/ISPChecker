@@ -1,6 +1,6 @@
 module Courses where
 
-data Status = Passed | Planned Int
+data Status = Passed | Planned Int deriving (Show)
 
 type ISPCourse = (Course, Status)
 type CourseCode = String

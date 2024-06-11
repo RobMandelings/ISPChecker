@@ -17,7 +17,7 @@ main = do
   case args of
     [filePath] -> do
       content <- T.readFile filePath
-      let result = parse DSLParser.parseModule filePath content
+      let result = parse DSLParser.parseFile filePath content
       case result of
         Left err -> putStrLn $ errorBundlePretty err
         Right moduleData -> print moduleData

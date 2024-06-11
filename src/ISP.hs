@@ -12,4 +12,4 @@ type ISPOptions = Map.Map OptionName OptionValue
 data ISP = ISP
   { courseSelection :: ISPCourseSelection
   , options :: ISPOptions -- Valid options are customised for each study program. For example, backgroundEducation or specialisation
-  }
+  } deriving (Show)

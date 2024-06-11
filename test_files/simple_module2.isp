@@ -12,7 +12,7 @@
 //    }
 //}
 
- Module {
+CS_ING = Module {
     name: "ingenieurswetenschappen",
     modules: [
         Module {

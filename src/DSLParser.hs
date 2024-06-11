@@ -58,7 +58,7 @@ identifier = lexeme ((:) <$> letterChar <*> many alphaNumChar)
 -- TODO allow parsing with spaces between the field and the value
 
 parseField :: Text -> Parser a -> Parser a
-parseField fieldName fieldParser = symbol fieldName >> symbol ":" >> (lexeme $ fieldParser) -- <* symbol "," TODO implement the separator later
+parseField fieldName fieldParser = symbol fieldName >> symbol ":" >> (lexeme $ fieldParser) <* symbol ","
 
 parseName :: Parser String
 parseName = parseField "name" stringLiteral
@@ -67,16 +67,22 @@ parseDescription :: Parser String
 parseDescription = parseField "description" stringLiteral
 
 parseCourses :: Parser [String]
-parseCourses = parseField "courses" (between (symbol "[") (symbol "]") (identifier `sepBy` symbol ","))
+parseCourses = parseField "courses" $ parseList (identifier `sepBy` symbol ",")
 
 parseConstraints :: Parser [String]
 parseConstraints = lexeme $ string "constraints:" >> between (symbol "[") (symbol "]") (identifier `sepBy` symbol ",")
 
 parseSubmodules :: Parser [Module]
-parseSubmodules = parseField "modules" $ parseNested (parseModule `sepBy` symbol ",")
+parseSubmodules = parseField "modules" $ parseList (parseModule `sepBy` symbol ",")
+
+parseList :: Parser a -> Parser a
+parseList = between (symbol "[") (symbol "]")
 
 parseNested :: Parser a -> Parser a
 parseNested = between (symbol "{") (symbol "}")
+
+parseComma :: Parser Text
+parseComma = symbol ","
 
 --parseActivator :: Parser String
 --parseActivator = lexeme $ string "active:" >> manyTill anySingle (try $ lookAhead (symbol "\n" <|> symbol "}"))
@@ -84,18 +90,17 @@ parseNested = between (symbol "{") (symbol "}")
 parseModule :: Parser Module
 parseModule = do
   _ <- symbol "Module"
-  _ <- symbol ":"
   parseNested $ do
     n <- parseName
     d <- optional parseDescription
-    c <- parseCourses
+    c <- optional parseCourses
   --  a <- parseActivator
   --  cs <- optional parseConstraints
     subModules <- optional parseSubmodules
     return Module
       { name = n
       , description = maybe "" id d
-      , courses = c
+      , courses = maybe [] id c
       , activator = trueActivator
       , constraints = []
       , subModules = maybe [] id subModules

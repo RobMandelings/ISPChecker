@@ -132,9 +132,9 @@ parseModule = do
 
 parseCourseSelection :: Parser [[String]]
 parseCourseSelection = do
-  passed <- parseListField "passed" $ identifier
-  planned <- parseListField "planned" $ parseList $ identifier -- Contains a list of lists of course identifiers
-  return (passed : planned)
+  passed <- optional $ parseListField "passed" $ identifier
+  planned <- optional $ parseListField "planned" $ parseList $ identifier -- Contains a list of lists of course identifiers
+  return ((maybe [] id passed) : (maybe [] id planned))
 
 parseISP :: Parser ISP
 parseISP = parseObject "ISP" $ do
@@ -142,4 +142,4 @@ parseISP = parseObject "ISP" $ do
   spec <- parseStringField "specialisation"
   bg <- parseStringField "background"
   courseSel <- parseField "courseSelection" $ parseNested $ parseCourseSelection
-  error "hi"
+  error "Not implemented yet"

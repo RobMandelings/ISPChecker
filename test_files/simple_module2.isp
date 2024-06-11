@@ -1,16 +1,16 @@
-ISP {
-	studyProgram: ING_CS,
-	specialisation: "A.I",
-	background: "informatica"
-	courseSelection: {
-	    passed: [H01F2A, H01F2A, H01F2A],
-        plannedSemesters: [
-         [H01F2A, H04I0A, G0K31B],
-         [H04G7A, H04L2A, H0A12A],
-         [H01F2A, H01F2A, H01F2A]
-	    ],
-    }
-}
+//ISP {
+//	studyProgram: ING_CS,
+//	specialisation: "A.I",
+//	background: "informatica"
+//	courseSelection: {
+//	    passed: [H01F2A, H01F2A, H01F2A],
+//        plannedSemesters: [
+//         [H01F2A, H04I0A, G0K31B],
+//         [H04G7A, H04L2A, H0A12A],
+//         [H01F2A, H01F2A, H01F2A]
+//	    ],
+//    }
+//}
 
 Module {
     name: "ingenieurswetenschappen",

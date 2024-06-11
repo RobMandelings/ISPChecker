@@ -20,8 +20,14 @@ import StudyProgram
 -- TODO difference Text and String?
 type Parser = Parsec Void Text
 
+singleLineComment :: Parser ()
+singleLineComment = L.skipLineComment "//"
+
+multiLineComment :: Parser ()
+multiLineComment = L.skipBlockComment "/*" "*/"
+
 spaceConsumer :: Parser ()
-spaceConsumer = L.space space1 empty empty
+spaceConsumer = L.space space1 singleLineComment multiLineComment
 
 {- | Returns a parser that consumes any sequence of characters followed by whitespace.
   Takes a parser as argument and make sure the parser can also parse even though there is trailing whitespace
@@ -101,6 +107,7 @@ parseComma = symbol ","
 
 parseModule :: Parser Module
 parseModule = do
+  _ <- spaceConsumer
   parseObject "Module" $ do
     n <- parseName
     d <- optional parseDescription
@@ -130,4 +137,4 @@ parseModule = do
 --  spec <- parseStringField "specialisation"
 --  bg <- parseStringField "background"
 --  courseSel <- parseObject "courseSelection" $
-
+--

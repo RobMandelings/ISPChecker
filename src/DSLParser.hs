@@ -11,6 +11,7 @@ import Data.Void
 import Data.Text (Text)
 import qualified Data.Text as T -- Qualified
 
+import qualified Courses
 import ISP
 import StudyProgram
 
@@ -82,9 +83,6 @@ parseName = parseField "name" stringLiteral
 parseDescription :: Parser String
 parseDescription = parseField "description" stringLiteral
 
-parseCourses :: Parser [String]
-parseCourses = parseListField "courses" identifier
-
 parseConstraints :: Parser [String]
 parseConstraints = lexeme $ string "constraints:" >> between (symbol "[") (symbol "]") (identifier `sepBy` symbol ",")
 
@@ -105,6 +103,16 @@ parseNested = between (symbol "{") (symbol "}")
 parseComma :: Parser Text
 parseComma = symbol ","
 
+parseInt :: Parser Int
+parseInt = L.decimal
+
+parsePeriod :: Parser Courses.Period
+parsePeriod = choice
+  [ symbol "First" *> return Courses.FirstSem
+  ,  symbol "Second" *> return Courses.SecondSem
+  ,  symbol "AllYear" *> return Courses.AllYear
+  ]
+
 --parseActivator :: Parser String
 --parseActivator = lexeme $ string "active:" >> manyTill anySingle (try $ lookAhead (symbol "\n" <|> symbol "}"))
 
@@ -114,7 +122,7 @@ parseModule = do
   parseObject "Module" $ do
     n <- parseName
     d <- optional parseDescription
-    c <- optional parseCourses
+    c <- optional $ parseListField "courses" identifier
   --  a <- parseActivator
   --  cs <- optional parseConstraints
     subModules <- optional parseSubmodules
@@ -129,6 +137,22 @@ parseModule = do
   --    , constraints = maybe [] id cs
   --    , subModules = maybe [] id subModules
       }
+
+parseCourse :: Parser Courses.Course
+parseCourse = do
+  parseObject "Course" $ do
+    n <- parseField "name" stringLiteral
+    d <- optional $ parseField "description" stringLiteral
+    code <- parseField "code" $ identifier
+    period <- parseField "period" $ parsePeriod
+    sp <- parseField "studyPoints" $ parseInt
+    return Courses.Course {
+      Courses.name = n
+    , Courses.description = maybe "" id d
+    , Courses.code = code
+    , Courses.period = period
+    , Courses.studyPoints = sp
+    }
 
 parseCourseSelection :: Parser [[String]]
 parseCourseSelection = do

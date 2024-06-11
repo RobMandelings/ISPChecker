@@ -97,7 +97,10 @@ parseList p = between (symbol "[") (symbol "]") (p `sepBy` symbol ",")
 parseObject :: Text -> Parser a -> Parser a
 parseObject name p = do
   _ <- symbol name
-  between (symbol "{") (symbol "}") p -- No need to use the return keyword because this is already a monadic action that results the result
+  parseNested p -- No need to use the return keyword because this is already a monadic action that results the result
+
+parseNested :: Parser a -> Parser a
+parseNested = between (symbol "{") (symbol "}")
 
 parseComma :: Parser Text
 parseComma = symbol ","
@@ -127,14 +130,16 @@ parseModule = do
   --    , subModules = maybe [] id subModules
       }
 
---parseCourseSelection :: Parser [[String]]
---parseCourseSelection = do
---  passed <-
---
---parseISP :: Parser ISP
---parseISP = parseObject "ISP" $ do
---  identifier <- parseIdentifierField "studyProgram"
---  spec <- parseStringField "specialisation"
---  bg <- parseStringField "background"
---  courseSel <- parseObject "courseSelection" $
---
+parseCourseSelection :: Parser [[String]]
+parseCourseSelection = do
+  passed <- parseListField "passed" $ identifier
+  planned <- parseListField "planned" $ parseList $ identifier -- Contains a list of lists of course identifiers
+  return (passed : planned)
+
+parseISP :: Parser ISP
+parseISP = parseObject "ISP" $ do
+  identifier <- parseIdentifierField "studyProgram"
+  spec <- parseStringField "specialisation"
+  bg <- parseStringField "background"
+  courseSel <- parseField "courseSelection" $ parseNested $ parseCourseSelection
+  error "hi"

@@ -10,6 +10,7 @@ import qualified Text.Megaparsec.Char.Lexer as L
 import Data.Void
 import Data.Text (Text)
 import qualified Data.Text as T -- Qualified
+import qualified Data.Map as Map
 
 import qualified Courses
 import qualified ISP
@@ -161,19 +162,32 @@ parseCourse = do
     , Courses.studyPoints = sp
     }
 
-parseCourseSelection :: Parser [[String]]
+parseISPOptions :: Parser ISP.ISPOptions
+parseISPOptions = do
+  spec <- parseStringField "specialisation"
+  bg <- parseStringField "background"
+  let ispOptions = Map.fromList[("background", bg), ("specialisation", spec)]
+  return ispOptions
+
+parseCourseSelection :: Parser ISP.CourseSelection
 parseCourseSelection = do
   passed <- optional $ parseListField "passed" $ identifier
   planned <- optional $ parseListField "planned" $ parseList $ identifier -- Contains a list of lists of course identifiers
-  return ((maybe [] id passed) : (maybe [] id planned))
+  return ISP.CourseSelection {
+    ISP.passed = maybe [] id passed
+  , ISP.planned = maybe [] id planned
+  }
 
 parseISP :: Parser ISP.ISP
 parseISP = parseObject "ISP" $ do
-  identifier <- parseIdentifierField "studyProgram"
-  spec <- parseStringField "specialisation"
-  bg <- parseStringField "background"
+  studyProgram <- parseIdentifierField "studyProgram"
+  ispOptions <- parseISPOptions
   courseSel <- parseField "courseSelection" $ parseNested $ parseCourseSelection
-  error "Not implemented yet"
+  return ISP.ISP {
+    ISP.studyProgram = studyProgram
+  , ISP.options = ispOptions
+  , ISP.courseSelection = courseSel
+  }
 
 data ParseObj = ISPObj ISP.ISP | ModuleObj StudyProgram.Module | CourseObj Courses.Course deriving (Show)
 

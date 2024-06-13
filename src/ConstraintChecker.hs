@@ -1,16 +1,42 @@
+-- Required to define the type of the instance inline instead of having to wrap it in a different type
+{-# LANGUAGE FlexibleInstances #-}
+
 module ConstraintChecker where
---
---import qualified Data.Map.Strict as Map
---import Data.Maybe (mapMaybe)
---import Control.Monad.Reader
---import qualified Data.Set as Set
---
---import Courses
---import StudyProgram
---import Constraints
---import ISP
---
---type ConstraintChecker = ReaderT ISP Maybe Bool
+
+-- TODO why did I use a strict map here?
+import qualified Data.Map as Map
+import qualified Data.Map.Strict as StrictMap -- Forces evaluation of values when they are inserted into the map. As opposed to normal map.
+import Data.Maybe (mapMaybe)
+import Control.Monad.Reader
+import qualified Data.Set as Set
+
+import qualified Courses
+import StudyProgram
+import Constraints
+import ISP
+
+-- the lhs defines the type constraint for this typeclass.
+-- Any m that is an instance of the CourseStore type class, should also be an instance of the Monad typeclass
+class Monad m => CourseStore m where
+  getCourse :: Courses.CourseCode -> m -> Maybe Courses.Course
+
+-- | Maps the course code to the corresponding course
+type CourseMap = Map.Map Courses.CourseCode Courses.Course
+
+--instance CourseStore (ReaderT CourseMap IO) where
+--  getCourse courseCode = do
+--    courseMap <- ask
+--    return $ Map.lookup courseCode courseMap
+§
+
+
+data Env = Env
+  {
+    isp :: ISP
+--  , courseStore :: CourseStore
+  }
+
+type ConstraintChecker = ReaderT Env Maybe Bool
 --
 ---- check whether module is active
 ---- evaluate subModules
@@ -39,7 +65,7 @@ module ConstraintChecker where
 --checkConstraint :: Constraint -> ConstraintChecker
 --checkConstraint (IncludedConstraint code) = do
 --  isp <- ask
---  return (Map.member code (courseSelection isp))
+--  return (StrictMap.member code (courseSelection isp))
 --
 --checkConstraint (NandConstraint c1 c2) = do
 --  r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
@@ -48,13 +74,13 @@ module ConstraintChecker where
 --
 --checkConstraint (MinSPConstraint sp) = do
 --  isp <- ask
---  let courses = getCourses $ Map.elems $ courseSelection isp
+--  let courses = getCourses $ StrictMap.elems $ courseSelection isp
 --  let totalSP = sum $ map (studyPoints) courses
 --  return (totalSP >= sp)
 --
 --checkConstraint (MaxSPConstraint sp) = do
 --  isp <- ask
---  let courses = getCourses $ Map.elems $ courseSelection isp
+--  let courses = getCourses $ StrictMap.elems $ courseSelection isp
 --  let totalSP = sum $ map (studyPoints) courses
 --  return (totalSP <= sp)
 --
@@ -70,7 +96,7 @@ module ConstraintChecker where
 --  isp <- ask
 --  let selectionMap = courseSelection isp
 --  -- The below implementation does not handle the situation where one of two lookups return nothing, the constraint check returns nothing (this is an error, something went wrong here).
---  return $ case (Map.lookup code1 selectionMap, Map.lookup code2 selectionMap) of
+--  return $ case (StrictMap.lookup code1 selectionMap, StrictMap.lookup code2 selectionMap) of
 --    (Just (_, Planned year1), Just (_, Planned year2)) -> year1 == year2
 --    (Just (_, Passed), Just (_, Passed)) -> True
 --    _ -> False -- TODO THIS SHOULD BE NOTHING INSTEAD!!! If nothing is returned, then something went wrong here
@@ -78,7 +104,7 @@ module ConstraintChecker where
 ----remainingSPConstraint (RemainingSPConstraint sp) = do
 ----  isp <- ask
 --
---getScope :: Module -> ISP -> [CourseCode]
+--getScope :: Module -> ISP -> [Courses.CourseCode]
 --getScope mod isp =
 --  if isActive mod isp
 --  then courses mod ++ concatMap (\subMod -> getScope subMod isp) (subModules mod)
@@ -87,10 +113,10 @@ module ConstraintChecker where
 --filterISP :: ISP -> Scope -> ISP
 --filterISP isp scope =
 --  let scopeSet = Set.fromList scope -- More efficient lookups. TODO: maybe scope should always be a set if possible?
---      filteredSelection = Map.filterWithKey (\key _ -> Set.member key scopeSet) (courseSelection isp) -- Underscore ignores the value associated with that key. Is a wildcard.
+--      filteredSelection = StrictMap.filterWithKey (\key _ -> Set.member key scopeSet) (courseSelection isp) -- Underscore ignores the value associated with that key. Is a wildcard.
 --  in isp { courseSelection = filteredSelection }
 --
---getCourses :: [ISPCourse] -> [Course]
+--getCourses :: [Courses.ISPCourse] -> [Courses.Course]
 --getCourses ispCourses = fmap fst ispCourses
 --
 --runCheckModule :: Module -> ISP -> Maybe Bool

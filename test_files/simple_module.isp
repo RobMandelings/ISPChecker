@@ -1,5 +1,3 @@
-
-
 hello = Module {
     name: "Verdere optie",
     description: "Hellowkes",
@@ -36,4 +34,11 @@ isp1 = ISP {
          [H01F2A, H01F2A, H01F2A]
 	    ],
     },
+}
+
+Course {
+
+}
+
+Course {
 }

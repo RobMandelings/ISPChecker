@@ -1,34 +1,12 @@
-isp = ISP {
-	studyProgram: ING_CS,
-	specialisation: A.I,
-	background: "informatica"
-	courseSelection: {
-	    passed: [H01F2A, H01F2A, H01F2A],
-        plannedSemesters: [
-         [H01F2A, H04I0A, G0K31B],
-         [H04G7A, H04L2A, H0A12A],
-         [H01F2A, H01F2A, H01F2A]
-	    ],
-    }
-}
-
-eval(isp);
-
+// Courses
 H01F2A = Course {
     name: "",
-    code: "This is a course on databases",
+    description: "This is a course on databases",
     period: First, Second, AllYear,
     studyPoints: 5
 }
 
-/*
-Constraints are written like this
-*/
-oneOf = Constraint {
-    Selected (H01F2A) OR
-    Selected (H02F2B)
-}
-
+// StudyProgram
 ING_CS = Module {
     modules: [
         ING_CS_bachelor_verbredend,
@@ -40,11 +18,6 @@ ING_CS = Module {
     constraints: [
         IncludedSP = 120
     ]
-}
-
-AllIncluded = Constraint {
-    All c -> Included(c),
-    errorMsg = "Niet alle opleidingsonderdelen zijn opgenomen"
 }
 
 ING_CS_bachelor_verbredend = Module {
@@ -66,21 +39,6 @@ ING_CS_bachelor_verbredend = Module {
     ]
 }
 
-Obligatory = Module {
-    name: "Verplicht deel"
-    description: "Alle opleidingsonderdelen zijn verplicht voor alle studenten"
-    courses: [H04I4A, HOE96A, GOB23A, H09B5B, H0415A]
-    constraints: AllIncluded
-}
-
-Hoofdoptie = Module {
-    name: "Hoofdoptie"
-    description: "De student kiest 1 van 6 mogelijke opties"
-    modules: {
-        Hoofdoptie_Gedistribueerde_Systemen,
-    }
-}
-
 Hoofdoptie_Gedistribueerde_Systemen = Module {
     name: "Hoofdoptie Gedistribueerde Systemen"
     modules: {
@@ -96,6 +54,14 @@ Hoofdoptie_Gedistribueerde_Systemen = Module {
             courses: [H02H4A, HO4L2A, H04G4A, HOA12A]
         }
         errorMsg = "De vereisten van de hoofdoptie gedistribueerde systemen zijn niet voldaan."
+    }
+}
+
+Hoofdoptie = Module {
+    name: "Hoofdoptie"
+    description: "De student kiest 1 van 6 mogelijke opties"
+    modules: {
+        Hoofdoptie_Gedistribueerde_Systemen,
     }
 }
 
@@ -115,6 +81,44 @@ Masterproef = Module {
         RemainingSP(Period(H04J4A)) <= 72 // Unsure of this yet. Remaining study points at the moment you include the master thesis should be maximally 72.
         error_msg = ""
     ]
+}
+
+ISP {
+	studyProgram: ING_CS,
+	specialisation: A.I,
+	background: "informatica"
+	courseSelection: {
+	    passed: [H01F2A, H01F2A, H01F2A],
+        plannedSemesters: [
+         [H01F2A, H04I0A, G0K31B],
+         [H04G7A, H04L2A, H0A12A],
+         [H01F2A, H01F2A, H01F2A]
+	    ],
+    }
+}
+
+eval(isp);
+
+// Constraints
+
+/*
+Constraints are written like this
+*/
+oneOf = Constraint {
+    Selected (H01F2A) OR
+    Selected (H02F2B)
+}
+
+AllIncluded = Constraint {
+    All c -> Included(c),
+    errorMsg = "Niet alle opleidingsonderdelen zijn opgenomen"
+}
+
+Obligatory = Module {
+    name: "Verplicht deel"
+    description: "Alle opleidingsonderdelen zijn verplicht voor alle studenten"
+    courses: [H04I4A, HOE96A, GOB23A, H09B5B, H0415A]
+    constraints: AllIncluded
 }
 
 // Constraints

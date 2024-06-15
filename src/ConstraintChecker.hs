@@ -15,28 +15,67 @@ import StudyProgram
 import Constraints
 import ISP
 
+-- TODO
 -- the lhs defines the type constraint for this typeclass.
 -- Any m that is an instance of the CourseStore type class, should also be an instance of the Monad typeclass
-class Monad m => CourseStore m where
-  getCourse :: Courses.CourseCode -> m -> Maybe Courses.Course
+
+--class Monad m => CourseStore m where
+--  getCourse :: Courses.CourseCode -> m (Maybe Courses.Course)
+
+data CourseStore = CourseStore { getCourse :: Courses.CourseCode -> Maybe Courses.Course }
 
 -- | Maps the course code to the corresponding course
 type CourseMap = Map.Map Courses.CourseCode Courses.Course
+
+createMapCourseStore :: CourseMap -> CourseStore
+createMapCourseStore courseMap =
+  CourseStore { getCourse = (\courseCode -> Map.lookup courseCode courseMap) }
+
+createDBCourseStore :: String -> CourseStore
+createDBCourseStore dbName =
+  CourseStore { getCourse = (\courseCode -> Nothing) }
+
+-- Instances don't work because they will always return a monad and you still need to know how to execute it and pass the proper parameters.
+
+--instance CourseStore (Reader CourseMap) where
+--  getCourse courseCode = do
+--    courseMap <- ask
+--    return $ Map.lookup courseCode courseMap
+
+--createGetCourseFromMap
+
+-- runReader (getCourse courseCode) courseMap (gives back the actual result)
+
+--instance CourseStore IO where
+--  getCourse courseCode = do
+--    return Nothing -- TODO implement database implementation
+
+
+
+data CourseStoreEnv = CourseStoreEnv
+  { runStore :: Courses.CourseCode -> (Maybe Courses.Course)}
+
+
+--createEnv :: CourseStore m => (Courses.CourseCode -> m (Maybe Courses.Course)) -> (m a -> a) -> CourseStoreEnv
+--createEnv getCourse runMonad = CourseStoreEnv $ \courseCode -> runMonad (getCourse courseCode)
 
 --instance CourseStore (ReaderT CourseMap IO) where
 --  getCourse courseCode = do
 --    courseMap <- ask
 --    return $ Map.lookup courseCode courseMap
-§
 
 
 data Env = Env
   {
     isp :: ISP
---  , courseStore :: CourseStore
+  , courseStore :: CourseMap
   }
 
 type ConstraintChecker = ReaderT Env Maybe Bool
+
+extractCourse :: ConstraintChecker
+extractCourse = do
+  error "Hi"
 --
 ---- check whether module is active
 ---- evaluate subModules

@@ -13,7 +13,8 @@ import qualified Data.Set as Set
 import qualified Courses
 import StudyProgram
 import Constraints
-import ISP
+import ISP (ISP)
+import qualified ISP as ISP
 
 -- TODO
 -- the lhs defines the type constraint for this typeclass.
@@ -54,7 +55,7 @@ type ConstraintChecker = ReaderT Env Maybe Bool
 ---- evaluate this constraint
 --
 isActive :: Module -> ISP -> Bool
-isActive mod isp = (activator mod) (options isp)
+isActive mod isp = (activator mod) (ISP.options isp)
 --
 checkModule :: Module -> ConstraintChecker
 checkModule mod = do
@@ -65,29 +66,34 @@ checkModule mod = do
     -- Not only applies checkConstraint to each constraint in the list, but also sequences the results in a single monadic action that
     -- Produces all results. If at least one result returned Nothing, the binding fails and checkModule will return Nothing as well.
     subModuleResults <- mapM checkModule (subModules mod)
+    results <- mapM (\c -> checkConstraint (ScopedConstraint c scope)) (constraints mod)
     return True
---    results <- mapM (\c -> checkConstraint (ScopedConstraint c scope)) (constraints mod)
 
     -- You provide a function that maps a result to a boolean. Then provide a list of results. You get a boolean if all the outcomes of the results are booleans.
 --    return $ all id results -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
   else return True
 --
---checkConstraint :: Constraint -> ConstraintChecker
---checkConstraint (IncludedConstraint code) = do
---  isp <- ask
---  return (StrictMap.member code (courseSelection isp))
+checkConstraint :: Constraint -> ConstraintChecker
+checkConstraint (IncludedConstraint code) = do
+  isp <- asks isp
+  return $ Set.member code $ ISP.getIncludedCourses isp
+
+checkConstraint (NandConstraint c1 c2) = do
+  r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
+  r2 <- checkConstraint c2
+  return (not (r1 && r2))
 --
---checkConstraint (NandConstraint c1 c2) = do
---  r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
---  r2 <- checkConstraint c2
---  return (not (r1 && r2))
---
---checkConstraint (MinSPConstraint sp) = do
---  isp <- ask
---  let courses = getCourses $ StrictMap.elems $ courseSelection isp
---  let totalSP = sum $ map (studyPoints) courses
---  return (totalSP >= sp)
---
+checkConstraint (MinSPConstraint sp) = do
+  isp <- asks isp
+  courseStore <- asks courseStore
+  let courseIds = ISP.getIncludedCourses $ isp in
+    let results = mapM (getCourse courseStore) $ Set.toList courseIds in
+    case results of
+      Just courses ->
+          let totalSP = sum $ map (Courses.studyPoints) courses in
+            return (totalSP >= sp)
+      Nothing ->
+        error "Not all courses could be retrieved"
 --checkConstraint (MaxSPConstraint sp) = do
 --  isp <- ask
 --  let courses = getCourses $ StrictMap.elems $ courseSelection isp

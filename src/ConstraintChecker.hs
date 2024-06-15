@@ -56,6 +56,8 @@ type ConstraintChecker = ReaderT Env Maybe Bool
 --
 
 -- No need to use a monad here, just use getCourses
+-- No monad because its not easy to change the monad type with a different environment. You use need to use runReader to extract the values, but then that would be the same as just having an argument.
+-- If the monadic context for getCourses is used in recursive calls, then you might want to reconsider using a monad. Otherwise I wouldn't see the point.
 getCourses :: Env -> [Courses.Course]
 getCourses env =
     let courseIds = ISP.getIncludedCourses $ isp env in

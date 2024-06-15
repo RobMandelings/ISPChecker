@@ -54,6 +54,19 @@ type ConstraintChecker = ReaderT Env Maybe Bool
 ---- wrap the andConstraint in a scopedConstraint (todo for organisational purposes maybe its better to iterate over the constraints?)
 ---- evaluate this constraint
 --
+
+-- No need to use a monad here, just use getCourses
+getCourses :: Env -> [Courses.Course]
+getCourses env =
+    let courseIds = ISP.getIncludedCourses $ isp env in
+      let results = mapM (getCourse (courseStore env)) $ Set.toList courseIds in
+      case results of
+        Just courses ->
+          courses
+        Nothing ->
+          error "Not all courses could be retrieved"
+
+
 isActive :: Module -> ISP -> Bool
 isActive mod isp = (activator mod) (ISP.options isp)
 --
@@ -82,23 +95,20 @@ checkConstraint (NandConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   r2 <- checkConstraint c2
   return (not (r1 && r2))
---
+
+
 checkConstraint (MinSPConstraint sp) = do
-  isp <- asks isp
-  courseStore <- asks courseStore
-  let courseIds = ISP.getIncludedCourses $ isp in
-    let results = mapM (getCourse courseStore) $ Set.toList courseIds in
-    case results of
-      Just courses ->
-          let totalSP = sum $ map (Courses.studyPoints) courses in
-            return (totalSP >= sp)
-      Nothing ->
-        error "Not all courses could be retrieved"
---checkConstraint (MaxSPConstraint sp) = do
---  isp <- ask
---  let courses = getCourses $ StrictMap.elems $ courseSelection isp
---  let totalSP = sum $ map (studyPoints) courses
---  return (totalSP <= sp)
+  env <- ask
+  let courses = getCourses env in
+      let totalSP = sum $ map (Courses.studyPoints) courses in
+      return (totalSP >= sp) -- Return now maps the boolean inside a maybe monad, wraps it inside the ReaderT
+--  lift Nothing -- Return would wrap the result of 'lift Nothing' in another layer of ReaderT
+
+checkConstraint (MaxSPConstraint sp) = do
+  env <- ask
+  let courses = getCourses env in
+      let totalSP = sum $ map (Courses.studyPoints) courses in
+      return (totalSP <= sp) -- Return now maps the boolean inside a maybe monad, wraps it inside the ReaderT
 --
 ---- Const is a function that ignores its argument and returns a constant value.
 ---- We require const here because local expects a function that takes in an env and returns an adjusted environment.

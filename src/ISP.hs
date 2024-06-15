@@ -2,10 +2,11 @@ module ISP where
 
 import Courses
 import Data.Map.Strict as Map -- TODO: should I use Map.Strict or Map.Lazy?
+import Data.Set (Set)
 
 data CourseSelection = CourseSelection
-  { passed :: [CourseCode]
-  , planned :: [[CourseCode]]
+  { passed :: Set CourseCode
+  , planned :: [Set CourseCode]
   } deriving (Show)
 
 type OptionName = String

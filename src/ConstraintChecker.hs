@@ -37,45 +37,13 @@ createDBCourseStore dbName =
 
 -- Instances don't work because they will always return a monad and you still need to know how to execute it and pass the proper parameters.
 
---instance CourseStore (Reader CourseMap) where
---  getCourse courseCode = do
---    courseMap <- ask
---    return $ Map.lookup courseCode courseMap
-
---createGetCourseFromMap
-
--- runReader (getCourse courseCode) courseMap (gives back the actual result)
-
---instance CourseStore IO where
---  getCourse courseCode = do
---    return Nothing -- TODO implement database implementation
-
-
-
-data CourseStoreEnv = CourseStoreEnv
-  { runStore :: Courses.CourseCode -> (Maybe Courses.Course)}
-
-
---createEnv :: CourseStore m => (Courses.CourseCode -> m (Maybe Courses.Course)) -> (m a -> a) -> CourseStoreEnv
---createEnv getCourse runMonad = CourseStoreEnv $ \courseCode -> runMonad (getCourse courseCode)
-
---instance CourseStore (ReaderT CourseMap IO) where
---  getCourse courseCode = do
---    courseMap <- ask
---    return $ Map.lookup courseCode courseMap
-
-
 data Env = Env
   {
     isp :: ISP
-  , courseStore :: CourseMap
+  , courseStore :: CourseStore
   }
 
 type ConstraintChecker = ReaderT Env Maybe Bool
-
-extractCourse :: ConstraintChecker
-extractCourse = do
-  error "Hi"
 --
 ---- check whether module is active
 ---- evaluate subModules
@@ -85,21 +53,24 @@ extractCourse = do
 ---- wrap the andConstraint in a scopedConstraint (todo for organisational purposes maybe its better to iterate over the constraints?)
 ---- evaluate this constraint
 --
---isActive :: Module -> ISP -> Bool
---isActive mod isp = (activator mod) (options isp)
+isActive :: Module -> ISP -> Bool
+isActive mod isp = (activator mod) (options isp)
 --
---checkModule :: Module -> ConstraintChecker
---checkModule mod = do
---  isp <- ask
---  if isActive mod isp
---  then do
---    let scope = getScope mod isp
---    -- Not only applies checkConstraint to each constraint in the list, but also sequences the results in a single monadic action that
---    -- Produces all results. If at least one result returned Nothing, the binding fails and checkModule will return Nothing as well.
---    subModuleResults <- mapM checkModule (subModules mod)
+checkModule :: Module -> ConstraintChecker
+checkModule mod = do
+  isp <- asks isp
+  if isActive mod isp
+  then do
+    let scope = getScope mod isp
+    -- Not only applies checkConstraint to each constraint in the list, but also sequences the results in a single monadic action that
+    -- Produces all results. If at least one result returned Nothing, the binding fails and checkModule will return Nothing as well.
+    subModuleResults <- mapM checkModule (subModules mod)
+    return True
 --    results <- mapM (\c -> checkConstraint (ScopedConstraint c scope)) (constraints mod)
+
+    -- You provide a function that maps a result to a boolean. Then provide a list of results. You get a boolean if all the outcomes of the results are booleans.
 --    return $ all id results -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
---  else return True
+  else return True
 --
 --checkConstraint :: Constraint -> ConstraintChecker
 --checkConstraint (IncludedConstraint code) = do
@@ -143,11 +114,11 @@ extractCourse = do
 ----remainingSPConstraint (RemainingSPConstraint sp) = do
 ----  isp <- ask
 --
---getScope :: Module -> ISP -> [Courses.CourseCode]
---getScope mod isp =
---  if isActive mod isp
---  then courses mod ++ concatMap (\subMod -> getScope subMod isp) (subModules mod)
---  else []
+getScope :: Module -> ISP -> [Courses.CourseCode]
+getScope mod isp =
+  if isActive mod isp
+  then courses mod ++ concatMap (\subMod -> getScope subMod isp) (subModules mod)
+  else []
 --
 --filterISP :: ISP -> Scope -> ISP
 --filterISP isp scope =

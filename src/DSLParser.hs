@@ -15,6 +15,7 @@ import qualified Data.Map as Map
 import qualified Courses
 import qualified ISP
 import qualified StudyProgram
+import qualified Data.Set as Set
 
 -- Parsec is the core parser type in Megaparsec. Represents a parser that can consume input and produce a result.
 -- Void: error type (don't care about custom error information; TODO later)
@@ -169,12 +170,15 @@ parseISPOptions = do
   let ispOptions = Map.fromList[("background", bg), ("specialisation", spec)]
   return ispOptions
 
+parseSet :: (Ord a) => Parser [a] -> Parser (Set.Set a)
+parseSet p = Set.fromList <$> p
+
 parseCourseSelection :: Parser ISP.CourseSelection
 parseCourseSelection = do
-  passed <- optional $ parseListField "passed" $ identifier
-  planned <- optional $ parseListField "planned" $ parseList $ identifier -- Contains a list of lists of course identifiers
+  passed <- optional $ parseSet $ parseListField "passed" $ identifier
+  planned <- optional $ parseListField "planned" $ parseSet $ parseList $ identifier -- Contains a list of lists of course identifiers
   return ISP.CourseSelection {
-    ISP.passed = maybe [] id passed
+    ISP.passed = maybe Set.empty id passed
   , ISP.planned = maybe [] id planned
   }
 

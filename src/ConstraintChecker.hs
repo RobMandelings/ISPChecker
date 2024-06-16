@@ -121,6 +121,7 @@ checkConstraint (Constraints.ScopedConstraint constraint newScope) = do
     let newEnv = env { isp = newISP } in
       local (const newEnv) (checkConstraint constraint)
 ----
+
 --checkConstraint (SameYearConstraint code1 code2) = do
 --  isp <- ask
 --  let selectionMap = courseSelection isp

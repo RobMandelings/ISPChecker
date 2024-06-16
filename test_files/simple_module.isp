@@ -43,6 +43,3 @@ Course {
     period: First, // Second, AllYear
     studyPoints: 5,
 }
-//
-//Course {
-//}

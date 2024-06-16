@@ -206,10 +206,12 @@ data ParseResult = ParseResult
 parseObjects :: Parser [(String, ParseObj)]
 parseObjects = do
   _ <- spaceConsumer
-  parsedObjs <- many $ parseAssignment $ choice
-    [ ISPObj <$> parseISP
-    , ModuleObj <$> parseModule
-    , CourseObj <$> parseCourse
+  parsedObjs <- many $ choice
+    [ try $ parseAssignment $ ISPObj <$> parseISP
+    , try $ parseAssignment $ ModuleObj <$> parseModule
+    , try $ do
+        course <- parseCourse
+        return (Courses.code course, CourseObj course)
     ]
   return parsedObjs
 

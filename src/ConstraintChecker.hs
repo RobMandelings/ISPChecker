@@ -118,7 +118,7 @@ checkConstraint (Constraints.MaxSPConstraint sp) = do
 checkConstraint (Constraints.ScopedConstraint constraint newScope) = do
   env <- ask
   let newISP = filterISP (isp env) newScope in
-    let newEnv = Env { isp = newISP, courseStore = (courseStore env) } in
+    let newEnv = env { isp = newISP } in
       local (const newEnv) (checkConstraint constraint)
 ----
 --checkConstraint (SameYearConstraint code1 code2) = do
@@ -142,12 +142,14 @@ getScope mod isp =
 --
 filterISP :: ISP -> Constraints.Scope -> ISP
 filterISP isp scope =
-  isp
---  let scopeSet = Set.fromList scope -- More efficient lookups. TODO: maybe scope should always be a set if possible?
---      filteredSelection = StrictMap.filterWithKey (\key _ -> Set.member key scopeSet) (courseSelection isp) in -- Underscore ignores the value associated with that key. Is a wildcard.
---    isp { courseSelection = filteredSelection }
---
---filterCoursesSet :: Set.Set Courses.Course -> Constraints.Scope
+  let
+  courseSel = ISP.courseSelection isp
+  passed = ISP.passed courseSel
+  planned = ISP.planned courseSel in
+    let
+    filteredPassed = Set.intersection scope passed
+    filteredPlanned = map (Set.intersection scope) planned in
+      isp { ISP.courseSelection = ISP.CourseSelection { ISP.passed = filteredPassed, ISP.planned = filteredPlanned } }
 --
 --getCourses :: [Courses.ISPCourse] -> [Courses.Course]
 --getCourses ispCourses = fmap fst ispCourses

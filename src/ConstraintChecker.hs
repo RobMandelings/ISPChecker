@@ -82,10 +82,8 @@ checkModule mod = do
     -- Produces all results. If at least one result returned Nothing, the binding fails and checkModule will return Nothing as well.
     subModuleResults <- mapM checkModule (subModules mod)
     results <- mapM (\c -> checkConstraint (Constraints.ScopedConstraint c scope)) (constraints mod)
-    return True
-
     -- You provide a function that maps a result to a boolean. Then provide a list of results. You get a boolean if all the outcomes of the results are booleans.
---    return $ all id results -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
+    return $ all id results -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
   else return True
 --
 checkConstraint :: Constraints.Constraint -> ConstraintChecker
@@ -153,5 +151,5 @@ filterISP isp scope =
 --getCourses :: [Courses.ISPCourse] -> [Courses.Course]
 --getCourses ispCourses = fmap fst ispCourses
 --
---runCheckModule :: Module -> ISP -> Maybe Bool
---runCheckModule mod isp = runReaderT (checkModule mod) isp
+runCheckModule :: Module -> Env -> Maybe Bool
+runCheckModule mod env = runReaderT (checkModule mod) env

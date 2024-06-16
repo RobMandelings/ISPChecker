@@ -12,7 +12,7 @@ import qualified Data.Set as Set
 
 import qualified Courses
 import StudyProgram
-import Constraints
+import qualified Constraints
 import ISP (ISP)
 import qualified ISP as ISP
 
@@ -81,32 +81,32 @@ checkModule mod = do
     -- Not only applies checkConstraint to each constraint in the list, but also sequences the results in a single monadic action that
     -- Produces all results. If at least one result returned Nothing, the binding fails and checkModule will return Nothing as well.
     subModuleResults <- mapM checkModule (subModules mod)
-    results <- mapM (\c -> checkConstraint (ScopedConstraint c scope)) (constraints mod)
+    results <- mapM (\c -> checkConstraint (Constraints.ScopedConstraint c scope)) (constraints mod)
     return True
 
     -- You provide a function that maps a result to a boolean. Then provide a list of results. You get a boolean if all the outcomes of the results are booleans.
 --    return $ all id results -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
   else return True
 --
-checkConstraint :: Constraint -> ConstraintChecker
-checkConstraint (IncludedConstraint code) = do
+checkConstraint :: Constraints.Constraint -> ConstraintChecker
+checkConstraint (Constraints.IncludedConstraint code) = do
   isp <- asks isp
   return $ Set.member code $ ISP.getIncludedCourses isp
 
-checkConstraint (NandConstraint c1 c2) = do
+checkConstraint (Constraints.NandConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   r2 <- checkConstraint c2
   return (not (r1 && r2))
 
 
-checkConstraint (MinSPConstraint sp) = do
+checkConstraint (Constraints.MinSPConstraint sp) = do
   env <- ask
   let courses = getCourses env in
       let totalSP = sum $ map (Courses.studyPoints) courses in
       return (totalSP >= sp) -- Return now maps the boolean inside a maybe monad, wraps it inside the ReaderT
 --  lift Nothing -- Return would wrap the result of 'lift Nothing' in another layer of ReaderT
 
-checkConstraint (MaxSPConstraint sp) = do
+checkConstraint (Constraints.MaxSPConstraint sp) = do
   env <- ask
   let courses = getCourses env in
       let totalSP = sum $ map (Courses.studyPoints) courses in
@@ -115,10 +115,11 @@ checkConstraint (MaxSPConstraint sp) = do
 ---- Const is a function that ignores its argument and returns a constant value.
 ---- We require const here because local expects a function that takes in an env and returns an adjusted environment.
 ---- But we have already created the newEnv via different variable, so we can just return that value.
---checkConstraint (ScopedConstraint constraint newScope) = do
---  isp <- ask
---  let newISP = filterISP isp newScope
---  local (const newISP) (checkConstraint constraint)
+checkConstraint (Constraints.ScopedConstraint constraint newScope) = do
+  env <- ask
+  let newISP = filterISP (isp env) newScope in
+    let newEnv = Env { isp = newISP, courseStore = (courseStore env) } in
+      local (const newEnv) (checkConstraint constraint)
 ----
 --checkConstraint (SameYearConstraint code1 code2) = do
 --  isp <- ask
@@ -132,17 +133,21 @@ checkConstraint (MaxSPConstraint sp) = do
 ----remainingSPConstraint (RemainingSPConstraint sp) = do
 ----  isp <- ask
 --
-getScope :: Module -> ISP -> [Courses.CourseCode]
+getScope :: Module -> ISP -> Constraints.Scope
 getScope mod isp =
   if isActive mod isp
-  then courses mod ++ concatMap (\subMod -> getScope subMod isp) (subModules mod)
-  else []
+  then Set.fromList $ courses mod -- TODO needs to get sub modules as well
+--  then Set.union (courses mod) ++ concatMap (\subMod -> getScope subMod isp) (subModules mod)
+  else Set.empty
 --
---filterISP :: ISP -> Scope -> ISP
---filterISP isp scope =
+filterISP :: ISP -> Constraints.Scope -> ISP
+filterISP isp scope =
+  isp
 --  let scopeSet = Set.fromList scope -- More efficient lookups. TODO: maybe scope should always be a set if possible?
---      filteredSelection = StrictMap.filterWithKey (\key _ -> Set.member key scopeSet) (courseSelection isp) -- Underscore ignores the value associated with that key. Is a wildcard.
---  in isp { courseSelection = filteredSelection }
+--      filteredSelection = StrictMap.filterWithKey (\key _ -> Set.member key scopeSet) (courseSelection isp) in -- Underscore ignores the value associated with that key. Is a wildcard.
+--    isp { courseSelection = filteredSelection }
+--
+--filterCoursesSet :: Set.Set Courses.Course -> Constraints.Scope
 --
 --getCourses :: [Courses.ISPCourse] -> [Courses.Course]
 --getCourses ispCourses = fmap fst ispCourses

@@ -1,8 +1,9 @@
 module Constraints where
 
 import Courses
+import qualified Data.Set as Set
 
-type Scope = [CourseCode]
+type Scope = Set.Set CourseCode
 
 -- TODO implement the PeriodConstraint: course can only be selected in proper period. Independent of the study program but still a constraint I think.
 --  (additional constraint can be added to studyprogram? E.g. in this program you need to do it in sem 2, even though the course is available in sem 1 as well)

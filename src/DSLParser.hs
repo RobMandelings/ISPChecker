@@ -209,7 +209,7 @@ parseObjects = do
   parsedObjs <- many $ choice
     [ try $ parseAssignment $ ISPObj <$> parseISP
     , try $ parseAssignment $ ModuleObj <$> parseModule
-    , try $ do
+    , do
         course <- parseCourse
         return (Courses.code course, CourseObj course)
     ]

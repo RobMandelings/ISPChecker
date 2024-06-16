@@ -147,9 +147,6 @@ filterISP isp scope =
     filteredPassed = Set.intersection scope passed
     filteredPlanned = map (Set.intersection scope) planned in
       isp { ISP.courseSelection = ISP.CourseSelection { ISP.passed = filteredPassed, ISP.planned = filteredPlanned } }
---
---getCourses :: [Courses.ISPCourse] -> [Courses.Course]
---getCourses ispCourses = fmap fst ispCourses
---
+
 runCheckModule :: Module -> Env -> Maybe Bool
 runCheckModule mod env = runReaderT (checkModule mod) env

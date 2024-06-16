@@ -17,8 +17,11 @@ main = do
   case args of
     [filePath] -> do
       content <- T.readFile filePath
-      let result = parse DSLParser.parseFile filePath content
+      let result = parse DSLParser.parse filePath content
       case result of
         Left err -> putStrLn $ errorBundlePretty err
-        Right moduleData -> print moduleData
+        Right moduleData ->
+          putStrLn $ show moduleData
+--          let redefinitions = DSLParser.checkRedefinitions moduleData in
+--            print redefinitions
     _ -> putStrLn "ISPChecker usage: stack run <file-path>"

@@ -16,6 +16,8 @@ import qualified Courses
 import qualified ISP
 import qualified StudyProgram
 import qualified Data.Set as Set
+import Data.Function (on)
+import Data.List (sortOn, groupBy)
 
 -- Parsec is the core parser type in Megaparsec. Represents a parser that can consume input and produce a result.
 -- Void: error type (don't care about custom error information; TODO later)
@@ -195,8 +197,14 @@ parseISP = parseObject "ISP" $ do
 
 data ParseObj = ISPObj ISP.ISP | ModuleObj StudyProgram.Module | CourseObj Courses.Course deriving (Show)
 
-parseFile :: Parser [(String, ParseObj)]
-parseFile = do
+data ParseResult = ParseResult
+  { isps :: Map.Map String ISP.ISP
+  , modules :: Map.Map String StudyProgram.Module
+  , courses :: Map.Map String Courses.Course
+  } deriving (Show)
+
+parseObjects :: Parser [(String, ParseObj)]
+parseObjects = do
   _ <- spaceConsumer
   parsedObjs <- many $ parseAssignment $ choice
     [ ISPObj <$> parseISP
@@ -204,3 +212,57 @@ parseFile = do
     , CourseObj <$> parseCourse
     ]
   return parsedObjs
+
+createParseResultFromObjs :: [(String, ParseObj)] -> ParseResult
+createParseResultFromObjs objs =
+  let isps = Map.fromList $ foldr (\(n, obj) acc -> case obj of
+                                        ISPObj obj -> ((n, obj) : acc)
+                                        _ -> acc
+                                        ) [] objs in
+  let modules = Map.fromList $ foldr (\(n, obj) acc -> case obj of
+                                        ModuleObj obj -> ((n, obj) : acc)
+                                        _ -> acc
+                                        ) [] objs in
+  let courses = Map.fromList $ foldr (\(n, obj) acc -> case obj of
+                                        CourseObj obj -> ((n, obj) : acc)
+                                        _ -> acc
+                                        ) [] objs in
+
+--  let isps = filter (\(n, obj) -> case obj of
+--                                    ISPObj isp -> True
+--                                    _ -> False
+--                                    ) objs in
+--  let modules = filter (\(n, obj) -> case obj of
+--                                      ModuleObj mod -> True
+--                                      _ -> False
+--                                      ) objs in
+--  let courses = filter (\(n, obj) -> case obj of
+--                                      CourseObj course -> True
+--                                      _ -> False
+--                                      ) objs in
+    ParseResult { isps = isps, modules = modules, courses = courses }
+--  let groupedParseObjs = groupBy ((==) `on` )
+
+
+parse :: Parser ParseResult
+parse = do
+  parseObjs <- parseObjects
+  case (checkRedefinitions parseObjs) of
+    Just res -> error $ show res
+    Nothing ->
+      return $ createParseResultFromObjs parseObjs
+
+
+createErrorMessage :: [(String, ParseObj)] -> String
+createErrorMessage grp =
+  let name = fst $ head grp in
+  let count = length grp in
+    "Redefinitions: the name " ++ name ++ " occurs " ++ show count ++ " times"
+
+checkRedefinitions :: [(String, ParseObj)] -> Maybe [String]
+checkRedefinitions pairs =
+  let grouped = groupBy ((==) `on` fst) $ sortOn fst pairs in
+  let redefined = filter (\grp -> length grp > 1) grouped in
+    if (length redefined > 0) then
+      Just $ map createErrorMessage redefined
+    else Nothing

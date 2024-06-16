@@ -122,18 +122,16 @@ checkConstraint (Constraints.ScopedConstraint constraint newScope) = do
       local (const newEnv) (checkConstraint constraint)
 ----
 
---checkConstraint (SameYearConstraint code1 code2) = do
---  isp <- ask
---  let selectionMap = courseSelection isp
---  -- The below implementation does not handle the situation where one of two lookups return nothing, the constraint check returns nothing (this is an error, something went wrong here).
---  return $ case (StrictMap.lookup code1 selectionMap, StrictMap.lookup code2 selectionMap) of
---    (Just (_, Planned year1), Just (_, Planned year2)) -> year1 == year2
---    (Just (_, Passed), Just (_, Passed)) -> True
---    _ -> False -- TODO THIS SHOULD BE NOTHING INSTEAD!!! If nothing is returned, then something went wrong here
---
-----remainingSPConstraint (RemainingSPConstraint sp) = do
-----  isp <- ask
---
+checkConstraint (Constraints.SameYearConstraint code1 code2) = do
+  isp <- asks isp
+  let plannedPerYear = ISP.getPlannedPerYear $ ISP.courseSelection isp in
+    let setsContainingBoth = filter (\s -> Set.member code1 s && Set.member code2 s) plannedPerYear in
+      -- Either they are simply not included, or both are included in that year
+      if (length setsContainingBoth == 1 || length setsContainingBoth == 0) then
+        return True
+      else
+        return False
+
 getScope :: Module -> ISP -> Constraints.Scope
 getScope mod isp =
   if isActive mod isp

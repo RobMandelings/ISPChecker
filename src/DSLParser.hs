@@ -215,16 +215,17 @@ parseObjects :: Parser [(String, ParseObj)]
 parseObjects = do
   _ <- spaceConsumer
   parsedObjs <- many $ choice
-    [ try $ parseAssignment $ do {
+    [ do {
+      course <- parseCourse;
+      return (course.code, CourseObj course)
+    },
+    parseAssignment $ do { -- TODO make sure that you can parse in all cases and have proper error handling (no usage of tries because this eliminates errors). E.g. you can't parse something with 'Course' as name
         res <- choice [
           ISPObj <$> parseISP,
           ModuleObj <$> parseModule
         ];
         return res
       }
-    , do
-        course <- parseCourse
-        return (course.code, CourseObj course)
     ]
   return parsedObjs
 

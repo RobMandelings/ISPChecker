@@ -69,7 +69,7 @@ getCourses env =
 
 isActive :: Module -> ISP -> Bool
 isActive mod isp =
-  let StudyProgram.ModuleActivator f = StudyProgram.getActivator mod in
+  let StudyProgram.ModuleActivator f = mod.commonFields.activator in
      f $ isp.options
 --
 checkModule :: Module -> ConstraintChecker
@@ -81,7 +81,7 @@ checkModule mod = do
     -- Not only applies checkConstraint to each constraint in the list, but also sequences the results in a single monadic action that
     -- Produces all results. If at least one result returned Nothing, the binding fails and checkModule will return Nothing as well.
     subModuleResults <- mapM checkModule (mod.subModules)
-    results <- mapM (\c -> checkConstraint (Constraints.ScopedConstraint c scope)) (StudyProgram.getConstraints mod)
+    results <- mapM (\c -> checkConstraint (Constraints.ScopedConstraint c scope)) (mod.commonFields.constraints)
     -- You provide a function that maps a result to a boolean. Then provide a list of results. You get a boolean if all the outcomes of the results are booleans.
     return $ all id results -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
   else return True
@@ -133,7 +133,7 @@ checkConstraint (Constraints.SameYearConstraint code1 code2) = do
 getScope :: Module -> ISP -> Constraints.Scope
 getScope mod isp =
   if isActive mod isp
-  then Set.fromList $ StudyProgram.getCourses mod -- TODO needs to get sub modules as well
+  then Set.fromList $ mod.commonFields.courses -- TODO needs to get sub modules as well
 --  then Set.union (courses mod) ++ concatMap (\subMod -> getScope subMod isp) (subModules mod)
   else Set.empty
 --

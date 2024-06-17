@@ -25,13 +25,6 @@ specActivator spec = optionAndNameActivator "specialisation" spec
 backgroundEduActivator :: String -> ModuleActivator
 backgroundEduActivator bgEdu = optionAndNameActivator "backgroundEducation" bgEdu
 
-class ModuleCommon a where
-  getName :: a -> String
-  getDescription :: a -> String
-  getCourses :: a -> [Courses.CourseCode]
-  getConstraints :: a -> [Constraint]
-  getActivator :: a -> ModuleActivator
-
 data ModuleCommonFields = ModuleCommonFields
   { name :: String,
     description :: String,
@@ -51,20 +44,6 @@ data ModuleWRef = ModuleWRef
   commonFields :: ModuleCommonFields,
   subModules :: [Either String ModuleWRef]
   }
-
-instance ModuleCommon ModuleWRef where
- getName ModuleWRef{..} = commonFields.name
- getDescription ModuleWRef{..} = commonFields.description
- getCourses ModuleWRef{..} = commonFields.courses
- getConstraints ModuleWRef{..} =  commonFields.constraints
- getActivator ModuleWRef{..} = commonFields.activator
-
-instance ModuleCommon Module where
- getName Module{..} = commonFields.name
- getDescription Module{..} = commonFields.description
- getCourses Module{..} = commonFields.courses
- getConstraints Module{..} = commonFields.constraints
- getActivator Module{..} = commonFields.activator
 
 
 instance Show ModuleActivator where

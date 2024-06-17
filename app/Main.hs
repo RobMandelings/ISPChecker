@@ -1,6 +1,6 @@
 module Main (main) where
 
-
+import Text.Show.Pretty (ppShow)
 import StudyProgram
 import Text.Megaparsec
 import Data.Text (Text)
@@ -21,7 +21,7 @@ main = do
       case result of
         Left err -> putStrLn $ errorBundlePretty err
         Right moduleData ->
-          putStrLn $ show moduleData
+          putStrLn $ ppShow moduleData
 --          let redefinitions = DSLParser.checkRedefinitions moduleData in
 --            print redefinitions
     _ -> putStrLn "ISPChecker usage: stack run <file-path>"

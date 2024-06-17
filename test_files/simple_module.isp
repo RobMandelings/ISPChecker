@@ -2,25 +2,26 @@ abc = Module {
     name: "Verdere optie",
     description: "Hellowkes",
     courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A],
+    modules: [hoi],
 }
 
-a = Module {
-    name: "Verdere optie",
-    description: "Hellowkes",
-    courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A],
-}
-
-h = Module {
-    name: "Verdere optie",
-    description: "Hellowkes",
-    courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A],
-}
-
-hello = Module {
-    name: "Verdere optie",
-    description: "Hellowkes",
-    courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A],
-}
+//a = Module {
+//    name: "Verdere optie",
+//    description: "Hellowkes",
+//    courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A],
+//}
+//
+//h = Module {
+//    name: "Verdere optie",
+//    description: "Hellowkes",
+//    courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A],
+//}
+//
+//hello = Module {
+//    name: "Verdere optie",
+//    description: "Hellowkes",
+//    courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A],
+//}
 
 hoi = ISP {
 	studyProgram: ING_CS,

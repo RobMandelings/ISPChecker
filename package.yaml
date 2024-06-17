@@ -25,6 +25,7 @@ dependencies:
   - megaparsec >= 9.0
   - text >= 2.0 && < 2.1
   - mtl >= 2.3.1
+  - pretty-show
 
 ghc-options:
   - -Wall

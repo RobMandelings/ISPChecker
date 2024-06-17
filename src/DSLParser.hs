@@ -88,8 +88,14 @@ parseDescription = parseField "description" stringLiteral
 parseConstraints :: Parser [String]
 parseConstraints = lexeme $ string "constraints:" >> between (symbol "[") (symbol "]") (identifier `sepBy` symbol ",")
 
-parseSubmodules :: Parser [StudyProgram.Module]
-parseSubmodules = parseListField "modules" parseModule
+parseSubmodules :: Parser [Either String StudyProgram.ModuleWRef]
+parseSubmodules = parseListField "modules" $ do {
+  choice
+    [
+      Left <$> identifier,
+      Right <$> parseModule
+    ]
+  }
 
 parseList :: Parser a -> Parser [a]
 parseList p = between (symbol "[") (symbol "]") (p `sepBy` symbol ",")
@@ -125,7 +131,7 @@ parseAssignment p = do
   rhs <- p
   return (lhs, rhs)
 
-parseModule :: Parser StudyProgram.Module
+parseModule :: Parser StudyProgram.ModuleWRef
 parseModule = do
   _ <- spaceConsumer
   parseObject "Module" $ do
@@ -135,7 +141,7 @@ parseModule = do
   --  a <- parseActivator
   --  cs <- optional parseConstraints
     subModules <- optional parseSubmodules
-    return StudyProgram.Module
+    return StudyProgram.ModuleWRef
       {
       StudyProgram.commonFields = StudyProgram.ModuleCommonFields
         {
@@ -197,11 +203,11 @@ parseISP = parseObject "ISP" $ do
   , ISP.courseSelection = courseSel
   }
 
-data ParseObj = ISPObj ISP.ISP | ModuleObj StudyProgram.Module | CourseObj Courses.Course deriving (Show)
+data ParseObj = ISPObj ISP.ISP | ModuleObj StudyProgram.ModuleWRef | CourseObj Courses.Course deriving (Show)
 
 data ParseResult = ParseResult
   { isps :: Map.Map String ISP.ISP
-  , modules :: Map.Map String StudyProgram.Module
+  , modules :: Map.Map String StudyProgram.ModuleWRef
   , courses :: Map.Map String Courses.Course
   } deriving (Show)
 
@@ -209,8 +215,13 @@ parseObjects :: Parser [(String, ParseObj)]
 parseObjects = do
   _ <- spaceConsumer
   parsedObjs <- many $ choice
-    [ try $ parseAssignment $ ISPObj <$> parseISP
-    , try $ parseAssignment $ ModuleObj <$> parseModule
+    [ try $ parseAssignment $ do {
+        res <- choice [
+          ISPObj <$> parseISP,
+          ModuleObj <$> parseModule
+        ];
+        return res
+      }
     , do
         course <- parseCourse
         return (course.code, CourseObj course)

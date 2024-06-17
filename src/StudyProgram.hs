@@ -43,7 +43,7 @@ data ModuleWRef = ModuleWRef
   {
   commonFields :: ModuleCommonFields,
   subModules :: [Either String ModuleWRef]
-  }
+  } deriving (Show)
 
 
 instance Show ModuleActivator where

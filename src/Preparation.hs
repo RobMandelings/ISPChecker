@@ -28,4 +28,4 @@ module Preparation where
   buildModule mod = do
     env <- ask
     subModules <- mapM (getModule >=> buildModule) mod.subModules
-    return $ StudyProgram.Module { commonFields = mod.commonFields, subModules = [] }
+    return $ StudyProgram.Module { commonFields = mod.commonFields, subModules }

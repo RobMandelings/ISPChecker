@@ -5,11 +5,12 @@ abc = Module {
     modules: [hoi],
 }
 
-//a = Module {
-//    name: "Verdere optie",
-//    description: "Hellowkes",
-//    courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A],
-//}
+
+hoi = Module {
+    name: "Subonderdeel",
+    description: "Cool",
+    courses: [],
+}
 //
 //h = Module {
 //    name: "Verdere optie",
@@ -23,24 +24,24 @@ abc = Module {
 //    courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A],
 //}
 
-hoi = ISP {
-	studyProgram: ING_CS,
-	specialisation: "A.I",
-	background: "informatica",
-	courseSelection: {
-	    passed: [H01F2A, H01F2A, H01F2A],
-        planned: [
-         [H01F2A, H04I0A, G0K31B],
-         [H04G7A, H04L2A, H0A12A],
-         [H01F2A, H01F2A, H01F2A]
-	    ],
-    },
-}
-
-Course {
-    name: "",
-    description: "This is a course on databases",
-    code: H01F2A,
-    period: First, // Second, AllYear
-    studyPoints: 5,
-}
+//hoi = ISP {
+//	studyProgram: ING_CS,
+//	specialisation: "A.I",
+//	background: "informatica",
+//	courseSelection: {
+//	    passed: [H01F2A, H01F2A, H01F2A],
+//        planned: [
+//         [H01F2A, H04I0A, G0K31B],
+//         [H04G7A, H04L2A, H0A12A],
+//         [H01F2A, H01F2A, H01F2A]
+//	    ],
+//    },
+//}
+//
+//Course {
+//    name: "",
+//    description: "This is a course on databases",
+//    code: H01F2A,
+//    period: First, // Second, AllYear
+//    studyPoints: 5,
+//}

@@ -24,7 +24,6 @@ module Preparation where
       Right modWRef -> return modWRef
 
   buildModule :: StudyProgram.ModuleWRef -> Reader Env StudyProgram.Module
---  buildModule = do
   buildModule mod = do
     env <- ask
     subModules <- mapM (getModule >=> buildModule) mod.subModules

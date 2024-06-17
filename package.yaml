@@ -47,6 +47,7 @@ library:
     - FlexibleInstances
     - OverloadedStrings
     - OverloadedRecordDot
+    - NamedFieldPuns
 
 executables:
   ISPChecker-exe:
@@ -59,6 +60,7 @@ executables:
       - FlexibleInstances
       - OverloadedStrings
       - OverloadedRecordDot
+      - NamedFieldPuns
     ghc-options:
       - -threaded
       - -rtsopts

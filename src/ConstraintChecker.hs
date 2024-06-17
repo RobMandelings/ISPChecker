@@ -1,6 +1,4 @@
 -- Required to define the type of the instance inline instead of having to wrap it in a different type
-{-# LANGUAGE FlexibleInstances #-}
-
 module ConstraintChecker where
 
 -- TODO why did I use a strict map here?
@@ -60,8 +58,8 @@ type ConstraintChecker = ReaderT Env Maybe Bool
 -- If the monadic context for getCourses is used in recursive calls, then you might want to reconsider using a monad. Otherwise I wouldn't see the point.
 getCourses :: Env -> [Courses.Course]
 getCourses env =
-    let courseIds = ISP.getIncludedCourses $ isp env in
-      let results = mapM (getCourse (courseStore env)) $ Set.toList courseIds in
+    let courseIds = ISP.getIncludedCourses $ env.isp in
+      let results = mapM (env.courseStore.getCourse) $ Set.toList courseIds in
       case results of
         Just courses ->
           courses
@@ -72,17 +70,17 @@ getCourses env =
 isActive :: Module -> ISP -> Bool
 isActive mod isp =
   let StudyProgram.ModuleActivator f = StudyProgram.getActivator mod in
-     f $ ISP.options isp
+     f $ isp.options
 --
 checkModule :: Module -> ConstraintChecker
 checkModule mod = do
-  isp <- asks isp
-  if isActive mod isp
+  env <- ask
+  if isActive mod env.isp
   then do
-    let scope = getScope mod isp
+    let scope = getScope mod env.isp
     -- Not only applies checkConstraint to each constraint in the list, but also sequences the results in a single monadic action that
     -- Produces all results. If at least one result returned Nothing, the binding fails and checkModule will return Nothing as well.
-    subModuleResults <- mapM checkModule (subModules mod)
+    subModuleResults <- mapM checkModule (mod.subModules)
     results <- mapM (\c -> checkConstraint (Constraints.ScopedConstraint c scope)) (StudyProgram.getConstraints mod)
     -- You provide a function that maps a result to a boolean. Then provide a list of results. You get a boolean if all the outcomes of the results are booleans.
     return $ all id results -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
@@ -90,8 +88,8 @@ checkModule mod = do
 --
 checkConstraint :: Constraints.Constraint -> ConstraintChecker
 checkConstraint (Constraints.IncludedConstraint code) = do
-  isp <- asks isp
-  return $ Set.member code $ ISP.getIncludedCourses isp
+  env <- ask
+  return $ Set.member code $ ISP.getIncludedCourses env.isp
 
 checkConstraint (Constraints.NandConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
@@ -102,14 +100,14 @@ checkConstraint (Constraints.NandConstraint c1 c2) = do
 checkConstraint (Constraints.MinSPConstraint sp) = do
   env <- ask
   let courses = ConstraintChecker.getCourses env in
-      let totalSP = sum $ map (Courses.studyPoints) courses in
+      let totalSP = sum $ map (\c -> c.studyPoints) courses in
       return (totalSP >= sp) -- Return now maps the boolean inside a maybe monad, wraps it inside the ReaderT
 --  lift Nothing -- Return would wrap the result of 'lift Nothing' in another layer of ReaderT
 
 checkConstraint (Constraints.MaxSPConstraint sp) = do
   env <- ask
   let courses = ConstraintChecker.getCourses env in
-      let totalSP = sum $ map (Courses.studyPoints) courses in
+      let totalSP = sum $ map (\c -> c.studyPoints) courses in
       return (totalSP <= sp) -- Return now maps the boolean inside a maybe monad, wraps it inside the ReaderT
 --
 ---- Const is a function that ignores its argument and returns a constant value.
@@ -117,14 +115,14 @@ checkConstraint (Constraints.MaxSPConstraint sp) = do
 ---- But we have already created the newEnv via different variable, so we can just return that value.
 checkConstraint (Constraints.ScopedConstraint constraint newScope) = do
   env <- ask
-  let newISP = filterISP (isp env) newScope in
+  let newISP = filterISP (env.isp) newScope in
     let newEnv = env { isp = newISP } in
       local (const newEnv) (checkConstraint constraint)
 ----
 
 checkConstraint (Constraints.SameYearConstraint code1 code2) = do
-  isp <- asks isp
-  let plannedPerYear = ISP.getPlannedPerYear $ ISP.courseSelection isp in
+  env <- ask
+  let plannedPerYear = ISP.getPlannedPerYear $ env.isp.courseSelection in
     let setsContainingBoth = filter (\s -> Set.member code1 s && Set.member code2 s) plannedPerYear in
       -- Either they are simply not included, or both are included in that year
       if (length setsContainingBoth == 1 || length setsContainingBoth == 0) then
@@ -142,9 +140,9 @@ getScope mod isp =
 filterISP :: ISP -> Constraints.Scope -> ISP
 filterISP isp scope =
   let
-  courseSel = ISP.courseSelection isp
-  passed = ISP.passed courseSel
-  planned = ISP.planned courseSel in
+  courseSel = isp.courseSelection
+  passed = courseSel.passed
+  planned = courseSel.planned in
     let
     filteredPassed = Set.intersection scope passed
     filteredPlanned = map (Set.intersection scope) planned in

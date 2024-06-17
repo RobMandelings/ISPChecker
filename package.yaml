@@ -39,11 +39,25 @@ ghc-options:
 
 library:
   source-dirs: src
+  default-extensions:
+    - NoFieldSelectors
+    - RecordWildCards
+    - DuplicateRecordFields
+    - FlexibleInstances
+    - OverloadedStrings
+    - OverloadedRecordDot
 
 executables:
   ISPChecker-exe:
     main: Main.hs
     source-dirs: app
+    default-extensions:
+      - NoFieldSelectors
+      - RecordWildCards
+      - DuplicateRecordFields
+      - FlexibleInstances
+      - OverloadedStrings
+      - OverloadedRecordDot
     ghc-options:
       - -threaded
       - -rtsopts

@@ -39,6 +39,13 @@ library
       Paths_ISPChecker
   hs-source-dirs:
       src
+  default-extensions:
+      NoFieldSelectors
+      RecordWildCards
+      DuplicateRecordFields
+      FlexibleInstances
+      OverloadedStrings
+      OverloadedRecordDot
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints.md
   build-depends:
       base >=4.7 && <5
@@ -56,6 +63,13 @@ executable ISPChecker-exe
       Paths_ISPChecker
   hs-source-dirs:
       app
+  default-extensions:
+      NoFieldSelectors
+      RecordWildCards
+      DuplicateRecordFields
+      FlexibleInstances
+      OverloadedStrings
+      OverloadedRecordDot
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints.md -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       ISPChecker

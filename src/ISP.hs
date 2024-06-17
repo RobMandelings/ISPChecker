@@ -24,9 +24,9 @@ data ISP = ISP
 
 getIncludedCourses :: ISP -> Set CourseCode
 getIncludedCourses isp =
-  let courseSel = courseSelection isp in
-  let includedPlanned = foldr Set.union Set.empty $ planned courseSel in
-    Set.union includedPlanned (passed courseSel)
+  let courseSel = isp.courseSelection in
+  let includedPlanned = foldr Set.union Set.empty $ courseSel.planned in
+    Set.union includedPlanned $ courseSel.passed
 
 -- Either adds a new set of course codes to the list (indicating a new year),
 -- or takes the union of the current set and the last set in the list (appends a semester of coursecodes to this year)
@@ -41,6 +41,6 @@ foldStep (i, courseCode) acc =
 
 getPlannedPerYear :: CourseSelection -> [Set CourseCode]
 getPlannedPerYear courseSel =
-  let plannedSel = planned courseSel in
+  let plannedSel = courseSel.planned in
   let plannedPerYear = foldr foldStep [] (zip [0..] []) in
       plannedPerYear

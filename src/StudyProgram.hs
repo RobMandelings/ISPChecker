@@ -1,5 +1,3 @@
-{-# LANGUAGE RecordWildCards #-}
-
 module StudyProgram where
 
 import Data.Map.Strict as Map
@@ -42,19 +40,31 @@ data ModuleCommonFields = ModuleCommonFields
     activator :: ModuleActivator
   } deriving (Show)
 
-
 data Module = Module
   {
   commonFields :: ModuleCommonFields,
   subModules :: [Module]
   } deriving (Show)
 
+data ModuleWRef = ModuleWRef
+  {
+  commonFields :: ModuleCommonFields,
+  subModules :: [Either String ModuleWRef]
+  }
+
+instance ModuleCommon ModuleWRef where
+ getName ModuleWRef{..} = commonFields.name
+ getDescription ModuleWRef{..} = commonFields.description
+ getCourses ModuleWRef{..} = commonFields.courses
+ getConstraints ModuleWRef{..} =  commonFields.constraints
+ getActivator ModuleWRef{..} = commonFields.activator
+
 instance ModuleCommon Module where
- getName Module{..} = name commonFields
- getDescription Module{..} = description commonFields
- getCourses Module{..} = courses commonFields
- getConstraints Module{..} = constraints commonFields
- getActivator Module{..} = activator commonFields
+ getName Module{..} = commonFields.name
+ getDescription Module{..} = commonFields.description
+ getCourses Module{..} = commonFields.courses
+ getConstraints Module{..} = commonFields.constraints
+ getActivator Module{..} = commonFields.activator
 
 
 instance Show ModuleActivator where

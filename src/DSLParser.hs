@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module DSLParser where
 
 -- Qualified vs Non-qualified: Qualified makes sure you need the prefix to access the exported functionality. This is not necessary with normal import.
@@ -215,7 +213,7 @@ parseObjects = do
     , try $ parseAssignment $ ModuleObj <$> parseModule
     , do
         course <- parseCourse
-        return (Courses.code course, CourseObj course)
+        return (course.code, CourseObj course)
     ]
   return parsedObjs
 

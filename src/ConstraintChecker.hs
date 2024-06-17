@@ -70,7 +70,9 @@ getCourses env =
 
 
 isActive :: Module -> ISP -> Bool
-isActive mod isp = (activator mod) (ISP.options isp)
+isActive mod isp =
+  let StudyProgram.ModuleActivator f = StudyProgram.getActivator mod in
+     f $ ISP.options isp
 --
 checkModule :: Module -> ConstraintChecker
 checkModule mod = do
@@ -81,7 +83,7 @@ checkModule mod = do
     -- Not only applies checkConstraint to each constraint in the list, but also sequences the results in a single monadic action that
     -- Produces all results. If at least one result returned Nothing, the binding fails and checkModule will return Nothing as well.
     subModuleResults <- mapM checkModule (subModules mod)
-    results <- mapM (\c -> checkConstraint (Constraints.ScopedConstraint c scope)) (constraints mod)
+    results <- mapM (\c -> checkConstraint (Constraints.ScopedConstraint c scope)) (StudyProgram.getConstraints mod)
     -- You provide a function that maps a result to a boolean. Then provide a list of results. You get a boolean if all the outcomes of the results are booleans.
     return $ all id results -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
   else return True
@@ -99,14 +101,14 @@ checkConstraint (Constraints.NandConstraint c1 c2) = do
 
 checkConstraint (Constraints.MinSPConstraint sp) = do
   env <- ask
-  let courses = getCourses env in
+  let courses = ConstraintChecker.getCourses env in
       let totalSP = sum $ map (Courses.studyPoints) courses in
       return (totalSP >= sp) -- Return now maps the boolean inside a maybe monad, wraps it inside the ReaderT
 --  lift Nothing -- Return would wrap the result of 'lift Nothing' in another layer of ReaderT
 
 checkConstraint (Constraints.MaxSPConstraint sp) = do
   env <- ask
-  let courses = getCourses env in
+  let courses = ConstraintChecker.getCourses env in
       let totalSP = sum $ map (Courses.studyPoints) courses in
       return (totalSP <= sp) -- Return now maps the boolean inside a maybe monad, wraps it inside the ReaderT
 --
@@ -133,7 +135,7 @@ checkConstraint (Constraints.SameYearConstraint code1 code2) = do
 getScope :: Module -> ISP -> Constraints.Scope
 getScope mod isp =
   if isActive mod isp
-  then Set.fromList $ courses mod -- TODO needs to get sub modules as well
+  then Set.fromList $ StudyProgram.getCourses mod -- TODO needs to get sub modules as well
 --  then Set.union (courses mod) ++ concatMap (\subMod -> getScope subMod isp) (subModules mod)
   else Set.empty
 --

@@ -16,6 +16,7 @@ data Constraint =
   RemainingSPConstraint Int |
   SameYearConstraint CourseCode CourseCode |
   ScopedConstraint Constraint Scope -- Nested constraint only applies to given scope
+  deriving (Show)
 
 includedConstraint code = IncludedConstraint code
 nandConstraint c1 c2 = NandConstraint c1 c2

@@ -138,12 +138,16 @@ parseModule = do
   --  cs <- optional parseConstraints
     subModules <- optional parseSubmodules
     return StudyProgram.Module
-      { StudyProgram.name = n
-      , StudyProgram.description = maybe "" id d
-      , StudyProgram.courses = maybe [] id c
-      , StudyProgram.activator = StudyProgram.trueActivator
-      , StudyProgram.constraints = []
-      , StudyProgram.subModules = maybe [] id subModules
+      {
+      StudyProgram.commonFields = StudyProgram.ModuleCommonFields
+        {
+          StudyProgram.name = n,
+          StudyProgram.description = maybe "" id d,
+          StudyProgram.courses = maybe [] id c,
+          StudyProgram.activator = StudyProgram.trueActivator,
+          StudyProgram.constraints = []
+        },
+      StudyProgram.subModules = maybe [] id subModules
   --      constraints = []
   --    , constraints = maybe [] id cs
   --    , subModules = maybe [] id subModules

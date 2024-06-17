@@ -11,4 +11,3 @@ module Preparation where
 
   buildModule :: StudyProgram.Module -> Map.Map String StudyProgram.Module -> StudyProgram.Module
   buildModule = error "Not implemented yet"
-

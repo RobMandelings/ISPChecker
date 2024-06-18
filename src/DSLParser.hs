@@ -16,6 +16,7 @@ import qualified StudyProgram
 import qualified Data.Set as Set
 import Data.Function (on)
 import Data.List (sortOn, groupBy)
+import qualified Constraints
 
 -- Parsec is the core parser type in Megaparsec. Represents a parser that can consume input and produce a result.
 -- Void: error type (don't care about custom error information; TODO later)
@@ -149,7 +150,7 @@ parseModule = do
           StudyProgram.description = maybe "" id d,
           StudyProgram.courses = maybe [] id c,
           StudyProgram.activator = StudyProgram.trueActivator,
-          StudyProgram.constraints = []
+          StudyProgram.constraints = [Constraints.IncludedConstraint "H04IOA"] -- TODO fix this hardcoded stuff
         },
       StudyProgram.subModules = maybe [] id subModules
   --      constraints = []

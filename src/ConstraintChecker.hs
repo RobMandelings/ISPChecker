@@ -13,6 +13,7 @@ import StudyProgram
 import qualified Constraints
 import ISP (ISP)
 import qualified ISP as ISP
+import Debug.Trace
 
 -- TODO
 -- the lhs defines the type constraint for this typeclass.
@@ -133,7 +134,11 @@ checkConstraint (Constraints.SameYearConstraint code1 code2) = do
 getScope :: Module -> ISP -> Constraints.Scope
 getScope mod isp =
   if isActive mod isp
-  then Set.fromList $ mod.commonFields.courses -- TODO needs to get sub modules as well
+  then
+    let coursesInMod = Set.fromList mod.commonFields.courses in -- TODO needs to get sub modules as well
+    let courses = foldr (\mod acc -> Set.union (getScope mod isp) acc) coursesInMod mod.subModules in
+      courses
+
 --  then Set.union (courses mod) ++ concatMap (\subMod -> getScope subMod isp) (subModules mod)
   else Set.empty
 --

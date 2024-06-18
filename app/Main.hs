@@ -12,6 +12,7 @@ import qualified Preparation
 import qualified Data.Map as Map
 import Control.Monad.Reader
 import qualified ConstraintChecker as CC
+import qualified ISP
 
 type Parser = Parsec Void Text
 
@@ -33,9 +34,10 @@ main = do
                   Just isp ->
                     let env = CC.Env { isp, courseStore } in
                     let res = CC.runCheckModule mod env in
-                      putStrLn $ (ppShow result) ++ "\n" ++
+                      putStrLn $ (ppShow mod) ++ "\n" ++
                       (ppShow moduleData.courses) ++ "\n" ++
                       (ppShow moduleData.isps) ++ "\n" ++
+                      (show $ ISP.getIncludedCourses isp) ++ "\n" ++
                       "Result: " ++ show res ++ "!"
                   Nothing -> error "no isp with this name found"
 

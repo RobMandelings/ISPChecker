@@ -27,7 +27,7 @@ main = do
           case Map.lookup "abc" moduleData.modules of
             Just mod ->
               let result = runReader (Preparation.buildModule mod) $ Preparation.Env { modMap = moduleData.modules } in
-                putStrLn $ ppShow result
+                putStrLn $ (ppShow result) ++ "\n" ++ (ppShow moduleData.courses)
 
             Nothing -> error "hi"
 --          putStrLn $ ppShow $ Preparation.buildModule moduleData

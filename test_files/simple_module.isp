@@ -1,7 +1,6 @@
 abc = Module {
     name: "Verdere optie",
     description: "Hellowkes",
-    courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A],
     modules: [hoi],
 }
 
@@ -9,7 +8,14 @@ abc = Module {
 hoi = Module {
     name: "Subonderdeel",
     description: "Cool",
-    courses: [],
+    courses: [H04IOA],
+}
+
+Course {
+	name: "Industrial Internet Infrastructure",
+	code: H04IOA,
+	period: First,
+	studyPoints: 5,
 }
 //
 //h = Module {

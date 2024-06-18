@@ -1,0 +1,21 @@
+Course {
+	name: "Industrial Internet Infrastructure",
+	code: H04IOA,
+	period: First,
+	studyPoints: 5,
+}
+
+Course {
+	name: "Gedistribueerde softwarearchitecturen: verdiepende studie",
+	code: G0K31B,
+	period: First,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Capita Selecta Computer Science: Distributed Systems",
+	code: H04G7A,
+	period: AllYear,
+	studyPoints: 4,
+}
+

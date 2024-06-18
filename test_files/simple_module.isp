@@ -4,7 +4,6 @@ abc = Module {
     modules: [hoi, hoi2],
 }
 
-
 hoi = Module {
     name: "Subonderdeel",
     description: "Cool",

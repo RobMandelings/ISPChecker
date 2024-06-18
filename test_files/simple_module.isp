@@ -1,13 +1,19 @@
 abc = Module {
     name: "Verdere optie",
     description: "Hellowkes",
-    modules: [hoi],
+    modules: [hoi, hoi2],
 }
 
 
 hoi = Module {
     name: "Subonderdeel",
     description: "Cool",
+    courses: [],
+}
+
+hoi2 = Module {
+    name: "Subonderdeel 2",
+    description: "Heel cool",
     courses: [H04IOA],
 }
 
@@ -35,8 +41,9 @@ isp1 = ISP {
 	specialisation: "A.I",
 	background: "informatica",
 	courseSelection: {
-	    passed: [H04IOA],
+	    passed: [],
         planned: [
+            [H04IOA]
 	    ],
     },
 }

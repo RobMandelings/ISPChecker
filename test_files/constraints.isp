@@ -1,0 +1,16 @@
+Included(H01F2A) AND Included(H04G9B)
+RemainingSP(120) OR Included(H04G9B)
+SameYear (H04G9B, H01F2A) OR NOT Included (H01F2A)
+RangeSP(5, 10) AND maxSP ()
+
+RZL = Constraint(c1, c2) {
+    config: Included(c1) AND Included (c2),
+    errorMsg: ""
+}
+
+abc = Module {
+    name: "Verdere optie",
+    description: "Hellowkes",
+    constraints: [RZL (H04G9B, H01F2A)],
+    modules: [],
+}

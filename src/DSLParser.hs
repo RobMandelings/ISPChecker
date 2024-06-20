@@ -86,9 +86,6 @@ parseName = parseField "name" stringLiteral
 parseDescription :: Parser String
 parseDescription = parseField "description" stringLiteral
 
-parseConstraints :: Parser [String]
-parseConstraints = lexeme $ string "constraints:" >> between (symbol "[") (symbol "]") (identifier `sepBy` symbol ",")
-
 parseSubmodules :: Parser [Either String StudyProgram.ModuleWRef]
 parseSubmodules = parseListField "modules" $ do {
   choice
@@ -132,6 +129,51 @@ parseAssignment p = do
   rhs <- p
   return (lhs, rhs)
 
+data BinaryOp = AND | OR | XOR | NOR | NAND
+data UnaryOp = NOT
+
+parseBinaryConstraint :: Parser Constraints.Constraint
+parseBinaryConstraint = do
+  lhs <- parseConstraint
+  operator <- choice [
+    symbol "AND" *> return AND,
+    symbol "OR" *> return OR,
+    symbol "XOR" *> return XOR,
+    symbol "NOR" *> return NOR,
+    symbol "NAND" *> return NAND
+   ]
+  rhs <- parseConstraint
+  case operator of
+    AND -> return $ Constraints.andConstraint lhs rhs
+    OR -> return $ Constraints.orConstraint lhs rhs
+    XOR -> return $ Constraints.xorConstraint lhs rhs
+    NOR -> return $ Constraints.norConstraint lhs rhs
+    NAND -> return $ Constraints.NandConstraint lhs rhs
+
+parseUnaryConstraint :: Parser Constraints.Constraint
+parseUnaryConstraint = do
+  operator <- symbol "NOT" *> return NOT
+  constraint <- parseConstraint
+  return $ Constraints.notConstraint constraint
+
+parseParametrizedConstraint :: Parser Constraints.Constraint
+parseParametrizedConstraint = do
+--  c <- choice [
+--      symbol "Included" *> return Constraints.IncludedConstraint,
+--      symbol "SameYear" *> return Constraints.SameYearConstraint
+----      symbol "MinSP" *>
+--    ]
+  error "hi"
+
+
+parseConstraint :: Parser Constraints.Constraint
+parseConstraint = do
+  c <- choice [
+    parseBinaryConstraint,
+    parseUnaryConstraint
+    ]
+  return c
+
 parseModule :: Parser StudyProgram.ModuleWRef
 parseModule = do
   _ <- spaceConsumer
@@ -139,6 +181,7 @@ parseModule = do
     n <- parseName
     d <- optional parseDescription
     c <- optional $ parseListField "courses" identifier
+    constraints <- optional $ parseListField "constraints" parseConstraint
   --  a <- parseActivator
   --  cs <- optional parseConstraints
     subModules <- optional parseSubmodules

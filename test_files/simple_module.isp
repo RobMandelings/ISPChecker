@@ -1,20 +1,21 @@
 abc = Module {
     name: "Verdere optie",
     description: "Hellowkes",
-    modules: [hoi, hoi2],
+    constraints: [],
+    modules: [],
 }
 
-hoi = Module {
-    name: "Subonderdeel",
-    description: "Cool",
-    courses: [],
-}
-
-hoi2 = Module {
-    name: "Subonderdeel 2",
-    description: "Heel cool",
-    courses: [H04IOA],
-}
+//hoi = Module {
+//    name: "Subonderdeel",
+//    description: "Cool",
+//    courses: [],
+//}
+//
+//hoi2 = Module {
+//    name: "Subonderdeel 2",
+//    description: "Heel cool",
+//    courses: [H04IOA],
+//}
 
 Course {
 	name: "Industrial Internet Infrastructure",

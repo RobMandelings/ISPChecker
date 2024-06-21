@@ -165,6 +165,18 @@ data SomeParser (ts :: [*]) where
     SomeParserNil :: SomeParser '[]
     SomeParserCons :: Parser a -> SomeParser as -> SomeParser (a ': as)
 
+data SomeValue (ts :: [*]) where
+    SomeValueNil :: SomeValue '[]
+    SomeValueCons :: a -> SomeValue as -> SomeValue (a ': as) -- It knows that by giving these two types, the result will be in a type-level list
+
+parseArgs :: SomeParser ts -> Parser (SomeValue ts) -- Heterogeneous list (type-level list, we don't know the exact type here). But we do know that the types involved in the list are the same!
+parseArgs SomeParserNil = return SomeValueNil
+parseArgs (SomeParserCons parser restParsers) = do
+  res <- parser
+  _ <- symbol ","
+  restResults <- parseArgs restParsers
+  return (SomeValueCons res restResults)
+
 --parseArgs :: [SomeParser] -> Parser [SomeValue]
 --parseArgs [] = return []
 --parseArgs [SomeParser p] = do
@@ -177,15 +189,14 @@ data SomeParser (ts :: [*]) where
 --  rest <- parseArgs ps
 --  return (SomeValue res : rest)
 
-parseArgsInBrackets :: [SomeParser] -> Parser [SomeValue]
-parseArgsInBrackets = error "hi"
---parseArgsInBrackets argParsers = between (char '(') (char ')') $ parseArgs argParsers
+parseArgsInBrackets :: SomeParser ts -> Parser (SomeValue ts)
+parseArgsInBrackets argParsers = between (char '(') (char ')') $ parseArgs argParsers
 
-parseIncludedConstraint :: Parser Constraints.Constraint
-parseIncludedConstraint = do
-  _ <- symbol "Included"
-  [SomeValue c] <- parseArgsInBrackets [SomeParser (identifier)]
-  error "hi"
+--parseIncludedConstraint :: Parser Constraints.Constraint
+--parseIncludedConstraint = do
+--  _ <- symbol "Included"
+--  [SomeValue c] <- parseArgsInBrackets [SomeParser (identifier)]
+--  error "hi"
 --  case c of
 --    String str -> error "hi"
 --    _ -> error "hi"

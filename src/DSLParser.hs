@@ -173,9 +173,12 @@ parseArgs :: SomeParser ts -> Parser (SomeValue ts) -- Heterogeneous list (type-
 parseArgs SomeParserNil = return SomeValueNil
 parseArgs (SomeParserCons parser restParsers) = do
   res <- parser
-  _ <- symbol ","
-  restResults <- parseArgs restParsers
-  return (SomeValueCons res restResults)
+  case restParsers of
+    SomeParserNil -> return (SomeValueCons res SomeValueNil)
+    _ -> do
+      _ <- symbol ","
+      restResults <- parseArgs restParsers
+      return (SomeValueCons res restResults)
 
 --parseArgs :: [SomeParser] -> Parser [SomeValue]
 --parseArgs [] = return []
@@ -195,8 +198,12 @@ parseArgsInBrackets argParsers = between (char '(') (char ')') $ parseArgs argPa
 parseIncludedConstraint :: Parser Constraints.Constraint
 parseIncludedConstraint = do
   _ <- symbol "Included"
-  c <- parseArgsInBrackets SomeParserNil
-  error "hi"
+  args <- parseArgsInBrackets $ SomeParserCons identifier SomeParserNil
+  case args of
+    SomeValueCons courseCode xs ->
+      return $ Constraints.IncludedConstraint courseCode
+    _ -> error "Failed to parse arguments"
+
 --  case c of
 --    String str -> error "hi"
 --    _ -> error "hi"
@@ -215,8 +222,9 @@ parseParametrizedConstraint = do
 parseConstraint :: Parser Constraints.Constraint
 parseConstraint = do
   c <- choice [
-    parseBinaryConstraint,
-    parseUnaryConstraint
+--    parseBinaryConstraint,
+--    parseUnaryConstraint,
+    parseIncludedConstraint
     ]
   return c
 

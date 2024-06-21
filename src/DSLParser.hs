@@ -151,17 +151,20 @@ parseUnaryConstraint = do
 data SomeParser = forall a. SomeParser (Parser a)
 data SomeValue = forall a. SomeValue a
 
-parseArguments :: [SomeParser] -> Parser [SomeValue]
-parseArguments [] = return []
-parseArguments [SomeParser p] = do
+parseArgs :: [SomeParser] -> Parser [SomeValue]
+parseArgs [] = return []
+parseArgs [SomeParser p] = do
   res <- p
   return [SomeValue res]
 
-parseArguments (SomeParser p:ps) = do
+parseArgs (SomeParser p:ps) = do
   res <- p
   _ <- symbol ","
-  rest <- parseArguments ps
+  rest <- parseArgs ps
   return (SomeValue res : rest)
+
+parseArgsInBrackets :: [SomeParser] -> Parser [SomeValue]
+parseArgsInBrackets argParsers = between (char '(') (char ')') $ parseArgs argParsers
 
 parseIncludedConstraint :: Parser Constraints.Constraint
 parseIncludedConstraint = do

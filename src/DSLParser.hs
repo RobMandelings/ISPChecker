@@ -1,3 +1,5 @@
+{-# LANGUAGE DataKinds, TypeFamilies, GADTs, FlexibleInstances, TypeOperators #-}
+
 module DSLParser where
 
 -- Qualified vs Non-qualified: Qualified makes sure you need the prefix to access the exported functionality. This is not necessary with normal import.
@@ -17,6 +19,8 @@ import qualified Data.Set as Set
 import Data.Function (on)
 import Data.List (sortOn, groupBy)
 import qualified Constraints
+import GHC.TypeLits
+
 
 -- Parsec is the core parser type in Megaparsec. Represents a parser that can consume input and produce a result.
 -- Void: error type (don't care about custom error information; TODO later)
@@ -148,28 +152,44 @@ parseUnaryConstraint = do
   constraint <- parseConstraint
   return $ operator constraint
 
-data SomeParser = forall a. SomeParser (Parser a)
-data SomeValue = forall a. SomeValue a
+--data SomeParser = forall a. SomeParser (Parser a)
+--data SomeValue = forall a. SomeValue a
 
-parseArgs :: [SomeParser] -> Parser [SomeValue]
-parseArgs [] = return []
-parseArgs [SomeParser p] = do
-  res <- p
-  return [SomeValue res]
+-- Define type-level lists
+data HList (ts :: [*]) where
+    HNil :: HList '[]
+    HCons :: t -> HList ts -> HList (t ': ts)
 
-parseArgs (SomeParser p:ps) = do
-  res <- p
-  _ <- symbol ","
-  rest <- parseArgs ps
-  return (SomeValue res : rest)
+-- Define SomeParser and SomeValue for HLists
+data SomeParser (ts :: [*]) where
+    SomeParserNil :: SomeParser '[]
+    SomeParserCons :: Parser a -> SomeParser as -> SomeParser (a ': as)
+
+--parseArgs :: [SomeParser] -> Parser [SomeValue]
+--parseArgs [] = return []
+--parseArgs [SomeParser p] = do
+--  res <- p
+--  return [SomeValue res]
+--
+--parseArgs (SomeParser p:ps) = do
+--  res <- p
+--  _ <- symbol ","
+--  rest <- parseArgs ps
+--  return (SomeValue res : rest)
 
 parseArgsInBrackets :: [SomeParser] -> Parser [SomeValue]
-parseArgsInBrackets argParsers = between (char '(') (char ')') $ parseArgs argParsers
+parseArgsInBrackets = error "hi"
+--parseArgsInBrackets argParsers = between (char '(') (char ')') $ parseArgs argParsers
 
 parseIncludedConstraint :: Parser Constraints.Constraint
 parseIncludedConstraint = do
   _ <- symbol "Included"
+  [SomeValue c] <- parseArgsInBrackets [SomeParser (identifier)]
   error "hi"
+--  case c of
+--    String str -> error "hi"
+--    _ -> error "hi"
+--  return $ Constraints.IncludedConstraint c
 
 parseParametrizedConstraint :: Parser Constraints.Constraint
 parseParametrizedConstraint = do

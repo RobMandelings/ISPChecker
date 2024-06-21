@@ -192,11 +192,11 @@ parseArgs (SomeParserCons parser restParsers) = do
 parseArgsInBrackets :: SomeParser ts -> Parser (SomeValue ts)
 parseArgsInBrackets argParsers = between (char '(') (char ')') $ parseArgs argParsers
 
---parseIncludedConstraint :: Parser Constraints.Constraint
---parseIncludedConstraint = do
---  _ <- symbol "Included"
---  [SomeValue c] <- parseArgsInBrackets [SomeParser (identifier)]
---  error "hi"
+parseIncludedConstraint :: Parser Constraints.Constraint
+parseIncludedConstraint = do
+  _ <- symbol "Included"
+  c <- parseArgsInBrackets SomeParserNil
+  error "hi"
 --  case c of
 --    String str -> error "hi"
 --    _ -> error "hi"

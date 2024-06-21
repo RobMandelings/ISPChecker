@@ -47,6 +47,7 @@ library
       OverloadedStrings
       OverloadedRecordDot
       NamedFieldPuns
+      ExistentialQuantification
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints.md
   build-depends:
       base >=4.7 && <5
@@ -73,6 +74,7 @@ executable ISPChecker-exe
       OverloadedStrings
       OverloadedRecordDot
       NamedFieldPuns
+      ExistentialQuantification
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints.md -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       ISPChecker

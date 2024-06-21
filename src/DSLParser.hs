@@ -129,32 +129,44 @@ parseAssignment p = do
   rhs <- p
   return (lhs, rhs)
 
-data BinaryOp = AND | OR | XOR | NOR | NAND
-data UnaryOp = NOT
-
 parseBinaryConstraint :: Parser Constraints.Constraint
 parseBinaryConstraint = do
   lhs <- parseConstraint
   operator <- choice [
-    symbol "AND" *> return AND,
-    symbol "OR" *> return OR,
-    symbol "XOR" *> return XOR,
-    symbol "NOR" *> return NOR,
-    symbol "NAND" *> return NAND
+    symbol "AND" *> return Constraints.andConstraint,
+    symbol "OR" *> return Constraints.orConstraint,
+    symbol "XOR" *> return Constraints.xorConstraint,
+    symbol "NOR" *> return Constraints.norConstraint,
+    symbol "NAND" *> return Constraints.NandConstraint
    ]
   rhs <- parseConstraint
-  case operator of
-    AND -> return $ Constraints.andConstraint lhs rhs
-    OR -> return $ Constraints.orConstraint lhs rhs
-    XOR -> return $ Constraints.xorConstraint lhs rhs
-    NOR -> return $ Constraints.norConstraint lhs rhs
-    NAND -> return $ Constraints.NandConstraint lhs rhs
+  return $ operator lhs rhs
 
 parseUnaryConstraint :: Parser Constraints.Constraint
 parseUnaryConstraint = do
-  operator <- symbol "NOT" *> return NOT
+  operator <- symbol "NOT" *> return Constraints.notConstraint
   constraint <- parseConstraint
-  return $ Constraints.notConstraint constraint
+  return $ operator constraint
+
+data SomeParser = forall a. SomeParser (Parser a)
+data SomeValue = forall a. SomeValue a
+
+parseArguments :: [SomeParser] -> Parser [SomeValue]
+parseArguments [] = return []
+parseArguments [SomeParser p] = do
+  res <- p
+  return [SomeValue res]
+
+parseArguments (SomeParser p:ps) = do
+  res <- p
+  _ <- symbol ","
+  rest <- parseArguments ps
+  return (SomeValue res : rest)
+
+parseIncludedConstraint :: Parser Constraints.Constraint
+parseIncludedConstraint = do
+  _ <- symbol "Included"
+  error "hi"
 
 parseParametrizedConstraint :: Parser Constraints.Constraint
 parseParametrizedConstraint = do

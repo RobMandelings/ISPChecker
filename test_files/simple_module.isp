@@ -1,7 +1,7 @@
 abc = Module {
     name: "Verdere optie",
     description: "Hellowkes",
-    constraints: [Included(H04IOA)],
+    constraints: [Included(H04IOA), SameYear(H04IOA, H01F2A)],
     modules: [],
 }
 

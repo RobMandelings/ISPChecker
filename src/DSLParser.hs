@@ -1,4 +1,6 @@
-{-# LANGUAGE DataKinds, TypeFamilies, GADTs, FlexibleInstances, TypeOperators #-}
+{-# LANGUAGE DataKinds, TypeFamilies, GADTs, FlexibleInstances, TypeOperators, TypeApplications #-}
+
+-- TypeApplications required for the extract @0
 
 module DSLParser where
 
@@ -204,10 +206,14 @@ parseIncludedConstraint = do
       return $ Constraints.IncludedConstraint courseCode
     _ -> error "Failed to parse arguments"
 
---  case c of
---    String str -> error "hi"
---    _ -> error "hi"
---  return $ Constraints.IncludedConstraint c
+parseSameYearConstraint :: Parser Constraints.Constraint
+parseSameYearConstraint = do
+  _ <- symbol "SameYear"
+  args <- parseArgsInBrackets $ SomeParserCons identifier $ SomeParserCons identifier SomeParserNil
+  case args of
+    SomeValueCons code1 (SomeValueCons code2 SomeValueNil) ->
+        return $ Constraints.SameYearConstraint code1 code2
+    _ -> error "Failed to parse arguments"
 
 parseParametrizedConstraint :: Parser Constraints.Constraint
 parseParametrizedConstraint = do
@@ -224,7 +230,8 @@ parseConstraint = do
   c <- choice [
 --    parseBinaryConstraint,
 --    parseUnaryConstraint,
-    parseIncludedConstraint
+    parseIncludedConstraint,
+    parseSameYearConstraint
     ]
   return c
 
@@ -247,7 +254,7 @@ parseModule = do
           StudyProgram.description = maybe "" id d,
           StudyProgram.courses = maybe [] id c,
           StudyProgram.activator = StudyProgram.trueActivator,
-          StudyProgram.constraints = [Constraints.IncludedConstraint "H04IOA"] -- TODO fix this hardcoded stuff
+          StudyProgram.constraints = maybe [] id constraints -- TODO fix this hardcoded stuff
         },
       StudyProgram.subModules = maybe [] id subModules
   --      constraints = []

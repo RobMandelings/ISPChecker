@@ -9,6 +9,8 @@ type Scope = Set.Set CourseCode
 --  (additional constraint can be added to studyprogram? E.g. in this program you need to do it in sem 2, even though the course is available in sem 1 as well)
 
 data Constraint =
+  SomeConstraint Constraint | -- There is some course for which the following constraint holds
+  AllConstraint Constraint | -- For all courses the following constraints hold (such as AllIncluded)
   IncludedConstraint CourseCode |
   NandConstraint Constraint Constraint |
   AndConstraint Constraint Constraint |

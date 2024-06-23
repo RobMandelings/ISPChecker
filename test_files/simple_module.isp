@@ -15,7 +15,8 @@ abc = Module {
             name: "Subonderdeel 2",
             description: "Cool",
             courses: [],
-            constraints: [[H04IOA, H04IOB]: Some c -> MaxSP(5) AND NOT Included (H04IOA)],
+//            constraints: [[H04IOA, H04IOB]: Some c -> MaxSP(5) AND NOT Included (H04IOA)],
+            constraints: [MaxSP(5) AND NOT Included (H04IOA)],
         }
     ],
 }

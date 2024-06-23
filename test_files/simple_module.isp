@@ -1,9 +1,21 @@
 abc = Module {
     name: "Verdere optie",
     description: "Hellowkes",
-    courses: [H04IOA, H04IOB],
-    constraints: [RangeSP(4, 10) AND NOT NOT Included(H04IOA)],
-    modules: [],
+    courses: [],
+//    constraints: [MinSP(9)],
+    modules: [
+        Module {
+            name: "Subonderdeel",
+            description: "Cool",
+            courses: [H04IOA],
+            constraints: [MinSP(9)],
+        },
+        Module {
+            name: "Subonderdeel",
+            description: "Cool",
+            courses: [H04IOB],
+        }
+    ],
 }
 
 isp1 = ISP {
@@ -13,16 +25,16 @@ isp1 = ISP {
 	courseSelection: {
 	    passed: [],
         planned: [
-            [H04IOA]
+            [H04IOA, H04IOB]
 	    ],
     },
 }
 
-//hoi = Module {
-//    name: "Subonderdeel",
-//    description: "Cool",
-//    courses: [],
-//}
+hoi = Module {
+    name: "Subonderdeel",
+    description: "Cool",
+    courses: [],
+}
 //
 //hoi2 = Module {
 //    name: "Subonderdeel 2",

@@ -75,6 +75,13 @@ stringLiteral = between (char '"') (char '"') (many charLiteralExclQuotation)
 identifier :: Parser String
 identifier = lexeme ((:) <$> letterChar <*> many (alphaNumChar <|> char '_'))
 
+--pIdentifier :: Parser String
+--pIdentifier = try (
+--  do
+--    _ <- string "Module"
+--    failure "Reserved keyword 'Module' cannot be used as an identifier"
+--) <|> pIdentifier
+
 -- TODO allow parsing with spaces between the field and the value
 
 parseField :: Text -> Parser a -> Parser a
@@ -99,8 +106,8 @@ parseSubmodules :: Parser [Either String StudyProgram.ModuleWRef]
 parseSubmodules = parseListField "modules" $ do {
   choice
     [
-      Left <$> identifier,
-      Right <$> parseModule
+      Right <$> parseModule,
+      Left <$> identifier
     ]
   }
 

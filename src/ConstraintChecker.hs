@@ -7,6 +7,7 @@ import qualified Data.Map.Strict as StrictMap -- Forces evaluation of values whe
 import Data.Maybe (mapMaybe)
 import Control.Monad.Reader
 import qualified Data.Set as Set
+import Data.Text (pack, Text)
 
 import qualified Courses
 import StudyProgram
@@ -15,6 +16,20 @@ import ISP (ISP)
 import qualified ISP as ISP
 import Debug.Trace
 import Text.Show.Pretty (ppShow)
+
+class ToBool a where
+  toBool :: a -> Bool
+
+data CCResult =
+  CCSuccess |
+  CCFail {
+    errorMsg :: Text,
+    subResults :: [CCResult]
+  } deriving (Show)
+
+instance ToBool CCResult where
+  toBool CCSuccess = True
+  toBool (CCFail _ _) = False
 
 -- TODO
 -- the lhs defines the type constraint for this typeclass.
@@ -44,7 +59,7 @@ data Env = Env
   , courseStore :: CourseStore
   }
 
-type ConstraintChecker = ReaderT Env Maybe Bool
+type ConstraintChecker = ReaderT Env Maybe CCResult
 --
 ---- check whether module is active
 ---- evaluate subModules
@@ -84,66 +99,89 @@ checkModule mod = do
     -- Produces all results. If at least one result returned Nothing, the binding fails and checkModule will return Nothing as well.
     subModuleResults <- mapM checkModule (mod.subModules)
     results <- mapM (\c -> checkConstraint (Constraints.ScopedConstraint c scope)) (mod.commonFields.constraints)
+    let allResults = subModuleResults ++ results
+    let allResultBools = map toBool allResults
+    lift Nothing
     -- You provide a function that maps a result to a boolean. Then provide a list of results. You get a boolean if all the outcomes of the results are booleans.
-    return $ all id $ Set.toList $ Set.union (Set.fromList subModuleResults) (Set.fromList results) -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
-  else return True
+--    return $ all id $ Set.toList $ Set.union (Set.fromList subModuleResults) (Set.fromList results) -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
+  else return CCSuccess
 --
 checkConstraint :: Constraints.Constraint -> ConstraintChecker
 checkConstraint (Constraints.IncludedConstraint code) = do
   env <- ask
-  return $ Set.member code $ ISP.getIncludedCourses env.isp
+  let res = Set.member code $ ISP.getIncludedCourses env.isp
+  if res then
+    return CCSuccess
+  else
+    let errorMsg = pack $ "Het vak '" ++ code ++ "' is niet opgenomen in het ISP." in
+      return $ CCFail {errorMsg, subResults=[]}
 
 checkConstraint (Constraints.NandConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   r2 <- checkConstraint c2
-  return $ not (r1 && r2)
+  let r = not (toBool r1 && toBool r2)
+  return $ if r then CCSuccess else CCFail {errorMsg="", subResults=[r1, r2]}
 
 checkConstraint (Constraints.AndConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   r2 <- checkConstraint c2
-  return $ r1 && r2
+  let r = toBool r1 && toBool r2
+  return $ if r then CCSuccess else CCFail {errorMsg="", subResults=[r1, r2]}
 
 checkConstraint (Constraints.OrConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   r2 <- checkConstraint c2
-  return $ r1 || r2
+  let r = toBool r1 || toBool r2
+  return $ if r then CCSuccess else CCFail {errorMsg="", subResults=[r1, r2]}
 
 checkConstraint (Constraints.NorConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   r2 <- checkConstraint c2
-  return $ not (r1 || r2)
+  let r = not (toBool r1 || toBool r2)
+  return $ if r then CCSuccess else CCFail {errorMsg="", subResults=[r1, r2]}
 
 checkConstraint (Constraints.XorConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   r2 <- checkConstraint c2
-  return $ (r1 || r2) && r1 /= r2
+  let r = (toBool r1 || toBool r2) && toBool r1 /= toBool r2
+  return $ if r then CCSuccess else CCFail {errorMsg="", subResults=[r1, r2]}
 
 checkConstraint (Constraints.NotConstraint c) = do
   r <- checkConstraint c -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
-  return $ not r
-
+  let res = not $ toBool r
+  return $ if res then CCSuccess else CCFail {errorMsg="", subResults=[]}
 
 checkConstraint (Constraints.MinSPConstraint sp) = do
   env <- ask
   let courses = ConstraintChecker.getCourses env
   let totalSP = sum $ map (\c -> c.studyPoints) courses
-  return (totalSP >= sp) -- Return now maps the boolean inside a maybe monad, wraps it inside the ReaderT
+  let r = (totalSP >= sp) -- Return now maps the boolean inside a maybe monad, wraps it inside the ReaderT
+  if r then
+    return CCSuccess
+  else
+    let errorMsg = pack $ "Minimum aantal studiepunten in module moet " ++ show sp ++ " zijn, en is " ++ show totalSP in
+      return $ CCFail {errorMsg, subResults=[]}
 --  lift Nothing -- Return would wrap the result of 'lift Nothing' in another layer of ReaderT
 
 checkConstraint (Constraints.MaxSPConstraint sp) = do
   env <- ask
-  let courses = ConstraintChecker.getCourses env in
-      let totalSP = sum $ map (\c -> c.studyPoints) courses in
-      return (totalSP <= sp) -- Return now maps the boolean inside a maybe monad, wraps it inside the ReaderT
+  let courses = ConstraintChecker.getCourses env
+  let totalSP = sum $ map (\c -> c.studyPoints) courses
+  let r = (totalSP <= sp) -- Return now maps the boolean inside a maybe monad, wraps it inside the ReaderT
+  if r then
+    return CCSuccess
+  else
+    let errorMsg = pack $ "Maximum aantal studiepunten in module moet " ++ show sp ++ " zijn, en is " ++ show totalSP in
+      return $ CCFail {errorMsg, subResults=[]}
 --
 ---- Const is a function that ignores its argument and returns a constant value.
 ---- We require const here because local expects a function that takes in an env and returns an adjusted environment.
 ---- But we have already created the newEnv via different variable, so we can just return that value.
 checkConstraint (Constraints.ScopedConstraint constraint newScope) = do
   env <- ask
-  let newISP = filterISP (env.isp) newScope in
-    let newEnv = env { isp = newISP } in
-      local (const newEnv) (checkConstraint constraint)
+  let newISP = filterISP (env.isp) newScope
+  let newEnv = env { isp = newISP }
+  local (const newEnv) (checkConstraint constraint)
 
 checkConstraint (Constraints.SameYearConstraint code1 code2) = do
   env <- ask
@@ -151,9 +189,9 @@ checkConstraint (Constraints.SameYearConstraint code1 code2) = do
     let setsContainingBoth = filter (\s -> Set.member code1 s && Set.member code2 s) plannedPerYear in
       -- Either they are simply not included, or both are included in that year
       if (length setsContainingBoth == 1 || length setsContainingBoth == 0) then
-        return True
+        lift Nothing -- TODO implement same year constraint
       else
-        return False
+        lift Nothing -- TODO implement same year constraint
 
 getScope :: Module -> ISP -> Constraints.Scope
 getScope mod isp =
@@ -177,5 +215,5 @@ filterISP isp scope =
     filteredPlanned = map (Set.intersection scope) planned in
       isp { ISP.courseSelection = ISP.CourseSelection { ISP.passed = filteredPassed, ISP.planned = filteredPlanned } }
 
-runCheckModule :: Module -> Env -> Maybe Bool
+runCheckModule :: Module -> Env -> Maybe CCResult
 runCheckModule mod env = runReaderT (checkModule mod) env

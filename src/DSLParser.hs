@@ -56,6 +56,9 @@ symbol = L.symbol spaceConsumer
 charLiteralExclQuotation :: Parser Char
 charLiteralExclQuotation = satisfy (\c -> c /= '"')
 
+parseInteger :: Parser Int
+parseInteger = lexeme $ L.signed (return ()) (L.decimal <* notFollowedBy (char '.'))
+
 stringLiteral :: Parser String
 
  -- >> is to discard the first monadic action and return the result of the second monadic acion (chaining two monadic actions and discarding the first one)
@@ -200,20 +203,35 @@ parseArgsInBrackets argParsers = between (char '(') (char ')') $ parseArgs argPa
 parseIncludedConstraint :: Parser Constraints.Constraint
 parseIncludedConstraint = do
   _ <- symbol "Included"
-  args <- parseArgsInBrackets $ SomeParserCons identifier SomeParserNil
-  case args of
-    SomeValueCons courseCode xs ->
-      return $ Constraints.IncludedConstraint courseCode
-    _ -> error "Failed to parse arguments"
+  SomeValueCons courseCode SomeValueNil <- parseArgsInBrackets $ SomeParserCons identifier SomeParserNil
+  return $ Constraints.IncludedConstraint courseCode
 
 parseSameYearConstraint :: Parser Constraints.Constraint
 parseSameYearConstraint = do
   _ <- symbol "SameYear"
-  args <- parseArgsInBrackets $ SomeParserCons identifier $ SomeParserCons identifier SomeParserNil
-  case args of
-    SomeValueCons code1 (SomeValueCons code2 SomeValueNil) ->
-        return $ Constraints.SameYearConstraint code1 code2
-    _ -> error "Failed to parse arguments"
+  (SomeValueCons code1 (SomeValueCons code2 SomeValueNil)) <- parseArgsInBrackets $ SomeParserCons identifier $ SomeParserCons identifier SomeParserNil
+  return $ Constraints.SameYearConstraint code1 code2
+
+parseMinMaxSPConstraint :: Parser Constraints.Constraint
+parseMinMaxSPConstraint = do
+  minMaxConstraint <- choice [
+    symbol "MinSP" *> return Constraints.MinSPConstraint,
+    symbol "MaxSP" *> return Constraints.MaxSPConstraint
+    ]
+  (SomeValueCons sp SomeValueNil) <- parseArgsInBrackets $ SomeParserCons parseInteger SomeParserNil
+  return $ minMaxConstraint sp
+
+parseRangeSPConstraint :: Parser Constraints.Constraint
+parseRangeSPConstraint = do
+  _ <- symbol "RangeSP"
+  (SomeValueCons min (SomeValueCons max SomeValueNil)) <- parseArgsInBrackets $ SomeParserCons parseInteger $ SomeParserCons parseInteger SomeParserNil
+  return $ Constraints.rangeSPConstraint min max
+
+parseRemainingSPConstraint :: Parser Constraints.Constraint
+parseRemainingSPConstraint = do
+  _ <- symbol "RemainingSP"
+  (SomeValueCons sp SomeValueNil) <- parseArgsInBrackets $ SomeParserCons parseInteger SomeParserNil
+  return $ Constraints.RemainingSPConstraint sp
 
 parseParametrizedConstraint :: Parser Constraints.Constraint
 parseParametrizedConstraint = do

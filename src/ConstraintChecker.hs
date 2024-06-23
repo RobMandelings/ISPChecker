@@ -95,7 +95,31 @@ checkConstraint (Constraints.IncludedConstraint code) = do
 checkConstraint (Constraints.NandConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   r2 <- checkConstraint c2
-  return (not (r1 && r2))
+  return $ not (r1 && r2)
+
+checkConstraint (Constraints.AndConstraint c1 c2) = do
+  r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
+  r2 <- checkConstraint c2
+  return $ r1 && r2
+
+checkConstraint (Constraints.OrConstraint c1 c2) = do
+  r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
+  r2 <- checkConstraint c2
+  return $ r1 || r2
+
+checkConstraint (Constraints.NorConstraint c1 c2) = do
+  r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
+  r2 <- checkConstraint c2
+  return $ not (r1 || r2)
+
+checkConstraint (Constraints.XorConstraint c1 c2) = do
+  r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
+  r2 <- checkConstraint c2
+  return $ (r1 || r2) && r1 /= r2
+
+checkConstraint (Constraints.NotConstraint c) = do
+  r <- checkConstraint c -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
+  return $ not r
 
 
 checkConstraint (Constraints.MinSPConstraint sp) = do

@@ -11,6 +11,11 @@ type Scope = Set.Set CourseCode
 data Constraint =
   IncludedConstraint CourseCode |
   NandConstraint Constraint Constraint |
+  AndConstraint Constraint Constraint |
+  NotConstraint Constraint |
+  OrConstraint Constraint Constraint |
+  NorConstraint Constraint Constraint |
+  XorConstraint Constraint Constraint |
   MinSPConstraint Int |
   MaxSPConstraint Int |
   RemainingSPConstraint Int |

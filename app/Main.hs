@@ -41,7 +41,8 @@ main = do
                       (ppShow moduleData.courses) ++ "\n" ++
                       (ppShow moduleData.isps) ++ "\n" ++
                       (show $ ISP.getIncludedCourses isp) ++ "\n" ++
-                      "Result: " ++ show res ++ "!"
+                      "Result: \n" ++
+                      ppShow res
                   Nothing -> error "no isp with this name found"
 
             Nothing -> error "hi"

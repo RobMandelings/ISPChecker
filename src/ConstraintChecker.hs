@@ -29,7 +29,7 @@ data CCResult =
 
 instance ToBool CCResult where
   toBool CCSuccess = True
-  toBool (CCFail _ _) = False
+  toBool (CCFail _ _) = False -- TODO cleaner way to handle this?
 
 -- TODO
 -- the lhs defines the type constraint for this typeclass.
@@ -100,8 +100,12 @@ checkModule mod = do
     subModuleResults <- mapM checkModule (mod.subModules)
     results <- mapM (\c -> checkConstraint (Constraints.ScopedConstraint c scope)) (mod.commonFields.constraints)
     let allResults = subModuleResults ++ results
-    let allResultBools = map toBool allResults
-    lift Nothing
+    let isFail = Set.member False $ Set.fromList $ map toBool allResults
+    if isFail then
+      let errorMsg = pack $ "Module " ++ mod.commonFields.name ++ " voldoet niet aan vereisten." in
+        return $ CCFail { errorMsg, subResults=allResults}
+    else
+      return CCSuccess
     -- You provide a function that maps a result to a boolean. Then provide a list of results. You get a boolean if all the outcomes of the results are booleans.
 --    return $ all id $ Set.toList $ Set.union (Set.fromList subModuleResults) (Set.fromList results) -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
   else return CCSuccess

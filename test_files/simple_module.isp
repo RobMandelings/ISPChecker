@@ -8,14 +8,14 @@ abc = Module {
             name: "Subonderdeel",
             description: "Cool",
             courses: [H04IOA],
-            constraints: [MaxSP(5)],
-            modules: []
+            constraints: [MaxSP(1)],
+            modules: [],
         },
         Module {
             name: "Subonderdeel 2",
             description: "Cool",
-            courses: [H04IOB],
-            constraints: [MaxSP(5)],
+            courses: [],
+            constraints: [MaxSP(5) AND NOT Included (H04IOA)],
         }
     ],
 }

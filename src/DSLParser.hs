@@ -154,10 +154,10 @@ parseBinaryConstraint :: Parser Constraints.Constraint
 parseBinaryConstraint = do
   lhs <- parseSimpleConstraint
   operator <- choice [
-    symbol "AND" *> return Constraints.andConstraint,
-    symbol "OR" *> return Constraints.orConstraint,
-    symbol "XOR" *> return Constraints.xorConstraint,
-    symbol "NOR" *> return Constraints.norConstraint,
+    symbol "AND" *> return Constraints.AndConstraint,
+    symbol "OR" *> return Constraints.OrConstraint,
+    symbol "XOR" *> return Constraints.XorConstraint,
+    symbol "NOR" *> return Constraints.NorConstraint,
     symbol "NAND" *> return Constraints.NandConstraint
    ]
   rhs <- parseConstraint
@@ -165,7 +165,7 @@ parseBinaryConstraint = do
 
 parseUnaryConstraint :: Parser Constraints.Constraint
 parseUnaryConstraint = do
-  operator <- symbol "NOT" *> return Constraints.notConstraint
+  operator <- symbol "NOT" *> return Constraints.NotConstraint
   constraint <- parseConstraint
   return $ operator constraint
 

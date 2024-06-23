@@ -2,7 +2,7 @@ abc = Module {
     name: "Verdere optie",
     description: "Hellowkes",
     courses: [H04IOA, H04IOB],
-    constraints: [RangeSP(4, 10) AND Included(H04IOA)],
+    constraints: [RangeSP(4, 10) AND NOT NOT Included(H04IOA)],
     modules: [],
 }
 

@@ -14,6 +14,7 @@ import qualified Constraints
 import ISP (ISP)
 import qualified ISP as ISP
 import Debug.Trace
+import Text.Show.Pretty (ppShow)
 
 -- TODO
 -- the lhs defines the type constraint for this typeclass.
@@ -84,7 +85,7 @@ checkModule mod = do
     subModuleResults <- mapM checkModule (mod.subModules)
     results <- mapM (\c -> checkConstraint (Constraints.ScopedConstraint c scope)) (mod.commonFields.constraints)
     -- You provide a function that maps a result to a boolean. Then provide a list of results. You get a boolean if all the outcomes of the results are booleans.
-    return $ all id results -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
+    return $ all id $ Set.toList $ Set.union (Set.fromList subModuleResults) (Set.fromList results) -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
   else return True
 --
 checkConstraint :: Constraints.Constraint -> ConstraintChecker
@@ -124,9 +125,9 @@ checkConstraint (Constraints.NotConstraint c) = do
 
 checkConstraint (Constraints.MinSPConstraint sp) = do
   env <- ask
-  let courses = ConstraintChecker.getCourses env in
-      let totalSP = sum $ map (\c -> c.studyPoints) courses in
-      return (totalSP >= sp) -- Return now maps the boolean inside a maybe monad, wraps it inside the ReaderT
+  let courses = ConstraintChecker.getCourses env
+  let totalSP = sum $ map (\c -> c.studyPoints) courses
+  return (totalSP >= sp) -- Return now maps the boolean inside a maybe monad, wraps it inside the ReaderT
 --  lift Nothing -- Return would wrap the result of 'lift Nothing' in another layer of ReaderT
 
 checkConstraint (Constraints.MaxSPConstraint sp) = do
@@ -143,7 +144,6 @@ checkConstraint (Constraints.ScopedConstraint constraint newScope) = do
   let newISP = filterISP (env.isp) newScope in
     let newEnv = env { isp = newISP } in
       local (const newEnv) (checkConstraint constraint)
-----
 
 checkConstraint (Constraints.SameYearConstraint code1 code2) = do
   env <- ask

@@ -1,8 +1,21 @@
 abc = Module {
     name: "Verdere optie",
     description: "Hellowkes",
-    constraints: [Included(H04IOA), SameYear(H04IOA, H01F2A)],
+    courses: [H04IOA, H04IOB],
+    constraints: [RangeSP(4, 10) AND Included(H04IOA)],
     modules: [],
+}
+
+isp1 = ISP {
+	studyProgram: ING_CS,
+	specialisation: "A.I",
+	background: "informatica",
+	courseSelection: {
+	    passed: [],
+        planned: [
+            [H04IOA]
+	    ],
+    },
 }
 
 //hoi = Module {
@@ -23,6 +36,13 @@ Course {
 	period: First,
 	studyPoints: 5,
 }
+
+Course {
+	name: "Industrial Internet Infrastructure",
+	code: H04IOB,
+	period: Second,
+	studyPoints: 5,
+}
 //
 //h = Module {
 //    name: "Verdere optie",
@@ -35,18 +55,6 @@ Course {
 //    description: "Hellowkes",
 //    courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A],
 //}
-
-isp1 = ISP {
-	studyProgram: ING_CS,
-	specialisation: "A.I",
-	background: "informatica",
-	courseSelection: {
-	    passed: [],
-        planned: [
-            [H04IOA]
-	    ],
-    },
-}
 //
 //Course {
 //    name: "",

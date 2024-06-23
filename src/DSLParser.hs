@@ -138,9 +138,21 @@ parseAssignment p = do
   rhs <- p
   return (lhs, rhs)
 
+parseSimpleConstraint :: Parser Constraints.Constraint
+parseSimpleConstraint = do
+  c <- choice [
+      parseUnaryConstraint,
+      parseIncludedConstraint,
+      parseSameYearConstraint,
+      parseMinMaxSPConstraint,
+      parseRangeSPConstraint,
+      parseRemainingSPConstraint
+    ]
+  return c
+
 parseBinaryConstraint :: Parser Constraints.Constraint
 parseBinaryConstraint = do
-  lhs <- parseConstraint
+  lhs <- parseSimpleConstraint
   operator <- choice [
     symbol "AND" *> return Constraints.andConstraint,
     symbol "OR" *> return Constraints.orConstraint,
@@ -198,7 +210,7 @@ parseArgs (SomeParserCons parser restParsers) = do
 --  return (SomeValue res : rest)
 
 parseArgsInBrackets :: SomeParser ts -> Parser (SomeValue ts)
-parseArgsInBrackets argParsers = between (char '(') (char ')') $ parseArgs argParsers
+parseArgsInBrackets argParsers = lexeme $ between (char '(') (char ')') $ parseArgs argParsers
 
 parseIncludedConstraint :: Parser Constraints.Constraint
 parseIncludedConstraint = do
@@ -233,24 +245,9 @@ parseRemainingSPConstraint = do
   (SomeValueCons sp SomeValueNil) <- parseArgsInBrackets $ SomeParserCons parseInteger SomeParserNil
   return $ Constraints.RemainingSPConstraint sp
 
-parseParametrizedConstraint :: Parser Constraints.Constraint
-parseParametrizedConstraint = do
---  c <- choice [
---      symbol "Included" *> return Constraints.IncludedConstraint,
---      symbol "SameYear" *> return Constraints.SameYearConstraint
-----      symbol "MinSP" *>
---    ]
-  error "hi"
-
-
 parseConstraint :: Parser Constraints.Constraint
 parseConstraint = do
-  c <- choice [
---    parseBinaryConstraint,
---    parseUnaryConstraint,
-    parseIncludedConstraint,
-    parseSameYearConstraint
-    ]
+  c <- choice [try parseBinaryConstraint, parseSimpleConstraint]
   return c
 
 parseModule :: Parser StudyProgram.ModuleWRef

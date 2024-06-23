@@ -33,12 +33,13 @@ main = do
                 case (Map.lookup "isp1" moduleData.isps) of
                   Just isp ->
                     let env = CC.Env { isp, courseStore } in
-                    let res = CC.runCheckModule mod env in
-                      putStrLn $ (ppShow mod) ++ "\n" ++
-                      (ppShow moduleData.courses) ++ "\n" ++
-                      (ppShow moduleData.isps) ++ "\n" ++
-                      (show $ ISP.getIncludedCourses isp) ++ "\n" ++
-                      "Result: " ++ show res ++ "!"
+                      putStrLn $ ppShow $ CC.getScope (mod.subModules !! 1) isp
+--                    let res = CC.runCheckModule mod env in
+--                      putStrLn $ (ppShow mod) ++ "\n" ++
+--                      (ppShow moduleData.courses) ++ "\n" ++
+--                      (ppShow moduleData.isps) ++ "\n" ++
+--                      (show $ ISP.getIncludedCourses isp) ++ "\n" ++
+--                      "Result: " ++ show res ++ "!"
                   Nothing -> error "no isp with this name found"
 
             Nothing -> error "hi"

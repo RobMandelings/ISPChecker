@@ -5,7 +5,7 @@ abc = Module {
     moduleConstraints: [
         ModuleConstraint {
             description: "Maximaal 1 studiepunt",
-            constraint: MaxSP(1),
+            constraint: MaxSP(1) AND MinSP(1) OR NOT Included(H04IOB),
         }
         ],
 //    modules: [

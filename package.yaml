@@ -27,6 +27,7 @@ dependencies:
   - mtl >= 2.3.1
   - scotty >= 0.20
   - pretty-show >= 1.10
+  - aeson
 
 ghc-options:
   - -Wall

@@ -62,12 +62,11 @@ library
 executable ISPChecker-exe
   main-is: Main.hs
   other-modules:
-      App
       Paths_ISPChecker
   autogen-modules:
       Paths_ISPChecker
   hs-source-dirs:
-      app
+      app/Main
   default-extensions:
       NoFieldSelectors
       RecordWildCards
@@ -92,12 +91,11 @@ executable ISPChecker-exe
 executable scotty-server-exe
   main-is: App.hs
   other-modules:
-      Main
       Paths_ISPChecker
   autogen-modules:
       Paths_ISPChecker
   hs-source-dirs:
-      app
+      app/Server
   default-extensions:
       NoFieldSelectors
       RecordWildCards

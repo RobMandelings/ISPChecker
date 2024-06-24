@@ -54,7 +54,7 @@ library:
 executables:
   ISPChecker-exe:
     main: Main.hs
-    source-dirs: app
+    source-dirs: app/Main # Otherwise the two executables include each other
     default-extensions:
       - NoFieldSelectors
       - RecordWildCards
@@ -72,7 +72,7 @@ executables:
       - ISPChecker
   scotty-server-exe:
     main: App.hs
-    source-dirs: app
+    source-dirs: app/Server
     default-extensions:
       - NoFieldSelectors
       - RecordWildCards

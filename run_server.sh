@@ -1,0 +1,1 @@
+stack run scotty-server-exe

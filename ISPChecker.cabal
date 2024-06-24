@@ -52,15 +52,17 @@ library
   build-depends:
       base >=4.7 && <5
     , containers >=0.6.7
-    , megaparsec >=9.0
+    , megaparsec >=9.5
     , mtl >=2.3.1
-    , pretty-show
+    , pretty-show >=1.10
+    , scotty >=0.20
     , text ==2.0.*
   default-language: Haskell2010
 
 executable ISPChecker-exe
   main-is: Main.hs
   other-modules:
+      App
       Paths_ISPChecker
   autogen-modules:
       Paths_ISPChecker
@@ -80,9 +82,40 @@ executable ISPChecker-exe
       ISPChecker
     , base >=4.7 && <5
     , containers >=0.6.7
-    , megaparsec >=9.0
+    , megaparsec >=9.5
     , mtl >=2.3.1
-    , pretty-show
+    , pretty-show >=1.10
+    , scotty >=0.20
+    , text ==2.0.*
+  default-language: Haskell2010
+
+executable scotty-server-exe
+  main-is: App.hs
+  other-modules:
+      Main
+      Paths_ISPChecker
+  autogen-modules:
+      Paths_ISPChecker
+  hs-source-dirs:
+      app
+  default-extensions:
+      NoFieldSelectors
+      RecordWildCards
+      DuplicateRecordFields
+      FlexibleInstances
+      OverloadedStrings
+      OverloadedRecordDot
+      NamedFieldPuns
+      ExistentialQuantification
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints.md -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      ISPChecker
+    , base >=4.7 && <5
+    , containers >=0.6.7
+    , megaparsec >=9.5
+    , mtl >=2.3.1
+    , pretty-show >=1.10
+    , scotty >=0.20
     , text ==2.0.*
   default-language: Haskell2010
 
@@ -100,8 +133,9 @@ test-suite ISPChecker-test
       ISPChecker
     , base >=4.7 && <5
     , containers >=0.6.7
-    , megaparsec >=9.0
+    , megaparsec >=9.5
     , mtl >=2.3.1
-    , pretty-show
+    , pretty-show >=1.10
+    , scotty >=0.20
     , text ==2.0.*
   default-language: Haskell2010

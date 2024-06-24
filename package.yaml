@@ -22,10 +22,11 @@ description: Please see the README on GitHub at <https://github.com/githubuser/I
 dependencies:
   - base >= 4.7 && < 5
   - containers >= 0.6.7
-  - megaparsec >= 9.0
+  - megaparsec >= 9.5
   - text >= 2.0 && < 2.1
   - mtl >= 2.3.1
-  - pretty-show
+  - scotty >= 0.20
+  - pretty-show >= 1.10
 
 ghc-options:
   - -Wall
@@ -53,6 +54,24 @@ library:
 executables:
   ISPChecker-exe:
     main: Main.hs
+    source-dirs: app
+    default-extensions:
+      - NoFieldSelectors
+      - RecordWildCards
+      - DuplicateRecordFields
+      - FlexibleInstances
+      - OverloadedStrings
+      - OverloadedRecordDot
+      - NamedFieldPuns
+      - ExistentialQuantification
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - ISPChecker
+  scotty-server-exe:
+    main: App.hs
     source-dirs: app
     default-extensions:
       - NoFieldSelectors

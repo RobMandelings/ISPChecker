@@ -16,8 +16,7 @@ main = do
   args <- getArgs
   case args of
     [filePath] -> do
-      content <- T.readFile filePath
-      let res = Programs.runConstraintChecker filePath content
+      res <- Programs.runConstraintChecker filePath
       putStrLn $ ppShow res
 --          putStrLn $ ppShow $ Preparation.buildModule moduleData
 --          let redefinitions = DSLParser.checkRedefinitions moduleData in

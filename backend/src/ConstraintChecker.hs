@@ -217,9 +217,9 @@ checkConstraint (Constraints.SameYearConstraint code1 code2) = do
     let setsContainingBoth = filter (\s -> Set.member code1 s && Set.member code2 s) plannedPerYear in
       -- Either they are simply not included, or both are included in that year
       if (length setsContainingBoth == 1 || length setsContainingBoth == 0) then
-        lift Nothing -- TODO implement same year constraint
+        error "SameYear constraint is not implemented yet"
       else
-        lift Nothing -- TODO implement same year constraint
+        error "SameYear constraint is not implemented yet"
 
 getScope :: Module -> ISP -> Constraints.Scope
 getScope mod isp =

@@ -2,7 +2,7 @@ abc = Module {
     name: "Verdere optie",
     description: "Hellowkes",
     courses: [],
-    constraints: [MaxSP(10)],
+    constraints: [MaxSP(2)],
     modules: [
         Module {
             name: "Subonderdeel",

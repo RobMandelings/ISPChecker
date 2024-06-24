@@ -18,8 +18,7 @@ import qualified ISP as ISP
 import Debug.Trace
 import Text.Show.Pretty (ppShow)
 import GHC.Generics (Generic)
-import Data.Aeson
-import Data.Aeson.TH
+import qualified Data.Aeson as Aeson
 
 class ToBool a where
   toBool :: a -> Bool
@@ -31,8 +30,8 @@ data CCResult =
     subResults :: [CCResult]
   } deriving (Show, Generic)
 
-instance ToJSON CCResult where
-  toEncoding = genericToEncoding defaultOptions
+instance Aeson.ToJSON CCResult where
+  toEncoding = Aeson.genericToEncoding Aeson.defaultOptions
 
 instance ToBool CCResult where
   toBool CCSuccess = True

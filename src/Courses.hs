@@ -1,5 +1,8 @@
 module Courses where
 
+import qualified Data.Aeson as Aeson
+import GHC.Generics (Generic)
+
 data Status = Passed | Planned Int deriving (Show)
 
 type ISPCourse = (Course, Status)
@@ -7,14 +10,20 @@ type CourseCode = String
 
 --data Status = Finished | Planned Int
 
-data Period = FirstSem | SecondSem | AllYear deriving (Show, Eq, Ord)
+data Period = FirstSem | SecondSem | AllYear deriving (Show, Eq, Ord, Generic)
 data Course = Course
   { name :: String
   , code :: CourseCode
   , description :: String
   , period :: Period
   , studyPoints :: Int
-  } deriving (Show, Eq)
+  } deriving (Show, Eq, Generic)
+
+instance Aeson.ToJSON Course where
+  toEncoding = Aeson.genericToEncoding Aeson.defaultOptions
+
+instance Aeson.ToJSON Period where
+  toEncoding = Aeson.genericToEncoding Aeson.defaultOptions
 
 bedrijfskunde :: Course
 bedrijfskunde = Course

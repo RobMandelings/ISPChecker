@@ -4,13 +4,15 @@ import Courses
 import qualified Data.Map.Strict as Map -- TODO: should I use Map.Strict or Map.Lazy?
 import Data.Set (Set)
 import qualified Data.Set as Set
+import qualified Data.Aeson as Aeson
+import GHC.Generics (Generic)
 
 -- TODO What about more flexible ISP's where you can enter the year arbitrarily (for later)
 
 data CourseSelection = CourseSelection
   { passed :: Set CourseCode
   , planned :: [Set CourseCode]
-  } deriving (Show)
+  } deriving (Show, Generic)
 
 type OptionName = String
 type OptionValue = String
@@ -20,7 +22,14 @@ data ISP = ISP
   { courseSelection :: CourseSelection
   , studyProgram :: String
   , options :: ISPOptions -- Valid options are customised for each study program. For example, backgroundEducation or specialisation
-  } deriving (Show)
+  } deriving (Show, Generic)
+
+instance Aeson.ToJSON CourseSelection where
+  toEncoding = Aeson.genericToEncoding Aeson.defaultOptions
+
+instance Aeson.ToJSON ISP where
+  toEncoding = Aeson.genericToEncoding Aeson.defaultOptions
+
 
 getIncludedCourses :: ISP -> Set CourseCode
 getIncludedCourses isp =

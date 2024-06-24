@@ -22,6 +22,8 @@ import Data.Function (on)
 import Data.List (sortOn, groupBy)
 import qualified Constraints
 import GHC.TypeLits
+import qualified Data.Aeson as Aeson
+import GHC.Generics (Generic)
 
 
 -- Parsec is the core parser type in Megaparsec. Represents a parser that can consume input and produce a result.
@@ -29,6 +31,17 @@ import GHC.TypeLits
 -- Text: type of input the parser works on (string/bytestring/text)
 -- TODO difference Text and String?
 type Parser = Parsec Void Text
+
+data ParseObj = ISPObj ISP.ISP | ModuleObj StudyProgram.ModuleWRef | CourseObj Courses.Course deriving (Show)
+
+data ParseResult = ParseResult
+  { isps :: Map.Map String ISP.ISP
+  , modules :: Map.Map String StudyProgram.ModuleWRef
+  , courses :: Map.Map String Courses.Course
+  } deriving (Show, Generic)
+
+instance Aeson.ToJSON ParseResult where
+  toEncoding = Aeson.genericToEncoding Aeson.defaultOptions
 
 singleLineComment :: Parser ()
 singleLineComment = L.skipLineComment "//"
@@ -336,14 +349,6 @@ parseISP = parseObject "ISP" $ do
   , ISP.options = ispOptions
   , ISP.courseSelection = courseSel
   }
-
-data ParseObj = ISPObj ISP.ISP | ModuleObj StudyProgram.ModuleWRef | CourseObj Courses.Course deriving (Show)
-
-data ParseResult = ParseResult
-  { isps :: Map.Map String ISP.ISP
-  , modules :: Map.Map String StudyProgram.ModuleWRef
-  , courses :: Map.Map String Courses.Course
-  } deriving (Show)
 
 parseObjects :: Parser [(String, ParseObj)]
 parseObjects = do

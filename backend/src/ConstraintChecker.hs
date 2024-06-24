@@ -120,11 +120,10 @@ checkModule mod = do
     -- Produces all results. If at least one result returned Nothing, the binding fails and checkModule will return Nothing as well.
     subModuleResults <- mapM checkModule (mod.subModules)
     constraintResults <- mapM (\c -> checkConstraint (Constraints.ScopedConstraint c scope)) (mod.commonFields.constraints)
-    let allResults = subModuleResults ++ results
-    let isFail = Set.member False $ Set.fromList $ map toBool allResults
-    if isFail then
-      let errorMsg = pack $ "Module " ++ mod.commonFields.name ++ " voldoet niet aan vereisten." in
-        return $ ModuleFail { errorMsg, subModuleResults, constraintResults }
+    let subModuleFail = Set.member False $ Set.fromList $ map toBool subModuleResults
+    let constraintFail = Set.member False $ Set.fromList $ map toBool constraintResults
+    if subModuleFail || constraintFail then
+        return $ ModuleFail { subModuleResults, constraintResults }
     else
       return ModuleSuccess
     -- You provide a function that maps a result to a boolean. Then provide a list of results. You get a boolean if all the outcomes of the results are booleans.
@@ -244,5 +243,5 @@ filterISP isp scope =
     filteredPlanned = map (Set.intersection scope) planned in
       isp { ISP.courseSelection = ISP.CourseSelection { ISP.passed = filteredPassed, ISP.planned = filteredPlanned } }
 
-runCheckModule :: Module -> Env -> Maybe CCResult
+runCheckModule :: Module -> Env -> Maybe ModuleResult
 runCheckModule mod env = runReaderT (checkModule mod) env

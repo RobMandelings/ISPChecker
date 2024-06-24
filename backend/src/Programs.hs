@@ -20,7 +20,7 @@ module Programs where
       Left err -> error $ errorBundlePretty err
       Right parseRes -> return parseRes
 
-  runConstraintChecker :: String -> IO CC.CCResult
+  runConstraintChecker :: String -> IO CC.ModuleResult
   runConstraintChecker filePath = do
     parseRes <- parseDSL filePath
     case (Map.lookup "abc" parseRes.modules) of

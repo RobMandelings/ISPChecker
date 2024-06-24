@@ -28,6 +28,7 @@ dependencies:
   - scotty >= 0.20
   - pretty-show >= 1.10
   - aeson
+  - transformers
 
 ghc-options:
   - -Wall
@@ -51,6 +52,7 @@ library:
     - OverloadedRecordDot
     - NamedFieldPuns
     - ExistentialQuantification
+    - DeriveGeneric
 
 executables:
   ISPChecker-exe:
@@ -65,6 +67,7 @@ executables:
       - OverloadedRecordDot
       - NamedFieldPuns
       - ExistentialQuantification
+      - DeriveGeneric
     ghc-options:
       - -threaded
       - -rtsopts
@@ -83,6 +86,7 @@ executables:
       - OverloadedRecordDot
       - NamedFieldPuns
       - ExistentialQuantification
+      - DeriveGeneric
     ghc-options:
       - -threaded
       - -rtsopts

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveGeneric #-}
 -- Required to define the type of the instance inline instead of having to wrap it in a different type
 module ConstraintChecker where
 
@@ -16,6 +17,9 @@ import ISP (ISP)
 import qualified ISP as ISP
 import Debug.Trace
 import Text.Show.Pretty (ppShow)
+import GHC.Generics (Generic)
+import Data.Aeson
+import Data.Aeson.TH
 
 class ToBool a where
   toBool :: a -> Bool
@@ -25,7 +29,10 @@ data CCResult =
   CCFail {
     errorMsg :: Text,
     subResults :: [CCResult]
-  } deriving (Show)
+  } deriving (Show, Generic)
+
+instance ToJSON CCResult where
+  toEncoding = genericToEncoding defaultOptions
 
 instance ToBool CCResult where
   toBool CCSuccess = True

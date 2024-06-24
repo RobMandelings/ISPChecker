@@ -2,6 +2,7 @@ module Constraints where
 
 import Courses
 import qualified Data.Set as Set
+import Data.Text (Text)
 
 type Scope = Set.Set CourseCode
 
@@ -22,7 +23,8 @@ data Constraint =
   MaxSPConstraint Int |
   RemainingSPConstraint Int |
   SameYearConstraint CourseCode CourseCode |
-  ScopedConstraint Constraint Scope -- Nested constraint only applies to given scope
+  ScopedConstraint Constraint Scope | -- Nested constraint only applies to given scope
+  ModuleConstraint Text Constraint -- ModuleConstraint essentially wraps a constraint and adds a description for this constraint.
   deriving (Show)
 
 includedConstraint code = IncludedConstraint code

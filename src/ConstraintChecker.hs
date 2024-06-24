@@ -117,6 +117,10 @@ checkModule mod = do
   else return CCSuccess
 --
 checkConstraint :: Constraints.Constraint -> ConstraintChecker
+
+checkConstraint (Constraints.ModuleConstraint desc c) = do
+  checkConstraint c -- Description is irrelevant for constraint checking
+
 checkConstraint (Constraints.IncludedConstraint code) = do
   env <- ask
   let res = Set.member code $ ISP.getIncludedCourses env.isp

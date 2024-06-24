@@ -257,6 +257,13 @@ parseConstraint = do
   c <- choice [try parseBinaryConstraint, parseSimpleConstraint]
   return c
 
+parseModuleConstraint :: Parser Constraints.Constraint
+parseModuleConstraint = do
+  parseObject "ModuleConstraint" $ do
+    d <- parseField "description" $ T.pack <$> stringLiteral
+    c <- parseField "constraint" parseConstraint
+    return $ Constraints.ModuleConstraint d c
+
 parseModule :: Parser StudyProgram.ModuleWRef
 parseModule = do
   _ <- spaceConsumer
@@ -264,7 +271,7 @@ parseModule = do
     n <- parseName
     d <- optional parseDescription
     c <- optional $ parseListField "courses" identifier
-    constraints <- optional $ parseListField "constraints" parseConstraint
+    constraints <- optional $ parseListField "moduleConstraints" parseModuleConstraint
   --  a <- parseActivator
   --  cs <- optional parseConstraints
     subModules <- optional parseSubmodules

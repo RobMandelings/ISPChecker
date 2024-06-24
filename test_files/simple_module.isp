@@ -2,23 +2,25 @@ abc = Module {
     name: "Verdere optie",
     description: "Hellowkes",
     courses: [],
-    constraints: [MaxSP(2)],
-    modules: [
-        Module {
-            name: "Subonderdeel",
-            description: "Cool",
-            courses: [H04IOA],
-            constraints: [MaxSP(1)],
-            modules: [],
-        },
-        Module {
-            name: "Subonderdeel 2",
-            description: "Cool",
-            courses: [],
-//            constraints: [[H04IOA, H04IOB]: Some c -> MaxSP(5) AND NOT Included (H04IOA)],
-            constraints: [MaxSP(5) AND NOT Included (H04IOA)],
+    moduleConstraints: [
+        ModuleConstraint {
+            description: "Maximaal 1 studiepunt",
+            constraint: MaxSP(1),
         }
-    ],
+        ],
+//    modules: [
+//        Module {
+//            name: "Subonderdeel",
+//            description: "Cool",
+//            courses: [H04IOA],
+//            modules: [],
+//        },
+//        Module {
+//            name: "Subonderdeel 2",
+//            description: "Cool",
+//            courses: [],
+//        }
+//    ],
 }
 
 isp1 = ISP {

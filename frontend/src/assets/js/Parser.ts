@@ -1,6 +1,6 @@
-import {ModuleJSON} from "./Module"
+import {Module} from "./Module"
 
-function parseModule(jsonModule: Object): ModuleJSON {
+function parseModule(jsonModule: Object): Module {
     const commonFields = jsonModule["commonFields"];
     return {
         name: commonFields.name,

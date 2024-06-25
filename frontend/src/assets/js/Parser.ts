@@ -1,4 +1,4 @@
-import {Module} from "./Module"
+import {Module} from "./Structs"
 
 function parseModule(jsonModule: Object): Module {
     const commonFields = jsonModule["commonFields"];

@@ -34,6 +34,7 @@ enum Semester {
 export interface Course {
     code: string;
     name: string;
-    sp: number;
+    description: string;
+    studyPoints: number;
     semester: Semester;
 }

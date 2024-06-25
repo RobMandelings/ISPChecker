@@ -15,3 +15,20 @@ export interface ModuleConstraint {
     description: string;
     constraint: Constraint;
 }
+
+export interface CourseSelection {
+    passed: string[];
+    planned: string[][];
+}
+
+// Make the options customizable
+export interface ISPOptions {
+    background: string;
+    specialisation: string;
+}
+
+export interface ISP {
+    courseSelection: CourseSelection;
+    studyProgram: string;
+    options: ISPOptions;
+}

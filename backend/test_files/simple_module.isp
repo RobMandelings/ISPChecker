@@ -1,11 +1,11 @@
 abc = Module {
     name: "Verdere optie",
     description: "Hellowkes",
-    courses: [],
+    courses: [H04IOA],
     moduleConstraints: [
         ModuleConstraint {
             description: "Maximaal 1 studiepunt",
-            constraint: MaxSP(1) AND MinSP(1) OR NOT Included(H04IOB),
+            constraint: MaxSP(1),
         }
         ],
 //    modules: [

@@ -24,3 +24,16 @@ export interface ISP {
     studyProgram: string;
     options: { [key: string]: string };
 }
+
+enum Semester {
+    First = 1,
+    Second = 2,
+    AllYear = 3
+}
+
+export interface Course {
+    code: string;
+    name: string;
+    sp: number;
+    semester: Semester;
+}

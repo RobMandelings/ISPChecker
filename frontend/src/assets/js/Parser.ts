@@ -1,12 +1,13 @@
-import * as ModuleUtil from "./Module"
+import {ModuleJSON} from "./Module"
 
-function parseModule(jsonModule: Object): ModuleUtil.Module {
+function parseModule(jsonModule: Object): ModuleJSON {
     const commonFields = jsonModule["commonFields"];
-    return new ModuleUtil.Module(
-        commonFields.name,
-        commonFields.description,
-        commonFields.courses,
-        parseConstraints(jsonModule.constraints),
-        jsonModule.subModules.map(parseModule),
-        true);
+    return {
+        name: commonFields.name,
+        desc: commonFields.description,
+        courseCodes: commonFields.courses,
+        constraints: parseConstraints(jsonModule.constraints),
+        subModules: jsonModule.subModules.map(parseModule),
+        isActive: true
+    };
 }

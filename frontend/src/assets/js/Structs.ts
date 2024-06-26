@@ -5,16 +5,58 @@ export interface Module {
     name: string;
     desc: string;
     courseCodes: string[];
-    constraints: ModuleConstraint[];
+    moduleConstraints: ModuleConstraint[];
     subModules: Module[];
     isActive: boolean;
 }
+
+/**
+ * This is an example of a json object that can be parsed into a module
+ * {
+ *   "abc": {
+ *     "commonFields": {
+ *       "name": "Verdere optie",
+ *       "description": "Hellowkes",
+ *       "courses": [
+ *         "H04IOA"
+ *       ],
+ *       "constraints": [
+ *         {
+ *           "tag": "ModuleConstraint",
+ *           "contents": [
+ *             "Maximaal 1 studiepunt",
+ *             {
+ *               "tag": "MaxSPConstraint",
+ *               "contents": 1
+ *             }
+ *           ]
+ *         }
+ *       ],
+ *       "activator": "\"\u003CModuleActivator\u003E\""
+ *     },
+ *     "subModules": []
+ *   },
+ *   "hoi": {
+ *     "commonFields": {
+ *       "name": "Subonderdeel",
+ *       "description": "Cool",
+ *       "courses": [],
+ *       "constraints": [],
+ *       "activator": "\"\u003CModuleActivator\u003E\""
+ *     },
+ *     "subModules": []
+ *   }
+ * }
+ * @param json
+ */
 
 /** Not an actual constraint, just a constraint with a description attached */
 export interface ModuleConstraint {
     description: string;
     constraint: Constraint;
 }
+
+
 
 export interface ISP {
     courseSelection: {

@@ -30,13 +30,6 @@ data Constraint =
   ModuleConstraint Text Constraint -- ModuleConstraint essentially wraps a constraint and adds a description for this constraint.
   deriving (Show, Generic)
 
-includedConstraint code = IncludedConstraint code
-nandConstraint c1 c2 = NandConstraint c1 c2
-minSPConstraint sp = MinSPConstraint sp
-maxSPConstraint sp = MaxSPConstraint sp
-sameYearConstraint code1 code2 = SameYearConstraint code1 code2
-remainingSPConstraint sp = RemainingSPConstraint sp
-
 -- Derived constraints
 
 instance Aeson.ToJSON Constraint where

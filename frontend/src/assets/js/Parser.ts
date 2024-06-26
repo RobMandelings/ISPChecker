@@ -24,11 +24,11 @@ export function parseModuleConstraint(json: any): ModuleConstraint {
 export function parseConstraint(json: any): Constraints.Constraint {
 
     if (json.tag === "MaxSPConstraint") {
-        return new Constraints.MaxSPConstraint(json.contents[0]);
+        return new Constraints.MaxSPConstraint(json.contents);
     } else if (json.tag === "MinSPConstraint") {
-        return new Constraints.MinSPConstraint(json.contents[0]);
+        return new Constraints.MinSPConstraint(json.contents);
     } else if (json.tag === "IncludedCourseConstraint") {
-        return new Constraints.IncludedCourseConstraint(json.contents[0]);
+        return new Constraints.IncludedCourseConstraint(json.contents);
     } else if (["OrConstraint", "NorConstraint", "XorConstraint", "AndConstraint", "NandConstraint"].includes(json.tag)) {
         let type = null;
         switch (json.tag) {
@@ -53,7 +53,7 @@ export function parseConstraint(json: any): Constraints.Constraint {
         return new type(...json.contents.map(parseConstraint));
 
     } else if (json.tag === "notConstraint") {
-        return new Constraints.NotConstraint(parseConstraint(json.contents[0]));
+        return new Constraints.NotConstraint(parseConstraint(json.contents));
     } else {
         throw new Error("Unknown constraint type: " + json.tag);
     }

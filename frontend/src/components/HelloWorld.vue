@@ -43,7 +43,7 @@ const test = ref(module.value);
 
 <template>
   <h1>{{ msg }}</h1>
-  <Module></Module>
+  <Module :module-data="module"></Module>
 
   <div class="card">
     <button type="button" @click="count++">count is {{ count }}</button>

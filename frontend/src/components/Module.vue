@@ -13,6 +13,10 @@ const props = defineProps({
 </script>
 
 <template>
+  <div class="bg-amber-500">
+    {{ moduleData }}
+  </div>
+
 
 </template>
 

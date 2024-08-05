@@ -1,5 +1,5 @@
 <script setup>
-import Module from './Module.vue'
+import Module from './ModuleOverview.vue'
 
 import {ref} from 'vue'
 

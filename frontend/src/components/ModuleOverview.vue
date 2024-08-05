@@ -1,20 +1,14 @@
 <script setup lang="ts">
 
-import {Module} from '../assets/js/Structs'
+import * as Structs from '../assets/js/Structs'
 import {PropType} from 'vue'
-import {onMounted} from 'vue'
-import {initFlowbite} from 'flowbite'
 import {FwbAccordion, FwbAccordionHeader, FwbAccordionPanel, FwbAccordionContent, FwbTooltip} from 'flowbite-vue';
 
 const props = defineProps({
   moduleData: {
-    type: Object as PropType<Module>,
+    type: Object as PropType<Structs.Module>,
     required: true
   },
-})
-
-onMounted(() => {
-  initFlowbite();
 })
 
 </script>
@@ -55,7 +49,7 @@ onMounted(() => {
             </div>
             <div class="flex flex-col items-start p-1">
               <div v-for="subModule in moduleData.subModules">
-                <module :module-data="subModule"></module>
+                <ModuleOverview :module-data="subModule"></ModuleOverview>
               </div>
             </div>
           </div>

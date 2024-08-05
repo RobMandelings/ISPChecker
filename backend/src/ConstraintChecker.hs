@@ -20,9 +20,13 @@ import Text.Show.Pretty (ppShow)
 import GHC.Generics (Generic)
 import qualified Data.Aeson as Aeson
 
+-- | ToBool typeclass is used to convert a type to a boolean value
 class ToBool a where
   toBool :: a -> Bool
 
+-- | ConstraintResult is used to store the result of a constraint check
+-- Either successful, no extra information is needed
+-- Or failed, in which case the error message and sub constraint results are stored
 data ConstraintResult =
   ConstraintSuccess |
   ConstraintFail {
@@ -30,12 +34,16 @@ data ConstraintResult =
     subResults :: [ConstraintResult]
   } deriving (Show, Generic)
 
+-- | ModuleResult is used to store the result of a module check
+-- Either successful, no extra information is needed
+-- Or failed, in which case the constraint results and sub module results are stored
 data ModuleResult =
   ModuleSuccess |
   ModuleFail {
     constraintResults :: [ConstraintResult],
     subModuleResults :: [ModuleResult]
   } deriving (Show, Generic)
+
 
 instance Aeson.ToJSON ConstraintResult where
   toEncoding = Aeson.genericToEncoding Aeson.defaultOptions

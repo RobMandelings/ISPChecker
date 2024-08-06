@@ -65,7 +65,7 @@ const test = ref(module.value);
 </script>
 
 <template>
-  <div>
+  <div style="width: 800px">
     <ModuleOverview v-if="module" :module-data="module" :courses="courses"></ModuleOverview>
   </div>
 </template>

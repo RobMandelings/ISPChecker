@@ -6,8 +6,9 @@ module Programs where
   import Data.Void (Void)
   import qualified Data.Text.IO as T
   import qualified DSLParser
-  import qualified Preparation
+
   import qualified Data.Map as Map
+  import qualified Data.Map.Strict as StrictMap
   import Control.Monad.Reader
   import qualified ConstraintChecker as CC
   import qualified ISP
@@ -18,14 +19,14 @@ module Programs where
     let result = parse DSLParser.parse filePath content
     case result of
       Left err -> error $ errorBundlePretty err
-      Right parseRes -> return parseRes
+      Right parseRes ->
+        return parseRes
 
   runConstraintChecker :: String -> IO CC.ModuleResult
   runConstraintChecker filePath = do
     parseRes <- parseDSL filePath
     case (Map.lookup "abc" parseRes.modules) of
-      Just modWRef ->
-        let mod = runReader (Preparation.buildModule modWRef) $ Preparation.Env { modMap = parseRes.modules } in
+      Just mod ->
         let courseStore = CC.createMapCourseStore $ parseRes.courses in
           case (Map.lookup "isp1" parseRes.isps) of
             Just isp ->

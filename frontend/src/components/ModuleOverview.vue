@@ -18,8 +18,8 @@ const props = defineProps({
 </script>
 
 <template>
-  <div v-if="moduleData" style="width: 800px;">
-    <fwb-accordion style="width: 100%">
+  <div v-if="moduleData" class="w-full">
+    <fwb-accordion>
       <fwb-accordion-panel>
         <fwb-accordion-header>
           <div class="flex flex-row justify-between">
@@ -71,7 +71,7 @@ const props = defineProps({
               </div>
             </div>
             <div class="flex flex-col items-start p-1">
-              <div v-for="subModule in moduleData.subModules">
+              <div v-for="subModule in moduleData.subModules" class="w-full">
                 <ModuleOverview :module-data="subModule" :courses="courses"></ModuleOverview>
               </div>
             </div>

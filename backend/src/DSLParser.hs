@@ -24,7 +24,8 @@ import qualified Constraints
 import GHC.TypeLits
 import qualified Data.Aeson as Aeson
 import GHC.Generics (Generic)
-
+import qualified Preparation
+import Control.Monad.Reader
 
 -- Parsec is the core parser type in Megaparsec. Represents a parser that can consume input and produce a result.
 -- Void: error type (don't care about custom error information; TODO later)
@@ -36,7 +37,7 @@ data ParseObj = ISPObj ISP.ISP | ModuleObj StudyProgram.ModuleWRef | CourseObj C
 
 data ParseResult = ParseResult
   { isps :: Map.Map String ISP.ISP
-  , modules :: Map.Map String StudyProgram.ModuleWRef
+  , modules :: Map.Map String StudyProgram.Module
   , courses :: Map.Map String Courses.Course
   } deriving (Show, Generic)
 
@@ -374,10 +375,11 @@ createParseResultFromObjs objs =
                                         ISPObj obj -> ((n, obj) : acc)
                                         _ -> acc
                                         ) [] objs in
-  let modules = Map.fromList $ foldr (\(n, obj) acc -> case obj of
+  let modulesWRef = Map.fromList $ foldr (\(n, obj) acc -> case obj of
                                         ModuleObj obj -> ((n, obj) : acc)
                                         _ -> acc
                                         ) [] objs in
+  let modules = runReader (Preparation.buildModules modulesWRef) $ Preparation.Env { modMap = modulesWRef } in
   let courses = Map.fromList $ foldr (\(n, obj) acc -> case obj of
                                         CourseObj obj -> ((n, obj) : acc)
                                         _ -> acc

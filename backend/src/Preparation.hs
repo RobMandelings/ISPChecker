@@ -28,3 +28,9 @@ module Preparation where
     env <- ask
     subModules <- mapM (getModule >=> buildModule) mod.subModules
     return $ StudyProgram.Module { commonFields = mod.commonFields, subModules }
+
+  buildModules :: Map.Map String StudyProgram.ModuleWRef -> Reader Env (Map.Map String StudyProgram.Module)
+  buildModules modMap = do
+    env <- ask
+    let mods = Map.mapWithKey (\name modWRef -> runReader (buildModule modWRef) env) modMap
+    return mods

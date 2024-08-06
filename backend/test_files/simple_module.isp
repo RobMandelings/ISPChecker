@@ -8,19 +8,19 @@ abc = Module {
             constraint: MaxSP(1),
         }
         ],
-//    modules: [
-//        Module {
-//            name: "Subonderdeel",
-//            description: "Cool",
-//            courses: [H04IOA],
-//            modules: [],
-//        },
-//        Module {
-//            name: "Subonderdeel 2",
-//            description: "Cool",
-//            courses: [],
-//        }
-//    ],
+    modules: [
+        Module {
+            name: "Subonderdeel",
+            description: "Cool",
+            courses: [H04IOA],
+            modules: [],
+        },
+        Module {
+            name: "Subonderdeel 2",
+            description: "Cool",
+            courses: [],
+        }
+    ],
 }
 
 isp1 = ISP {

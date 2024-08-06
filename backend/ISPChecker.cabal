@@ -61,6 +61,8 @@ library
     , scotty >=0.20
     , text ==2.0.*
     , transformers
+    , wai >=3.2.4
+    , wai-cors >=0.2.7
   default-language: Haskell2010
 
 executable ISPChecker-exe
@@ -93,6 +95,8 @@ executable ISPChecker-exe
     , scotty >=0.20
     , text ==2.0.*
     , transformers
+    , wai >=3.2.4
+    , wai-cors >=0.2.7
   default-language: Haskell2010
 
 executable scotty-server-exe
@@ -125,6 +129,8 @@ executable scotty-server-exe
     , scotty >=0.20
     , text ==2.0.*
     , transformers
+    , wai >=3.2.4
+    , wai-cors >=0.2.7
   default-language: Haskell2010
 
 test-suite ISPChecker-test
@@ -148,4 +154,6 @@ test-suite ISPChecker-test
     , scotty >=0.20
     , text ==2.0.*
     , transformers
+    , wai >=3.2.4
+    , wai-cors >=0.2.7
   default-language: Haskell2010

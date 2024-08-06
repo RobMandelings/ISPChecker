@@ -7,10 +7,14 @@ module Main where
   import DSLParser
   import qualified Data.Map as Map
   import qualified Courses
+  import Network.Wai (Middleware)
+  import Network.Wai.Middleware.Cors (simpleCors, cors, CorsResourcePolicy(..))
+
 
 
   main :: IO ()
   main = scotty 3000 $ do
+    middleware simpleCors
     get "/run" $ do
       res <- lift $ Programs.runConstraintChecker "test_files/simple_module.isp"
       json res

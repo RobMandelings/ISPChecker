@@ -4,6 +4,7 @@ import * as Structs from '../assets/js/Structs'
 import {PropType} from 'vue'
 import {FwbAccordion, FwbAccordionHeader, FwbAccordionPanel, FwbAccordionContent, FwbTooltip} from 'flowbite-vue';
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import ConstraintResult from "./ConstraintResult.vue";
 
 const props = defineProps({
   moduleData: {
@@ -18,6 +19,9 @@ const props = defineProps({
     type: Object,
   }
 })
+
+const successColor = 'green-500';
+const failColor = 'red-500';
 
 </script>
 
@@ -36,7 +40,15 @@ const props = defineProps({
                   {{ moduleData.desc }}
                 </template>
               </fwb-tooltip>
-              <div>{{ moduleData.name }}</div>
+              <div v-if="checkResult">
+                <div :class="checkResult.failed ? `text-${failColor}` : `text-${successColor}`"> {{
+                    moduleData.name
+                  }}
+                </div>
+              </div>
+              <div v-else>
+                {{ moduleData.name }}
+              </div>
             </div>
             <div class="flex flex-row">
               Hello
@@ -46,8 +58,25 @@ const props = defineProps({
         <fwb-accordion-content>
           <div class="divide-y divide-dashed">
             <div class="flex flex-col items-start p-1">
-              <div v-for="mConstraint in moduleData.moduleConstraints">
-                {{ mConstraint.description }}
+              <div v-for="(mConstraint, i) in moduleData.moduleConstraints">
+                <div v-if="checkResult">
+                  <template v-if="checkResult.failed && checkResult.constraintResults[i].failed">
+                    <fwb-tooltip>
+                      <template #trigger>
+                        <div :class="`text-${failColor}`"> {{ mConstraint.description }}</div>
+                      </template>
+                      <template #content>
+                        <ConstraintResult :constraint-result="checkResult.constraintResults[i]"></ConstraintResult>
+                      </template>
+                    </fwb-tooltip>
+                  </template>
+                  <template v-else>
+                    <div :class="`text-${successColor}`"> {{ mConstraint.description }}</div>
+                  </template>
+                </div>
+                <div v-else>
+                  {{ mConstraint.description }}
+                </div>
               </div>
             </div>
             <div class="flex flex-col items-start p-1">
@@ -79,8 +108,9 @@ const props = defineProps({
               </div>
             </div>
             <div class="flex flex-col items-start p-1">
-              <div v-for="subModule in moduleData.subModules" class="w-full">
-                <ModuleOverview :module-data="subModule" :courses="courses"></ModuleOverview>
+              <div v-for="(subModule, i) in moduleData.subModules" class="w-full">
+                <ModuleOverview :module-data="subModule" :courses="courses"
+                                :checkResult="checkResult.subModuleResults[i]"></ModuleOverview>
               </div>
             </div>
           </div>

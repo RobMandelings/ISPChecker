@@ -70,7 +70,8 @@ const test = ref(module.value);
 
 <template>
   <div style="width: 800px">
-    <ModuleOverview v-if="module" :module-data="module" :courses="courses"></ModuleOverview>
+    <ModuleOverview v-if="module" :module-data="module" :courses="courses"
+                    :check-result="constraintResult"></ModuleOverview>
   </div>
 </template>
 

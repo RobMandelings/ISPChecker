@@ -1,7 +1,7 @@
 <script setup>
 import Module from './ModuleOverview.vue'
 
-import {ref} from 'vue'
+import {ref, onMounted} from 'vue'
 
 import * as Parser from "../assets/js/Parser"
 import * as Structs from "../assets/js/Structs"
@@ -31,6 +31,12 @@ const mod = {
 }
 
 const module = ref(Parser.parseModule(mod));
+
+const courses = ref([]);
+
+onMounted(() => {
+  
+})
 
 defineProps({
   msg: String,

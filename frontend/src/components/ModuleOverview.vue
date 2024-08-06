@@ -9,12 +9,16 @@ const props = defineProps({
     type: Object as PropType<Structs.Module>,
     required: true
   },
+  courses: {
+    type: Object as PropType<Structs.Course[]>,
+    required: true
+  },
 })
 
 </script>
 
 <template>
-  <div style="width: 600px;">
+  <div v-if="moduleData" style="width: 800px;">
     <fwb-accordion style="width: 100%">
       <fwb-accordion-panel>
         <fwb-accordion-header>
@@ -43,13 +47,32 @@ const props = defineProps({
               </div>
             </div>
             <div class="flex flex-col items-start p-1">
-              <div v-for="courseCode in moduleData.courseCodes">
-                {{ courseCode }}
+              <div v-for="courseCode in moduleData.courseCodes" class="w-full">
+                <div class="flex flex-row justify-between">
+                  <div class="flex flex-row">
+                    <fwb-tooltip v-if="courses[courseCode].description">
+                      <template #trigger>
+                        <font-awesome-icon :icon="['fas', 'question-circle']"/>
+                      </template>
+                      <template #content>
+                        {{ courses[courseCode].description }}
+                      </template>
+                    </fwb-tooltip>
+                    <div class="flex flex-row space-x-3">
+                      <div class="font-bold">{{ courses[courseCode].code }}</div>
+                      <div>{{ courses[courseCode].name }}</div>
+                    </div>
+                  </div>
+                  <div class="flex flex-row space-x-2">
+                    <div>{{ courses[courseCode].studyPoints }}SP</div>
+                    <div>{{ courses[courseCode].period }}</div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="flex flex-col items-start p-1">
               <div v-for="subModule in moduleData.subModules">
-                <ModuleOverview :module-data="subModule"></ModuleOverview>
+                <ModuleOverview :module-data="subModule" :courses="courses"></ModuleOverview>
               </div>
             </div>
           </div>

@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
-    "strict": true,
-    "target": "ES2015",
+    //    "strict": true,
+    "target": "ESNext",
     // or "ESNext" for the latest features
     "module": "commonjs"
     // or "ESNext" depending on your module system
     // ...other options
   },
   "lib": [
-    "ES2015"
+    "ES2015",
+    "ES2019",
+    "ES2023"
   ]
 }

@@ -1,6 +1,15 @@
-import {ConstraintResult, Course, Module, ModuleConstraint, ModuleConstraintResult} from "./Structs"
+import {ConstraintResult, Course, ISP, Module, ModuleConstraint, ModuleConstraintResult} from "./Structs"
 import * as Constraints from "./Constraints";
 import {Constraint} from "./Constraints";
+
+export function parseISP(json: any): ISP {
+
+    return {
+        courseSelection: json.courseSelection,
+        studyProgram: json.studyProgram,
+        options: json.options
+    }
+}
 
 function parseConstraintResult(json: any): ConstraintResult {
     const failed = json.tag === "ConstraintFail"

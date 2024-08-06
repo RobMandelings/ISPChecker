@@ -110,7 +110,7 @@ const failColor = 'red-500';
             <div class="flex flex-col items-start p-1">
               <div v-for="(subModule, i) in moduleData.subModules" class="w-full">
                 <ModuleOverview :module-data="subModule" :courses="courses"
-                                :checkResult="checkResult.subModuleResults[i]"></ModuleOverview>
+                                :checkResult="!checkResult ? checkResult : (checkResult.failed ? checkResult.subModuleResults[i] : checkResult)"></ModuleOverview>
               </div>
             </div>
           </div>

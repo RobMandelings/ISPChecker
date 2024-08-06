@@ -6,39 +6,17 @@ import {computed, onMounted, ref} from 'vue'
 import * as Parser from "../assets/js/Parser"
 import * as Structs from "../assets/js/Structs"
 import axios from "axios";
-//
-// const mod = {
-//   "commonFields": {
-//     "name": "Verdere optie",
-//     "description": "Hellowkes",
-//     "courses": [
-//       "H04IOA"
-//     ],
-//     "constraints": [
-//       {
-//         "tag": "ModuleConstraint",
-//         "contents": [
-//           "Maximaal 1 studiepunt",
-//           {
-//             "tag": "MaxSPConstraint",
-//             "contents": 1
-//           }
-//         ]
-//       }
-//     ],
-//     "activator": "\"\u003CModuleActivator\u003E\""
-//   },
-//   "subModules": []
-// }
 
 const mods = ref<Record<string, Structs.Module>>({});
-
 const module = computed(() => mods.value?.["abc"]);
 
-const constraintResult = ref<Structs.ModuleConstraintResult>({})
+const constraintResult = ref<Structs.ModuleConstraintResult>()
 
 // const module = ref(Parser.parseModule(mod));
 const courses = ref<Record<string, Structs.Course>>({});
+
+const isps = ref<Record<string, Structs.ISP>>();
+const isp = computed(() => isps.value?.["isp1"]);
 
 const loadData = async () => {
   const courseRes = await axios.get('http://localhost:3000/res/courses');
@@ -50,6 +28,10 @@ const loadData = async () => {
   const runRes = await axios.get('http://localhost:3000/run');
   const runJson = runRes.data;
   constraintResult.value = Parser.parseModuleConstraintResult(runJson);
+
+  const ispRes = (await axios.get('http://localhost:3000/res/isps')).data;
+  isp.value = Object.fromEntries(Object.entries(ispRes).map(([key, val]) => [key, Parser.parseISP(val)]));
+
 }
 
 
@@ -69,9 +51,14 @@ const test = ref(module.value);
 </script>
 
 <template>
-  <div style="width: 800px">
-    <ModuleOverview v-if="module" :module-data="module" :courses="courses"
-                    :check-result="constraintResult"></ModuleOverview>
+  <div class="flex flex-row justify-between">
+    <div style="width: 800px">
+      <ModuleOverview v-if="module" :module-data="module" :courses="courses"
+                      :check-result="constraintResult"></ModuleOverview>
+    </div>
+    <div style="width: 500px">
+
+    </div>
   </div>
 </template>
 

@@ -1,6 +1,29 @@
-import {Course, Module, ModuleConstraint} from "./Structs"
+import {ConstraintResult, Course, Module, ModuleConstraint, ModuleConstraintResult} from "./Structs"
 import * as Constraints from "./Constraints";
 import {Constraint} from "./Constraints";
+
+function parseConstraintResult(json: any): ConstraintResult {
+    const failed = json.tag === "ConstraintFail"
+    const errorMsg = failed ? json.errorMsg : null;
+    const subResults = failed ? json.subResults.map(parseConstraintResult) : null;
+
+    return {
+        failed: failed,
+        errorMsg: errorMsg,
+        subResults: subResults
+    }
+}
+
+export function parseModuleConstraintResult(json: any): ModuleConstraintResult {
+    const failed = json.tag === "ModuleFail"
+    const constraintResults = failed ? json.constraintResults.map(parseConstraintResult) : null;
+    const subModuleResults = failed ? json.subModuleResults.map(parseModuleConstraintResult) : null
+    return {
+        failed: failed,
+        constraintResults: constraintResults,
+        subModuleResults: subModuleResults
+    }
+}
 
 export function parseModule(json: any): Module {
 

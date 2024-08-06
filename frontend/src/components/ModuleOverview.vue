@@ -14,14 +14,10 @@ const props = defineProps({
     type: Object as PropType<Record<string, Structs.Course>>,
     required: true
   },
+  checkResult: {
+    type: Object,
+  }
 })
-
-const sem = (course: Structs.Course) => {
-  if (course.period === "FirstSem") return 1;
-  else if (course.period === "SecondSem") return 2;
-  else if (course.period === "AllYear") return 3;
-  else throw new Error("Couldn't convert course to sem");
-}
 
 </script>
 

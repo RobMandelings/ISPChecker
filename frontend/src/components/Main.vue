@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import Module from './ModuleOverview.vue'
+import ModuleOverview from './ModuleOverview.vue'
 
-import {ref, onMounted, computed} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 
 import * as Parser from "../assets/js/Parser"
 import * as Structs from "../assets/js/Structs"
 import axios from "axios";
-import ModuleOverview from "./ModuleOverview.vue";
 //
 // const mod = {
 //   "commonFields": {
@@ -36,6 +35,8 @@ const mods = ref<Record<string, Structs.Module>>({});
 
 const module = computed(() => mods.value?.["abc"]);
 
+const constraintResult = ref<Structs.ModuleConstraintResult>({})
+
 // const module = ref(Parser.parseModule(mod));
 const courses = ref<Record<string, Structs.Course>>({});
 
@@ -45,6 +46,10 @@ const loadData = async () => {
 
   const modsRes = await axios.get('http://localhost:3000/res/mods');
   mods.value = Object.fromEntries(Object.entries(modsRes.data).map(([key, val]) => [key, Parser.parseModule(val)]));
+
+  const runRes = await axios.get('http://localhost:3000/run');
+  const runJson = runRes.data;
+  constraintResult.value = Parser.parseModuleConstraintResult(runJson);
 }
 
 

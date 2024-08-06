@@ -56,8 +56,6 @@ export interface ModuleConstraint {
     constraint: Constraint;
 }
 
-
-
 export interface ISP {
     courseSelection: {
         passed: string[],
@@ -79,4 +77,16 @@ export interface Course {
     description: string;
     studyPoints: number;
     semester: Semester;
+}
+
+export interface ConstraintResult {
+    failed: boolean,
+    errorMsg: string,
+    subResults: ConstraintResult[]
+}
+
+export interface ModuleConstraintResult {
+    failed: boolean,
+    constraintResults: ConstraintResult[]
+    subModuleResults: ModuleConstraintResult[]
 }

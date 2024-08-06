@@ -3,6 +3,7 @@
 import * as Structs from '../assets/js/Structs'
 import {PropType} from 'vue'
 import {FwbAccordion, FwbAccordionHeader, FwbAccordionPanel, FwbAccordionContent, FwbTooltip} from 'flowbite-vue';
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 const props = defineProps({
   moduleData: {
@@ -10,10 +11,17 @@ const props = defineProps({
     required: true
   },
   courses: {
-    type: Object as PropType<Structs.Course[]>,
+    type: Object as PropType<Record<string, Structs.Course>>,
     required: true
   },
 })
+
+const sem = (course: Structs.Course) => {
+  if (course.period === "FirstSem") return 1;
+  else if (course.period === "SecondSem") return 2;
+  else if (course.period === "AllYear") return 3;
+  else throw new Error("Couldn't convert course to sem");
+}
 
 </script>
 
@@ -65,7 +73,11 @@ const props = defineProps({
                   </div>
                   <div class="flex flex-row space-x-2">
                     <div>{{ courses[courseCode].studyPoints }}SP</div>
-                    <div>{{ courses[courseCode].period }}</div>
+                    <div>
+                      <div v-if="courses[courseCode].semester == 1">1</div>
+                      <div v-if="courses[courseCode].semester == 2">2</div>
+                      <div v-if="courses[courseCode].semester == 2">3</div>
+                    </div>
                   </div>
                 </div>
               </div>

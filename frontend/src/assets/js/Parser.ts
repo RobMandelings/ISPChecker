@@ -1,4 +1,4 @@
-import {Module, ModuleConstraint} from "./Structs"
+import {Course, Module, ModuleConstraint} from "./Structs"
 import * as Constraints from "./Constraints";
 import {Constraint} from "./Constraints";
 
@@ -12,6 +12,28 @@ export function parseModule(json: any): Module {
         subModules: json.subModules.map(parseModule),
         isActive: false
     };
+}
+
+export function parseCourse(json: any): Course {
+    let semester = null;
+    switch (json.period) {
+        case "FirstSem":
+            semester = 1;
+            break;
+        case "SecondSem":
+            semester = 2;
+            break;
+        case "AllYear":
+            semester = 3;
+            break;
+    }
+    return {
+        code: json.code,
+        name: json.name,
+        description: json.description,
+        studyPoints: json.studyPoints,
+        semester: semester
+    }
 }
 
 export function parseModuleConstraint(json: any): ModuleConstraint {

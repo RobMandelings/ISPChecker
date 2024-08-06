@@ -37,12 +37,11 @@ const mods = ref<Record<string, Structs.Module>>({});
 const module = computed(() => mods.value?.["abc"]);
 
 // const module = ref(Parser.parseModule(mod));
-const courses = ref<Structs.Course[]>([]);
-
+const courses = ref<Record<string, Structs.Course>>({});
 
 const loadData = async () => {
   const courseRes = await axios.get('http://localhost:3000/res/courses');
-  courses.value = courseRes.data;
+  courses.value = Object.fromEntries(Object.entries(courseRes.data).map(([key, val]) => [key, Parser.parseCourse(val)]));
 
   const modsRes = await axios.get('http://localhost:3000/res/mods');
   mods.value = Object.fromEntries(Object.entries(modsRes.data).map(([key, val]) => [key, Parser.parseModule(val)]));

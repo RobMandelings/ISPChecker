@@ -15,6 +15,12 @@ const props = defineProps({
 <template>
   <div class="border text-left">
     <div class="text-3xl">ISP</div>
+    <div class="text-2xl">Study Program</div>
+    <div>{{ isp.studyProgram }}</div>
+    <div class="text-2xl">Options</div>
+    <div v-for="option in Object.entries(isp.options)">
+      {{option[0]}}: {{ option[1] }}
+    </div>
     <div class="text-2xl">Course selection</div>
     <div class="text-xl font-bold">Passed</div>
     <div v-if="isp.courseSelection.passed.length" class="border overflow-auto text-green-500"

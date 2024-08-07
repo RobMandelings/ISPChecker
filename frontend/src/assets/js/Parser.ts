@@ -81,7 +81,7 @@ export function parseConstraint(json: any): Constraints.Constraint {
         return new Constraints.MaxSPConstraint(json.contents);
     } else if (json.tag === "MinSPConstraint") {
         return new Constraints.MinSPConstraint(json.contents);
-    } else if (json.tag === "IncludedCourseConstraint") {
+    } else if (json.tag === "IncludedConstraint") {
         return new Constraints.IncludedCourseConstraint(json.contents);
     } else if (["OrConstraint", "NorConstraint", "XorConstraint", "AndConstraint", "NandConstraint"].includes(json.tag)) {
         let type = null;

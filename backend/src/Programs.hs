@@ -36,3 +36,4 @@ module Programs where
                   Just r -> return r
                   Nothing -> error "Failed to run the module check"
             Nothing -> error "no isp with this name found"
+      Nothing -> error "no module found"

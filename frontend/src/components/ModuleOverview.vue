@@ -100,8 +100,8 @@ const failColor = 'red-500';
                     <div>{{ courses[courseCode].studyPoints }}SP</div>
                     <div>
                       <div v-if="courses[courseCode].semester == 1">1</div>
-                      <div v-if="courses[courseCode].semester == 2">2</div>
-                      <div v-if="courses[courseCode].semester == 2">3</div>
+                      <div v-else-if="courses[courseCode].semester == 2">2</div>
+                      <div v-else-if="courses[courseCode].semester == 3">3</div>
                     </div>
                   </div>
                 </div>

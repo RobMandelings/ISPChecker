@@ -14,17 +14,139 @@ ING_CS = Module {
             description: "Studenten nemen verplicht elk opleidingsonderdeel op, waarvan de behandelde materie niet aan bod kwam in voorafgaande opleidingen.",
             courses: [],
             modules: [
-//                Module {
-//                    name: "Bachelor verbredend pakket voor studenten met een bachelor in de ingenieurswetenschappen: computerwetenschappen",
-//                    description: "",
-//
-//                }
+                Module {
+                    name: "Bachelor verbredend pakket voor studenten met een bachelor in de ingenieurswetenschappen: computerwetenschappen",
+                    description: "",
+                    courses: [H04H5B, H04J9B, H0O07A, H04H0B],
+                },
+                Module {
+                    name: "Bachelor verbredend pakket voor studenten met een bachelor informatica",
+                    description: "",
+                    courses: [H01F2A, G0Q57A, H01L1A],
+                }
             ],
         },
         Module {
-            name: "Subonderdeel 2",
+            name: "Verplicht deel",
             description: "Cool",
-            courses: [],
+            courses: [H04I4A, H0E96A, G0B23A, H09B5B, H04L5A],
+        },
+        Module {
+            name: "Hoofdoptie",
+            description: "De student kiest 1 van de 6 mogelijke opties",
+            modules: [
+                Module {
+                    name: "Hoofdoptie gedistribueerde systemen",
+                    description: "",
+                    modules: [
+                        Module {
+                            name: "Plichtgedeelte",
+                            description: "Hey how",
+                            courses: [H04I0A, G0K31B, H04G7A],
+                        },
+                        Module {
+                            name: "Keuzegedeelte",
+                            description: "",
+                            courses: [H04L2A, H04G4A, H0A12A],
+                        }
+                    ],
+                },
+                Module {
+                    name: "Hoofdoptie veilige software",
+                    description: "",
+                    modules: [
+                        Module {
+                            name: "Plichtgedeelte",
+                            description: "",
+                            courses: [H04K5A, H04G4A, H05M8B],
+                        },
+                        Module {
+                            name: "Keuzegedeelte",
+                            description: "",
+                            courses: [H04L2A, G0K32A, H04H8B, H0Q31A, H04I0A, G0K31B, H05D9A, H0A12A],
+                        }
+                    ],
+                },
+                Module {
+                    name: "Hoofdoptie artificiele intelligentie",
+                    description: "",
+                    modules: [
+                        Module {
+                            name: "Plichtgedeelte",
+                            description: "",
+                            courses: [H02C6A, H0T25A, H05N0A],
+                        },
+                        Module {
+                            name: "Keuzegedeelte",
+                            description: "",
+                            courses: [H02D1A, H02A3A, H02C3A, H02C8B, H00Y4A],
+                        }
+                    ],
+                },
+                Module {
+                    name: "Hoofdoptie software engineering",
+                    description: "",
+                    modules: [
+                        Module {
+                            name: "Plichtgedeelte",
+                            description: "",
+                            courses: [G0K32A, G0L15B, H0A12A],
+                        },
+                        Module {
+                            name: "Keuzegedeelte",
+                            description: "",
+                            courses: [H04L2A, H04H8B, H04K5A, G0K31B],
+                        }
+                    ],
+                },
+                Module {
+                    name: "Hoofdoptie mens-machinecommunicatie",
+                    description: "",
+                    modules: [
+                        Module {
+                            name: "Plichtgedeelte",
+                            description: "",
+                            courses: [G0Q55A, G0Q66D, H0O60A],
+                        },
+                        Module {
+                            name: "Keuzegedeelte",
+                            description: "",
+                            courses: [G0B36A, H09J2A, H04I2A, H02C8B, H0O61A],
+                        }
+                    ],
+                },
+                Module {
+                    name: "Hoofdoptie computationele informatica",
+                    description: "",
+                    modules: [
+                        Module {
+                            name: "Plichtgedeelte",
+                            description: "",
+                            courses: [H03F9A, G0Q63B, H03F0B],
+                        },
+                        Module {
+                            name: "Keuzegedeelte",
+                            description: "",
+                            courses: [H01G1A, H03F7A, H02D1A],
+                        }
+                    ],
+                }
+            ],
+        },
+        Module {
+            name: "Verdere optie",
+            description: "",
+            courses: [A04D5A, A08C4A, H05U5A, H05U6A, H04G9B, H04I9A, H04K9A, H05U7A],
+        },
+        Module {
+            name: "Masterproef",
+            description: "",
+            courses: [H04J4A],
+        },
+        Module {
+            name: "Verdere optie",
+            description: "",
+            courses: [H09P4A, H04X2A, H00K1A, H04E0A, H04G0A, D0H36A, W0EN7A, H00K2A, W0Q19A, W0T14A, G0O00A, D0I69A, H04D8A, G0B01A, P00H0A, G0B16A, G0B68A, G0K34A, C07I6A, G0U12B, G0R44A, W0AH4A, C00M0A, H0O00A, H0T39A, H0T91A, H0P05A, W0AE0A, S0B88A, H04B3A, H04B4A],
         }
     ],
 }
@@ -43,7 +165,7 @@ isp1 = ISP {
 
 Course {
 	name: "Industrial Internet Infrastructure",
-	code: H04IOA,
+	code: H04I0A,
 	period: First,
 	studyPoints: 5,
 }
@@ -55,585 +177,585 @@ Course {
 	studyPoints: 3,
 }
 
-//Course {
-//	name: "Capita Selecta Computer Science: Distributed Systems",
-//	code: H04G7A,
-//	period: AllYear,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Studie van declaratieve talen",
-//	code: H04H5B,
-//	period: First,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Ontwerp van softwaresystemen",
-//	code: H04J9B,
-//	period: First,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Ontwerp van algoritmen",
-//	code: H0O07A,
-//	period: First,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Fundamenten voor de computerwetenschappen",
-//	code: H04H0B,
-//	period: Second,
-//	studyPoints: 5,
-//}
-//
-//Course {
-//	name: "Bedrijfskunde & entrepreneurship",
-//	code: H01F2A,
-//	period: First,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Modellering en Simulatie",
-//	code: G0Q57A,
-//	period: First,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Digitale elektronica en processoren",
-//	code: H01L1A,
-//	period: Second,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Gedistribueerde systemen",
-//	code: H04I4A,
-//	period: First,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Beginselen van Machine learning",
-//	code: H0E96A,
-//	period: First,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Modellering van complexe systemen",
-//	code: G0B23A,
-//	period: Second,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Softwarearchitectuur",
-//	code: H09B5B,
-//	period: Second,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Vergelijkende studie van imperatieve programmeertalen",
-//	code: H04L5A,
-//	period: First,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Software for embedded systems",
-//	code: H04L2A,
-//	period: First,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Security Governance and Operations",
-//	code: H04G4A,
-//	period: Second,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Geavanceerde methodes voor softwarearchitectuur",
-//	code: H0A12A,
-//	period: First,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Development of secure software",
-//	code: H04K5A,
-//	period: First,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Capita Selecta Computer Science: Secure Software",
-//	code: H05M8B,
-//	period: Second,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Vereistenanalyse voor complexe softwaresystemen",
-//	code: G0K32A,
-//	period: First,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Formal systems and their applications",
-//	code: H04H8B
-//,
-//	period: First,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Security through the software lifecycle",
-//	code: H0Q31A,
-//	period: First,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Cryptografie en netwerkbeveiliging",
-//	code: H05D9A,
-//	period: First,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Data mining",
-//	code: H02C6A,
-//	period: Second,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Machine Learning: Project",
-//	code: H0T25A
-//,
-//	period: Second,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Capita Selecta Computer science: Artificial Intelligence",
-//	code: H05N0A,
-//	period: AllYear,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Declarative problem solving paradigms in A.I",
-//	code: H02A3A,
-//	period: First,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Knowledge representation",
-//	code: H02C3A,
-//	period: Second,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Information retrieval and search engines",
-//	code: H02C8B,
-//	period: Second,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Big data analytics programming",
-//	code: H00Y4A,
-//	period: AllYear,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Capita selecta van de software engineering",
-//	code: G0L15B,
-//	period: AllYear,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Fundamenten van de mens-machine interactie",
-//	code: G0Q55A,
-//	period: First,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Fundamenten van de computergrafiek",
-//	code: G0Q66D,
-//	period: First,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Fundamentals of Vritual and Augmented reality",
-//	code: H0O60A,
-//	period: First,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Computergrafiek 2",
-//	code: G0B36A,
-//	period: Second,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Image analysis and understanding",
-//	code: H09J2A,
-//	period: Second,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Informatievisualisatie",
-//	code: H04I2A,
-//	period: Second,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Virtual and augmented reality: project",
-//	code: H0O61A,
-//	period: Second,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Parallel Computing",
-//	code: H03F9A,
-//	period: First,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Complexiteitstheorie",
-//	code: G0Q63B,
-//	period: First,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Technisch-wetenschappelijke software",
-//	code: H03F0B,
-//	period: First,
-//	studyPoints: 5,
-//}
-//
-//Course {
-//	name: "Computergesteund probleemoplossen",
-//	code: H01G1A,
-//	period: First,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Wavelets with applications in signal and image processing",
-//	code: H03F7A,
-//	period: First,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Genetic algorithms and evolutionary computing",
-//	code: H02D1A,
-//	period: First,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Religie, zingeving en levensbeschouwing",
-//	code: A04D5A,
-//	period: First,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Religie, zingeving en levensbeschouwing",
-//	code: A08C4A,
-//	period: Second,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Capita selecta ingenieurswetenschappen I.1. (Athens/Summer course)",
-//	code: H05U5A,
-//	period: First,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Capita selecta ingenieurswetenschappen I.2. (Athens/Summer course)",
-//	code: H05U6A,
-//	period: Second,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Compilerconstructie",
-//	code: H04G9B,
-//	period: First,
-//	studyPoints: 5,
-//}
-//
-//Course {
-//	name: "Industriele stage: computerwetenschappen",
-//	code: H04I9A,
-//	period: First,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Capita selecta ingenieurswetenschappen II.1 (Athens / Summer course)",
-//	code: H04K9A,
-//	period: First,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Capita selecta ingenieurswetenschappen II.2 (Athens / Summer course)",
-//	code: H05U7A,
-//	period: Second,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Masterproef",
-//	code: H04J4A,
-//	period: AllYear,
-//	studyPoints: 24,
-//}
-//
-//Course {
-//	name: "Engineering & Entrepreneurship",
-//	code: H09P4A,
-//	period: Second,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Project Management",
-//	code: H04X2A,
-//	period: Second,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Engineering Economy",
-//	code: H00K1A,
-//	period: First,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Plichtenleer van de ingenieur",
-//	code: H04E0A,
-//	period: First,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Bedrijfservaring: computerwetenschappen / industrial experience: computer science",
-//	code: H04G0A,
-//	period: First,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Innovation management and strategy",
-//	code: D0H36A,
-//	period: First,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Philosophy of technology",
-//	code: W0EN7A,
-//	period: First,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Management and information technology",
-//	code: H00K2A,
-//	period: First,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Philosophy of Science / Natural philosophy: advanced course",
-//	code: W0Q19A,
-//	period: First,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Wetenschapsfilosofie / natuurfilosofie: verdiepende cursus",
-//	code: W0T14A,
-//	period: First,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Statistical Data Analaysis",
-//	code: G0O00A,
-//	period: Second,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "ICT Service Management",
-//	code: D0I69A,
-//	period: Second,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Expressievaardigheid in de technische bedrijfsomgeving",
-//	code: H04D8A,
-//	period: Second,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Intellectual property management",
-//	code: G0B01A,
-//	period: Second,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Psychologie m.i.v psychologie van de waarneming",
-//	code: P00H0A,
-//	period: Second,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Robust Statistics",
-//	code: G0B16A,
-//	period: Second,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Experimental Design",
-//	code: G0B68A,
-//	period: Second,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Geschiedenis van de informatica",
-//	code: G0K34A,
-//	period: Second,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "ICT-recht",
-//	code: C07I6A,
-//	period: Second,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Historical and social aspects of physics",
-//	code: G0U12B,
-//	period: Second,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Science communication and outreach",
-//	code: G0R44A,
-//	period: Second,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "Studium generale: mens- en wereldbeelden",
-//	code: W0AH4A,
-//	period: Second,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Recht van de intellectuele eigendom",
-//	code: C00M0A,
-//	period: Second,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Globale uitdagingen voor een duurzame samenleving",
-//	code: H0O00A,
-//	period: Second,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Entrepreneurship in de praktijk / in practice",
-//	code: H0T39A,
-//	period: Second,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Entrepreneurship in practice / service-learning",
-//	code: H0T91A,
-//	period: Second,
-//	studyPoints: 6,
-//}
-//
-//Course {
-//	name: "AI ethics & regulation",
-//	code: H0P05A,
-//	period: Second,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Lessen voor de 21e eeuw",
-//	code: W0AE0A,
-//	period: AllYear,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Genderstudies",
-//	code: S0B88A,
-//	period: AllYear,
-//	studyPoints: 4,
-//}
-//
-//Course {
-//	name: "Engels in de bedrijfsomgeving",
-//	code: H04B3A,
-//	period: AllYear,
-//	studyPoints: 3,
-//}
-//
-//Course {
-//	name: "Frans in de bedrijfsomgeving",
-//	code: H04B4A,
-//	period: AllYear,
-//	studyPoints: 3,
-//}
+Course {
+	name: "Capita Selecta Computer Science: Distributed Systems",
+	code: H04G7A,
+	period: AllYear,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Studie van declaratieve talen",
+	code: H04H5B,
+	period: First,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Ontwerp van softwaresystemen",
+	code: H04J9B,
+	period: First,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Ontwerp van algoritmen",
+	code: H0O07A,
+	period: First,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Fundamenten voor de computerwetenschappen",
+	code: H04H0B,
+	period: Second,
+	studyPoints: 5,
+}
+
+Course {
+	name: "Bedrijfskunde & entrepreneurship",
+	code: H01F2A,
+	period: First,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Modellering en Simulatie",
+	code: G0Q57A,
+	period: First,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Digitale elektronica en processoren",
+	code: H01L1A,
+	period: Second,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Gedistribueerde systemen",
+	code: H04I4A,
+	period: First,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Beginselen van Machine learning",
+	code: H0E96A,
+	period: First,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Modellering van complexe systemen",
+	code: G0B23A,
+	period: Second,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Softwarearchitectuur",
+	code: H09B5B,
+	period: Second,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Vergelijkende studie van imperatieve programmeertalen",
+	code: H04L5A,
+	period: First,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Software for embedded systems",
+	code: H04L2A,
+	period: First,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Security Governance and Operations",
+	code: H04G4A,
+	period: Second,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Geavanceerde methodes voor softwarearchitectuur",
+	code: H0A12A,
+	period: First,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Development of secure software",
+	code: H04K5A,
+	period: First,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Capita Selecta Computer Science: Secure Software",
+	code: H05M8B,
+	period: Second,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Vereistenanalyse voor complexe softwaresystemen",
+	code: G0K32A,
+	period: First,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Formal systems and their applications",
+	code: H04H8B
+,
+	period: First,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Security through the software lifecycle",
+	code: H0Q31A,
+	period: First,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Cryptografie en netwerkbeveiliging",
+	code: H05D9A,
+	period: First,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Data mining",
+	code: H02C6A,
+	period: Second,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Machine Learning: Project",
+	code: H0T25A
+,
+	period: Second,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Capita Selecta Computer science: Artificial Intelligence",
+	code: H05N0A,
+	period: AllYear,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Declarative problem solving paradigms in A.I",
+	code: H02A3A,
+	period: First,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Knowledge representation",
+	code: H02C3A,
+	period: Second,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Information retrieval and search engines",
+	code: H02C8B,
+	period: Second,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Big data analytics programming",
+	code: H00Y4A,
+	period: AllYear,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Capita selecta van de software engineering",
+	code: G0L15B,
+	period: AllYear,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Fundamenten van de mens-machine interactie",
+	code: G0Q55A,
+	period: First,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Fundamenten van de computergrafiek",
+	code: G0Q66D,
+	period: First,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Fundamentals of Vritual and Augmented reality",
+	code: H0O60A,
+	period: First,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Computergrafiek 2",
+	code: G0B36A,
+	period: Second,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Image analysis and understanding",
+	code: H09J2A,
+	period: Second,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Informatievisualisatie",
+	code: H04I2A,
+	period: Second,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Virtual and augmented reality: project",
+	code: H0O61A,
+	period: Second,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Parallel Computing",
+	code: H03F9A,
+	period: First,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Complexiteitstheorie",
+	code: G0Q63B,
+	period: First,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Technisch-wetenschappelijke software",
+	code: H03F0B,
+	period: First,
+	studyPoints: 5,
+}
+
+Course {
+	name: "Computergesteund probleemoplossen",
+	code: H01G1A,
+	period: First,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Wavelets with applications in signal and image processing",
+	code: H03F7A,
+	period: First,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Genetic algorithms and evolutionary computing",
+	code: H02D1A,
+	period: First,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Religie, zingeving en levensbeschouwing",
+	code: A04D5A,
+	period: First,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Religie, zingeving en levensbeschouwing",
+	code: A08C4A,
+	period: Second,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Capita selecta ingenieurswetenschappen I.1. (Athens/Summer course)",
+	code: H05U5A,
+	period: First,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Capita selecta ingenieurswetenschappen I.2. (Athens/Summer course)",
+	code: H05U6A,
+	period: Second,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Compilerconstructie",
+	code: H04G9B,
+	period: First,
+	studyPoints: 5,
+}
+
+Course {
+	name: "Industriele stage: computerwetenschappen",
+	code: H04I9A,
+	period: First,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Capita selecta ingenieurswetenschappen II.1 (Athens / Summer course)",
+	code: H04K9A,
+	period: First,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Capita selecta ingenieurswetenschappen II.2 (Athens / Summer course)",
+	code: H05U7A,
+	period: Second,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Masterproef",
+	code: H04J4A,
+	period: AllYear,
+	studyPoints: 24,
+}
+
+Course {
+	name: "Engineering & Entrepreneurship",
+	code: H09P4A,
+	period: Second,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Project Management",
+	code: H04X2A,
+	period: Second,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Engineering Economy",
+	code: H00K1A,
+	period: First,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Plichtenleer van de ingenieur",
+	code: H04E0A,
+	period: First,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Bedrijfservaring: computerwetenschappen / industrial experience: computer science",
+	code: H04G0A,
+	period: First,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Innovation management and strategy",
+	code: D0H36A,
+	period: First,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Philosophy of technology",
+	code: W0EN7A,
+	period: First,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Management and information technology",
+	code: H00K2A,
+	period: First,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Philosophy of Science / Natural philosophy: advanced course",
+	code: W0Q19A,
+	period: First,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Wetenschapsfilosofie / natuurfilosofie: verdiepende cursus",
+	code: W0T14A,
+	period: First,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Statistical Data Analaysis",
+	code: G0O00A,
+	period: Second,
+	studyPoints: 6,
+}
+
+Course {
+	name: "ICT Service Management",
+	code: D0I69A,
+	period: Second,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Expressievaardigheid in de technische bedrijfsomgeving",
+	code: H04D8A,
+	period: Second,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Intellectual property management",
+	code: G0B01A,
+	period: Second,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Psychologie m.i.v psychologie van de waarneming",
+	code: P00H0A,
+	period: Second,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Robust Statistics",
+	code: G0B16A,
+	period: Second,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Experimental Design",
+	code: G0B68A,
+	period: Second,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Geschiedenis van de informatica",
+	code: G0K34A,
+	period: Second,
+	studyPoints: 4,
+}
+
+Course {
+	name: "ICT-recht",
+	code: C07I6A,
+	period: Second,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Historical and social aspects of physics",
+	code: G0U12B,
+	period: Second,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Science communication and outreach",
+	code: G0R44A,
+	period: Second,
+	studyPoints: 6,
+}
+
+Course {
+	name: "Studium generale: mens- en wereldbeelden",
+	code: W0AH4A,
+	period: Second,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Recht van de intellectuele eigendom",
+	code: C00M0A,
+	period: Second,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Globale uitdagingen voor een duurzame samenleving",
+	code: H0O00A,
+	period: Second,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Entrepreneurship in de praktijk / in practice",
+	code: H0T39A,
+	period: Second,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Entrepreneurship in practice / service-learning",
+	code: H0T91A,
+	period: Second,
+	studyPoints: 6,
+}
+
+Course {
+	name: "AI ethics & regulation",
+	code: H0P05A,
+	period: Second,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Lessen voor de 21e eeuw",
+	code: W0AE0A,
+	period: AllYear,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Genderstudies",
+	code: S0B88A,
+	period: AllYear,
+	studyPoints: 4,
+}
+
+Course {
+	name: "Engels in de bedrijfsomgeving",
+	code: H04B3A,
+	period: AllYear,
+	studyPoints: 3,
+}
+
+Course {
+	name: "Frans in de bedrijfsomgeving",
+	code: H04B4A,
+	period: AllYear,
+	studyPoints: 3,
+}

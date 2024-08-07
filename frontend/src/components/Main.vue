@@ -9,7 +9,7 @@ import axios from "axios";
 import ISPOverview from "./ISPOverview.vue";
 
 const mods = ref<Record<string, Structs.Module>>({});
-const module = computed(() => mods.value?.["abc"]);
+const module = computed(() => mods.value && isp.value ? mods.value[isp.value.studyProgram] : null);
 
 const constraintResult = ref<Structs.ModuleConstraintResult>()
 

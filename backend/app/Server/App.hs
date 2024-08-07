@@ -17,7 +17,7 @@ module Main where
   main = scotty 3000 $ do
     middleware simpleCors
     get "/run" $ do
-      res <- lift $ Programs.runConstraintChecker dslFilePath "cs" "isp1"
+      res <- lift $ Programs.runConstraintChecker dslFilePath "ING_CS" "isp1"
       json res
 
     get "/res" $ do

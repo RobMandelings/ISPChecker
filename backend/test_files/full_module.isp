@@ -1,4 +1,4 @@
-cs = Module {
+ING_CS = Module {
     name: "Master in de ingenieurswetenschappen: computerwetenschappen",
     description: "",
     courses: [],
@@ -41,16 +41,16 @@ isp1 = ISP {
 //    courses: [],
 //}
 
-//Course {
-//	name: "Industrial Internet Infrastructure",
-//	code: H04IOA,
-//	period: First,
-//	studyPoints: 5,
-//}
-//
-//Course {
-//	name: "Industrial Internet Infrastructure",
-//	code: H04IOB,
-//	period: Second,
-//	studyPoints: 5,
-//}
+Course {
+	name: "Industrial Internet Infrastructure",
+	code: H04IOA,
+	period: First,
+	studyPoints: 5,
+}
+
+Course {
+	name: "Industrial Internet Infrastructure",
+	code: H04IOB,
+	period: Second,
+	studyPoints: 5,
+}

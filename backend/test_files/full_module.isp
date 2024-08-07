@@ -5,7 +5,7 @@ ING_CS = Module {
     moduleConstraints: [
         ModuleConstraint {
             description: "Minstens 120 studiepunten moeten opgenomen worden",
-            constraint: MinSP(120),
+            constraint: MaxSP(120),
         }
         ],
     modules: [
@@ -18,6 +18,12 @@ ING_CS = Module {
                     name: "Bachelor verbredend pakket voor studenten met een bachelor in de ingenieurswetenschappen: computerwetenschappen",
                     description: "",
                     courses: [H04H5B, H04J9B, H0O07A, H04H0B],
+                    moduleConstraints: [
+                        ModuleConstraint {
+                            description: "Alle opleidingsonderdelen zijn verplicht",
+                            constraint: MinSP(50),
+                        }
+                    ],
                 },
                 Module {
                     name: "Bachelor verbredend pakket voor studenten met een bachelor informatica",

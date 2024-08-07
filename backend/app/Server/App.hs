@@ -10,33 +10,34 @@ module Main where
   import Network.Wai (Middleware)
   import Network.Wai.Middleware.Cors (simpleCors, cors, CorsResourcePolicy(..))
 
-
+  dslFilePath :: String
+  dslFilePath = "test_files/full_module.isp"
 
   main :: IO ()
   main = scotty 3000 $ do
     middleware simpleCors
     get "/run" $ do
-      res <- lift $ Programs.runConstraintChecker "test_files/simple_module.isp"
+      res <- lift $ Programs.runConstraintChecker dslFilePath "cs" "isp1"
       json res
 
     get "/res" $ do
-      res <- lift $ Programs.parseDSL "test_files/simple_module.isp"
+      res <- lift $ Programs.parseDSL dslFilePath
       json res
 
     get "/res/mods" $ do
       res <- lift $ do
-        r <- Programs.parseDSL "test_files/simple_module.isp"
+        r <- Programs.parseDSL dslFilePath
         return r.modules
       json res
 
     get "/res/isps" $ do
       res <- lift $ do
-        r <- Programs.parseDSL "test_files/simple_module.isp"
+        r <- Programs.parseDSL dslFilePath
         return r.isps
       json res
 
     get "/res/courses" $ do
       res <- lift $ do
-        r <- Programs.parseDSL "test_files/simple_module.isp"
+        r <- Programs.parseDSL dslFilePath
         return r.courses
       json res

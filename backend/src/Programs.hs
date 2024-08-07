@@ -22,13 +22,13 @@ module Programs where
       Right parseRes ->
         return parseRes
 
-  runConstraintChecker :: String -> IO CC.ModuleResult
-  runConstraintChecker filePath = do
+  runConstraintChecker :: String -> String -> String -> IO CC.ModuleResult
+  runConstraintChecker filePath moduleName ispName = do
     parseRes <- parseDSL filePath
-    case (Map.lookup "abc" parseRes.modules) of
+    case (Map.lookup moduleName parseRes.modules) of
       Just mod ->
         let courseStore = CC.createMapCourseStore $ parseRes.courses in
-          case (Map.lookup "isp1" parseRes.isps) of
+          case (Map.lookup ispName parseRes.isps) of
             Just isp ->
               let env = CC.Env { isp, courseStore } in
               let res = CC.runCheckModule mod env in

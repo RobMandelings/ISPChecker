@@ -1,0 +1,56 @@
+cs = Module {
+    name: "Master in de ingenieurswetenschappen: computerwetenschappen",
+    description: "",
+    courses: [],
+    moduleConstraints: [
+        ModuleConstraint {
+            description: "Maximaal 1 studiepunt",
+            constraint: MaxSP(1),
+        }
+        ],
+    modules: [
+        Module {
+            name: "Subonderdeel",
+            description: "Cool",
+            courses: [H04IOA],
+            modules: [],
+        },
+        Module {
+            name: "Subonderdeel 2",
+            description: "Cool",
+            courses: [],
+        }
+    ],
+}
+
+isp1 = ISP {
+	studyProgram: ING_CS,
+	specialisation: "A.I",
+	background: "informatica",
+	courseSelection: {
+	    passed: [BLABLA, BLA],
+        planned: [
+            [H04IOA, H04IOB]
+	    ],
+    },
+}
+
+//hoi = Module {
+//    name: "Subonderdeel",
+//    description: "Cool",
+//    courses: [],
+//}
+
+//Course {
+//	name: "Industrial Internet Infrastructure",
+//	code: H04IOA,
+//	period: First,
+//	studyPoints: 5,
+//}
+//
+//Course {
+//	name: "Industrial Internet Infrastructure",
+//	code: H04IOB,
+//	period: Second,
+//	studyPoints: 5,
+//}

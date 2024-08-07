@@ -30,28 +30,30 @@ const failColor = 'red-500';
     <fwb-accordion>
       <fwb-accordion-panel>
         <fwb-accordion-header>
-          <div class="flex flex-row justify-between">
-            <div class="flex flex-row">
-              <fwb-tooltip>
-                <template #trigger>
-                  <font-awesome-icon :icon="['fas', 'question-circle']"/>
-                </template>
-                <template #content>
-                  {{ moduleData.desc }}
-                </template>
-              </fwb-tooltip>
-              <div v-if="checkResult">
-                <div :class="checkResult.failed ? `text-${failColor}` : `text-${successColor}`"> {{
-                    moduleData.name
-                  }}
+          <div>
+            <div class="flex flex-row justify-between">
+              <div class="flex flex-row">
+                <fwb-tooltip>
+                  <template #trigger>
+                    <font-awesome-icon :icon="['fas', 'question-circle']"/>
+                  </template>
+                  <template #content>
+                    {{ moduleData.desc }}
+                  </template>
+                </fwb-tooltip>
+                <div v-if="checkResult">
+                  <div :class="checkResult.failed ? `text-${failColor}` : `text-${successColor}`"> {{
+                      moduleData.name
+                    }}
+                  </div>
+                </div>
+                <div v-else>
+                  {{ moduleData.name }}
                 </div>
               </div>
-              <div v-else>
-                {{ moduleData.name }}
+              <div class="flex flex-row">
+                Hello
               </div>
-            </div>
-            <div class="flex flex-row">
-              Hello
             </div>
           </div>
         </fwb-accordion-header>

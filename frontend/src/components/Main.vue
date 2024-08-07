@@ -6,6 +6,7 @@ import {computed, onMounted, ref} from 'vue'
 import * as Parser from "../assets/js/Parser"
 import * as Structs from "../assets/js/Structs"
 import axios from "axios";
+import ISPOverview from "./ISPOverview.vue";
 
 const mods = ref<Record<string, Structs.Module>>({});
 const module = computed(() => mods.value?.["abc"]);
@@ -30,7 +31,7 @@ const loadData = async () => {
   constraintResult.value = Parser.parseModuleConstraintResult(runJson);
 
   const ispRes = (await axios.get('http://localhost:3000/res/isps')).data;
-  isp.value = Object.fromEntries(Object.entries(ispRes).map(([key, val]) => [key, Parser.parseISP(val)]));
+  isps.value = Object.fromEntries(Object.entries(ispRes).map(([key, val]) => [key, Parser.parseISP(val)]));
 
 }
 
@@ -57,7 +58,7 @@ const test = ref(module.value);
                       :check-result="constraintResult"></ModuleOverview>
     </div>
     <div style="width: 500px">
-
+      <ISPOverview v-if="isp" :isp="isp"></ISPOverview>
     </div>
   </div>
 </template>

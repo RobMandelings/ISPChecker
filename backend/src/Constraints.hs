@@ -16,9 +16,9 @@ data Constraint =
   SomeConstraint Constraint | -- There is some course for which the following constraint holds
   AllConstraint CourseCode Constraint | -- For all courses the following constraints hold (such as AllIncluded)
   IncludedConstraint CourseCode |
+  NotConstraint Constraint |
   NandConstraint Constraint Constraint |
   AndConstraint Constraint Constraint |
-  NotConstraint Constraint |
   OrConstraint Constraint Constraint |
   NorConstraint Constraint Constraint |
   XorConstraint Constraint Constraint |

@@ -147,6 +147,14 @@ replaceCourseCodeRef codeRef newCode constraint =
         Constraints.IncludedConstraint newCode
       else
         constraint
+    Constraints.NandConstraint c1 c2 -> Constraints.NandConstraint (replaceCourseCodeRef codeRef newCode c1) (replaceCourseCodeRef codeRef newCode c2)
+    Constraints.AndConstraint c1 c2 -> Constraints.AndConstraint (replaceCourseCodeRef codeRef newCode c1) (replaceCourseCodeRef codeRef newCode c2)
+    Constraints.OrConstraint c1 c2 -> Constraints.OrConstraint (replaceCourseCodeRef codeRef newCode c1) (replaceCourseCodeRef codeRef newCode c2)
+    Constraints.NorConstraint c1 c2 -> Constraints.NorConstraint (replaceCourseCodeRef codeRef newCode c1) (replaceCourseCodeRef codeRef newCode c2)
+    Constraints.XorConstraint c1 c2 -> Constraints.XorConstraint (replaceCourseCodeRef codeRef newCode c1) (replaceCourseCodeRef codeRef newCode c2)
+    Constraints.NotConstraint c -> Constraints.NotConstraint (replaceCourseCodeRef codeRef newCode c)
+    -- TODO: what about the same year constraint?
+    -- TODO: what about the scoped constraint?
     _ ->
       constraint
 

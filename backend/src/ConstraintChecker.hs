@@ -83,7 +83,8 @@ createDBCourseStore dbName =
 
 data Env = Env
   {
-    isp :: ISP
+    scope :: Constraints.Scope
+  , isp :: ISP
   , courseStore :: CourseStore
   }
 
@@ -121,6 +122,8 @@ isActive mod isp =
 checkModule :: Module -> ModuleChecker
 checkModule mod = do
   env <- ask
+   -- If the module is activated, we need to check for constraints. E.g. module 'A.I' is activated, so needs to be checked.
+   -- Module 'Distributed Systems' is deactivated, does not need to be checked (automatic success)
   if isActive mod env.isp
   then do
     let scope = getScope mod env.isp
@@ -252,11 +255,19 @@ checkConstraint (Constraints.SameYearConstraint code1 code2) = do
       else
         error "SameYear constraint is not implemented yet"
 
+-- | Gets all the courses that are included in this module. This includes all the courses that are in nested modules as well (recursively).
+-- The scope of a module is used to check constraints at this level.
+-- E.g. MinSP(120) means that at least 120SP should be included, and all included courses within the scope contribute to the SP value.
+-- E.g. The scope of highest level module (the study program) contains all courses in the StudyProgram.
+-- The isp is necessary to check for module activation.
+-- Non-active modules do not contribute to the constraint checker and the courses inside those modules should therefore not be included in the scope.
 getScope :: Module -> ISP -> Constraints.Scope
 getScope mod isp =
   if isActive mod isp
   then
-    let coursesInMod = Set.fromList mod.commonFields.courses in -- TODO needs to get sub modules as well
+    let coursesInMod = Set.fromList mod.commonFields.courses in -- Courses inside the module at current level
+
+    -- Recursive fold function to get all courses that are in nested modules as well.
     let courses = foldr (\mod acc -> Set.union (getScope mod isp) acc) coursesInMod mod.subModules in
       courses
 

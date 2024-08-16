@@ -14,7 +14,7 @@ type Scope = Set.Set CourseCode
 
 data Constraint =
   SomeConstraint Constraint | -- There is some course for which the following constraint holds
-  AllConstraint Constraint | -- For all courses the following constraints hold (such as AllIncluded)
+  AllConstraint CourseCode Constraint | -- For all courses the following constraints hold (such as AllIncluded)
   IncludedConstraint CourseCode |
   NandConstraint Constraint Constraint |
   AndConstraint Constraint Constraint |

@@ -167,9 +167,17 @@ parseSimpleConstraint = do
       parseSameYearConstraint,
       parseMinMaxSPConstraint,
       parseRangeSPConstraint,
-      parseRemainingSPConstraint
+      parseRemainingSPConstraint,
+      parseAllConstraint
     ]
   return c
+
+parseAllConstraint :: Parser Constraints.Constraint
+parseAllConstraint = do
+  _ <- symbol "All"
+  SomeValueCons courseCodeRef (SomeValueCons constraint SomeValueNil) <- parseArgsInBrackets $ SomeParserCons identifier $ SomeParserCons parseConstraint SomeParserNil
+  return $ Constraints.AllConstraint courseCodeRef constraint
+
 
 parseBinaryConstraint :: Parser Constraints.Constraint
 parseBinaryConstraint = do

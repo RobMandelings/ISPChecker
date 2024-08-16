@@ -21,7 +21,7 @@ ING_CS = Module {
                     moduleConstraints: [
                         ModuleConstraint {
                             description: "Alle opleidingsonderdelen zijn verplicht",
-                            constraint: Included(H04H5B),
+                            constraint: All(c, Included(c)),
                         }
                     ],
                 },

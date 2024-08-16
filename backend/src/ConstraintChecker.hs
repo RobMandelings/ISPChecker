@@ -138,10 +138,25 @@ checkModule mod = do
 --    return $ all id $ Set.toList $ Set.union (Set.fromList subModuleResults) (Set.fromList results) -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
   else return ModuleSuccess
 --
+
+replaceCourseCodeRef :: Courses.CourseCode -> Courses.CourseCode -> Constraints.Constraint -> Constraints.Constraint
+replaceCourseCodeRef codeRef newCode constraint =
+  case constraint of
+    Constraints.IncludedConstraint code ->
+      if code == codeRef then
+        Constraints.IncludedConstraint newCode
+      else
+        constraint
+    _ ->
+      constraint
+
 checkConstraint :: Constraints.Constraint -> ConstraintChecker
 
 checkConstraint (Constraints.ModuleConstraint desc c) = do
   checkConstraint c -- Description is irrelevant for constraint checking
+
+--checkConstraint (Constraints.AllConstraint codeRef constraint) = do
+--
 
 checkConstraint (Constraints.IncludedConstraint code) = do
   env <- ask

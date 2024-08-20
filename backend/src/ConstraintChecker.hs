@@ -44,17 +44,20 @@ data ModuleResult =
     subModuleResults :: [ModuleResult]
   } deriving (Show, Generic)
 
-
+-- | Instance of TypeClass to convert a ConstraintResult type into Json format
 instance Aeson.ToJSON ConstraintResult where
   toEncoding = Aeson.genericToEncoding Aeson.defaultOptions
 
+-- | Instance of TypeClass to convert a ModuleResult type into Json format
 instance Aeson.ToJSON ModuleResult where
   toEncoding = Aeson.genericToEncoding Aeson.defaultOptions
 
+-- | Instance to convert ModuleResult to their boolean value
 instance ToBool ModuleResult where
   toBool ModuleSuccess = True
   toBool (ModuleFail _ _) = False -- TODO cleaner way to handle this?
 
+-- | Instance to convert ConstraintResult to their boolean value
 instance ToBool ConstraintResult where
   toBool ConstraintSuccess = True
   toBool (ConstraintFail _ _) = False
@@ -66,29 +69,36 @@ instance ToBool ConstraintResult where
 --class Monad m => CourseStore m where
 --  getCourse :: Courses.CourseCode -> m (Maybe Courses.Course)
 
+-- | CourseStore type where a function getCourse can be provided. This is because there might be different implementations of this function that should be abstracted. (e.g. database vs in-memory)
 data CourseStore = CourseStore { getCourse :: Courses.CourseCode -> Maybe Courses.Course }
 
 -- | Maps the course code to the corresponding course
 type CourseMap = Map.Map Courses.CourseCode Courses.Course
 
+-- | Creates a CourseStore based on a Map implementation
 createMapCourseStore :: CourseMap -> CourseStore
 createMapCourseStore courseMap =
   CourseStore { getCourse = (\courseCode -> Map.lookup courseCode courseMap) }
 
+-- | Creates a CourseStore based on a DB implementation
 createDBCourseStore :: String -> CourseStore
 createDBCourseStore dbName =
   CourseStore { getCourse = (\courseCode -> Nothing) }
 
 -- Instances don't work because they will always return a monad and you still need to know how to execute it and pass the proper parameters.
 
+-- | Environment used to run the constraint checker.
 data Env = Env
   {
     scope :: Constraints.Scope
-  , isp :: ISP
+  , isp :: ISP -- The ISP that was parsed
   , courseStore :: CourseStore
   }
 
+-- | Monad used to run the constraint checker
 type ModuleChecker = ReaderT Env Maybe ModuleResult
+
+-- | Monad used to run the constraint checker
 type ConstraintChecker = ReaderT Env Maybe ConstraintResult
 --
 ---- check whether module is active
@@ -103,6 +113,8 @@ type ConstraintChecker = ReaderT Env Maybe ConstraintResult
 -- No need to use a monad here, just use getCourses
 -- No monad because its not easy to change the monad type with a different environment. You use need to use runReader to extract the values, but then that would be the same as just having an argument.
 -- If the monadic context for getCourses is used in recursive calls, then you might want to reconsider using a monad. Otherwise I wouldn't see the point.
+
+-- | Retrieves a list of courses that are included in the ISP (not the codes, but actual courses)
 getCourses :: Env -> [Courses.Course]
 getCourses env =
     let courseIds = ISP.getIncludedCourses $ env.isp in
@@ -113,12 +125,13 @@ getCourses env =
         Nothing ->
           error "Not all courses could be retrieved"
 
-
+-- | Returns whether a Module is activated based on settings within the ISP
 isActive :: Module -> ISP -> Bool
 isActive mod isp =
   let StudyProgram.ModuleActivator f = mod.commonFields.activator in
      f $ isp.options
---
+
+-- | Checks the constraints of a module (and all its submodules) for constraint violations.
 checkModule :: Module -> ModuleChecker
 checkModule mod = do
   env <- ask
@@ -142,6 +155,8 @@ checkModule mod = do
   else return ModuleSuccess
 --
 
+-- | Replace a course code reference to an actual course code (the reference acts as a placeholder)
+-- | Used when the constrains have been quanfied.
 replaceCourseCodeRef :: Courses.CourseCode -> Courses.CourseCode -> Constraints.Constraint -> Constraints.Constraint
 replaceCourseCodeRef codeRef newCode constraint =
   case constraint of
@@ -161,14 +176,17 @@ replaceCourseCodeRef codeRef newCode constraint =
     _ ->
       constraint
 
+-- | Checks a single constraint.
 checkConstraint :: Constraints.Constraint -> ConstraintChecker
 
+-- | Checks a module constraint
 checkConstraint (Constraints.ModuleConstraint desc c) = do
-  checkConstraint c -- Description is irrelevant for constraint checking
+  checkConstraint c -- Description is irrelevant for constraint checking, so just return the result of the nested constraint.
 
 --checkConstraint (Constraints.AllConstraint codeRef constraint) = do
 --
 
+-- | Checks whether a coursecode is included in the ISP
 checkConstraint (Constraints.IncludedConstraint code) = do
   env <- ask
   let res = Set.member code $ ISP.getIncludedCourses env.isp

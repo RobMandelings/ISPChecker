@@ -16,3 +16,13 @@
 ## Optional
 
 - References to ModuleConstraints instead of inline definitions (with errormsg, description and everything)
+
+## To put in the report
+
+- The use of heterogeneous lists to parse any argument in any order
+
+### Possible improvements in the future
+
+- Remove the redundant komma at the end of an object definition
+- Better reference handling
+- Ability to use databases to get the course data (is now all present in the file which is not optimal)

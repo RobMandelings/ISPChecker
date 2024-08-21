@@ -52,6 +52,12 @@ ING_CS = Module {
         Module {
             name: "Hoofdoptie",
             description: "De student kiest 1 van de 6 mogelijke opties",
+            moduleConstraints: [
+                ModuleConstraint {
+                    description: "De student vult zijn hoofdoptie aan tot die minstens 18 sp. bedraagt.",
+                    constraint: MinSP(18),
+                }
+            ],
             modules: [
                 Module {
                     name: "Hoofdoptie gedistribueerde systemen",
@@ -61,6 +67,12 @@ ING_CS = Module {
                             name: "Plichtgedeelte",
                             description: "Hey how",
                             courses: [H04I0A, G0K31B, H04G7A],
+                            moduleConstraints: [
+                                ModuleConstraint {
+                                    description: "Alle opleidingsonderdelen zijn verplicht",
+                                    constraint: All(c, Included(c)),
+                                }
+                            ],
                         },
                         Module {
                             name: "Keuzegedeelte",
@@ -77,6 +89,12 @@ ING_CS = Module {
                             name: "Plichtgedeelte",
                             description: "",
                             courses: [H04K5A, H04G4A, H05M8B],
+                            moduleConstraints: [
+                                ModuleConstraint {
+                                    description: "Alle opleidingsonderdelen zijn verplicht",
+                                    constraint: All(c, Included(c)),
+                                }
+                            ],
                         },
                         Module {
                             name: "Keuzegedeelte",
@@ -93,6 +111,12 @@ ING_CS = Module {
                             name: "Plichtgedeelte",
                             description: "",
                             courses: [H02C6A, H0T25A, H05N0A],
+                            moduleConstraints: [
+                                ModuleConstraint {
+                                    description: "Alle opleidingsonderdelen zijn verplicht",
+                                    constraint: All(c, Included(c)),
+                                }
+                            ],
                         },
                         Module {
                             name: "Keuzegedeelte",
@@ -109,6 +133,12 @@ ING_CS = Module {
                             name: "Plichtgedeelte",
                             description: "",
                             courses: [G0K32A, G0L15B, H0A12A],
+                            moduleConstraints: [
+                                ModuleConstraint {
+                                    description: "Alle opleidingsonderdelen zijn verplicht",
+                                    constraint: All(c, Included(c)),
+                                }
+                            ],
                         },
                         Module {
                             name: "Keuzegedeelte",
@@ -125,6 +155,12 @@ ING_CS = Module {
                             name: "Plichtgedeelte",
                             description: "",
                             courses: [G0Q55A, G0Q66D, H0O60A],
+                            moduleConstraints: [
+                                ModuleConstraint {
+                                    description: "Alle opleidingsonderdelen zijn verplicht",
+                                    constraint: All(c, Included(c)),
+                                }
+                            ],
                         },
                         Module {
                             name: "Keuzegedeelte",
@@ -141,6 +177,12 @@ ING_CS = Module {
                             name: "Plichtgedeelte",
                             description: "",
                             courses: [H03F9A, G0Q63B, H03F0B],
+                            moduleConstraints: [
+                                ModuleConstraint {
+                                    description: "Alle opleidingsonderdelen zijn verplicht",
+                                    constraint: All(c, Included(c)),
+                                }
+                            ],
                         },
                         Module {
                             name: "Keuzegedeelte",
@@ -151,20 +193,39 @@ ING_CS = Module {
                 }
             ],
         },
+
         Module {
             name: "Verdere optie",
             description: "",
             courses: [A04D5A, A08C4A, H05U5A, H05U6A, H04G9B, H04I9A, H04K9A, H05U7A],
+            moduleConstraints: [
+                ModuleConstraint {
+                    description: "Eén van de twee opleidingsonderdelen 'Religie, zingeving en levensbeschouwing' (A04D5A of A08C4A) moet standaard opgenomen worden als onderdeel van dit keuzepakket.",
+                    constraint: Included(A04D5A) XOR Included(A08C4A),
+                }
+            ],
         },
         Module {
             name: "Masterproef",
             description: "",
             courses: [H04J4A],
+            moduleConstraints: [
+                ModuleConstraint {
+                    description: "De masterproef is verplicht.",
+                    constraint: Included(H04J4A),
+                }
+            ],
         },
         Module {
-            name: "Verdere optie",
-            description: "",
+            name: "Algemeen vormende en onderzoeksondersteundende groep",
+            description: "Deze keuzeopleidingsonderdelen beogen de verbreding van de vorming ten opzichte van de opleiding op grond waarvan de student is toegelaten tot de master; de keuze moet derhalve opleidingsonderdelen betreffen waarvoor de student nog geen credit heeft behaald.",
             courses: [H09P4A, H04X2A, H00K1A, H04E0A, H04G0A, D0H36A, W0EN7A, H00K2A, W0Q19A, W0T14A, G0O00A, D0I69A, H04D8A, G0B01A, P00H0A, G0B16A, G0B68A, G0K34A, C07I6A, G0U12B, G0R44A, W0AH4A, C00M0A, H0O00A, H0T39A, H0T91A, H0P05A, W0AE0A, S0B88A, H04B3A, H04B4A],
+            moduleConstraints: [
+                ModuleConstraint {
+                    description: "Een student kiest maximaal één van volgende opleidingsonderdelen: H04B3A (Engels in de bedrijfsomgeving) of H04B4A (Frans in de bedrijfsomgeving).",
+                    constraint: Included(H04B3A) NAND Included(H04B4A),
+                }
+            ],
         }
     ],
 }

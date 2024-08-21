@@ -24,10 +24,25 @@ export abstract class ConstraintVisitor {
 
     abstract visitIncludedCourseConstraint(c: IncludedCourseConstraint): any;
 
+    abstract visitAllConstraint(c: Constraint): any;
 }
 
 export abstract class Constraint {
     public abstract accept(visitor: ConstraintVisitor): any;
+}
+
+export class AllConstraint extends Constraint {
+    public c: Constraint;
+
+    constructor(c: Constraint) {
+        super();
+        this.c = c;
+    }
+
+    // TODO: this is a unary constrain, put the common functionality in a common class (not is also a unary constraint)
+    accept(visitor: ConstraintVisitor): any {
+        return visitor.visitAllConstraint(this.c);
+    }
 }
 
 export class NotConstraint extends Constraint {
@@ -35,6 +50,7 @@ export class NotConstraint extends Constraint {
 
     constructor(c: Constraint) {
         super();
+        this.c = c;
     }
 
     accept(visitor: ConstraintVisitor): any {

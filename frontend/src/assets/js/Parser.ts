@@ -107,7 +107,9 @@ export function parseConstraint(json: any): Constraints.Constraint {
         return new type(...json.contents.map(parseConstraint));
 
     } else if (json.tag === "notConstraint") {
-        return new Constraints.NotConstraint(parseConstraint(json.contents));
+        return new Constraints.NotConstraint(parseConstraint(json.contents[1]));
+    } else if (json.tag === "AllConstraint") {
+        return new Constraints.AllConstraint(parseConstraint(json.contents[1]));
     } else {
         throw new Error("Unknown constraint type: " + json.tag);
     }

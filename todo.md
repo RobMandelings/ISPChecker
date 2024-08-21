@@ -26,3 +26,4 @@
 - Remove the redundant komma at the end of an object definition
 - Better reference handling
 - Ability to use databases to get the course data (is now all present in the file which is not optimal)
+- Editors for the begeleiders (real front end) to edit the study programs.

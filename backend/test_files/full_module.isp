@@ -6,8 +6,12 @@ ING_CS = Module {
         ModuleConstraint {
             description: "Minstens 120 studiepunten moeten opgenomen worden",
             constraint: MaxSP(120),
+        },
+        ModuleConstraint { // Gebruikt vakken van zowel verdere optie als AVO
+            description: "Een student besteedt maximum 9 studiepunten aan Bedrijfservaring, Industriële Stage en Entrepreneurship in de praktijk/in practice.",
+            constraint: [H04G0A, H0T39A, H0T91A, H04I9A] -> MaxSP(9),
         }
-        ],
+    ],
     modules: [
         Module {
             name: "Bachelor verbredend pakket",

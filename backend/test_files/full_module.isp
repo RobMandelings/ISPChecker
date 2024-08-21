@@ -29,6 +29,12 @@ ING_CS = Module {
                     name: "Bachelor verbredend pakket voor studenten met een bachelor informatica",
                     description: "",
                     courses: [H01F2A, G0Q57A, H01L1A],
+                    moduleConstraints: [
+                        ModuleConstraint {
+                            description: "Alle opleidingsonderdelen zijn verplicht",
+                            constraint: All(c, Included(c)),
+                        }
+                    ],
                 }
             ],
         },
@@ -36,6 +42,12 @@ ING_CS = Module {
             name: "Verplicht deel",
             description: "Cool",
             courses: [H04I4A, H0E96A, G0B23A, H09B5B, H04L5A],
+            moduleConstraints: [
+                ModuleConstraint {
+                    description: "Alle opleidingsonderdelen zijn verplicht voor alle studenten",
+                    constraint: All(c, Included(c)),
+                }
+            ],
         },
         Module {
             name: "Hoofdoptie",
@@ -156,6 +168,11 @@ ING_CS = Module {
         }
     ],
 }
+
+//alleVerplicht = ModuleConstraint {
+//    description: "Alle opleidingsonderdelen zijn verplicht",
+//    constraint: All(c, Included(c)),
+//}
 
 isp1 = ISP {
 	studyProgram: ING_CS,

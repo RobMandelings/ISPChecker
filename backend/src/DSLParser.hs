@@ -33,12 +33,13 @@ import Control.Monad.Reader
 -- TODO difference Text and String?
 type Parser = Parsec Void Text
 
-data ParseObj = ISPObj ISP.ISP | ModuleObj StudyProgram.ModuleWRef | CourseObj Courses.Course deriving (Show)
+data ParseObj = ISPObj ISP.ISP | ModuleObj StudyProgram.ModuleWRef | CourseObj Courses.Course | ConstraintObj Constraints.Constraint deriving (Show)
 
 data ParseResult = ParseResult
   { isps :: Map.Map String ISP.ISP
   , modules :: Map.Map String StudyProgram.Module
   , courses :: Map.Map String Courses.Course
+  , constraints :: Map.Map String Constraints.Constraint
   } deriving (Show, Generic)
 
 instance Aeson.ToJSON ParseResult where
@@ -370,6 +371,7 @@ parseObjects = do
     parseAssignment $ do { -- TODO make sure that you can parse in all cases and have proper error handling (no usage of tries because this eliminates errors). E.g. you can't parse something with 'Course' as name
         res <- choice [
           ISPObj <$> parseISP,
+          ConstraintObj <$> parseModuleConstraint, -- The order has been explicitly thought about because switching Module parsing with ModuleConstraint parsing leads to problem
           ModuleObj <$> parseModule
         ];
         return res
@@ -392,21 +394,11 @@ createParseResultFromObjs objs =
                                         CourseObj obj -> ((n, obj) : acc)
                                         _ -> acc
                                         ) [] objs in
-
---  let isps = filter (\(n, obj) -> case obj of
---                                    ISPObj isp -> True
---                                    _ -> False
---                                    ) objs in
---  let modules = filter (\(n, obj) -> case obj of
---                                      ModuleObj mod -> True
---                                      _ -> False
---                                      ) objs in
---  let courses = filter (\(n, obj) -> case obj of
---                                      CourseObj course -> True
---                                      _ -> False
---                                      ) objs in
-    ParseResult { isps = isps, modules = modules, courses = courses }
---  let groupedParseObjs = groupBy ((==) `on` )
+  let constraints = Map.fromList $ foldr (\(n, obj) acc -> case obj of
+                                          ConstraintObj obj -> ((n, obj) : acc)
+                                          _ -> acc
+                                          ) [] objs in
+    ParseResult { isps = isps, modules = modules, courses = courses, constraints = constraints }
 
 
 parse :: Parser ParseResult

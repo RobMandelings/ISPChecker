@@ -12,3 +12,7 @@
 
 - Write the documentation
 - Write the report
+
+## Optional
+
+- References to ModuleConstraints instead of inline definitions (with errormsg, description and everything)

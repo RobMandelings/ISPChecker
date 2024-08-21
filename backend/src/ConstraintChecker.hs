@@ -157,20 +157,20 @@ checkModule mod = do
 
 -- | Replace a course code reference to an actual course code (the reference acts as a placeholder)
 -- | Used when the constrains have been quanfied.
-replaceCourseCodeRef :: Courses.CourseCode -> Courses.CourseCode -> Constraints.Constraint -> Constraints.Constraint
-replaceCourseCodeRef codeRef newCode constraint =
+replaceCourseCodeRef :: Courses.CourseCode -> Constraints.Constraint -> Courses.CourseCode -> Constraints.Constraint
+replaceCourseCodeRef codeRef constraint newCode =
   case constraint of
     Constraints.IncludedConstraint code ->
       if code == codeRef then
         Constraints.IncludedConstraint newCode
       else
         constraint
-    Constraints.NandConstraint c1 c2 -> Constraints.NandConstraint (replaceCourseCodeRef codeRef newCode c1) (replaceCourseCodeRef codeRef newCode c2)
-    Constraints.AndConstraint c1 c2 -> Constraints.AndConstraint (replaceCourseCodeRef codeRef newCode c1) (replaceCourseCodeRef codeRef newCode c2)
-    Constraints.OrConstraint c1 c2 -> Constraints.OrConstraint (replaceCourseCodeRef codeRef newCode c1) (replaceCourseCodeRef codeRef newCode c2)
-    Constraints.NorConstraint c1 c2 -> Constraints.NorConstraint (replaceCourseCodeRef codeRef newCode c1) (replaceCourseCodeRef codeRef newCode c2)
-    Constraints.XorConstraint c1 c2 -> Constraints.XorConstraint (replaceCourseCodeRef codeRef newCode c1) (replaceCourseCodeRef codeRef newCode c2)
-    Constraints.NotConstraint c -> Constraints.NotConstraint (replaceCourseCodeRef codeRef newCode c)
+    Constraints.NandConstraint c1 c2 -> Constraints.NandConstraint (replaceCourseCodeRef codeRef c1 newCode) (replaceCourseCodeRef codeRef c2 newCode)
+    Constraints.AndConstraint c1 c2 -> Constraints.AndConstraint (replaceCourseCodeRef codeRef c1 newCode) (replaceCourseCodeRef codeRef c2 newCode)
+    Constraints.OrConstraint c1 c2 -> Constraints.OrConstraint (replaceCourseCodeRef codeRef c1 newCode) (replaceCourseCodeRef codeRef c2 newCode)
+    Constraints.NorConstraint c1 c2 -> Constraints.NorConstraint (replaceCourseCodeRef codeRef c1 newCode) (replaceCourseCodeRef codeRef c2 newCode)
+    Constraints.XorConstraint c1 c2 -> Constraints.XorConstraint (replaceCourseCodeRef codeRef c1 newCode) (replaceCourseCodeRef codeRef c2 newCode)
+    Constraints.NotConstraint c -> Constraints.NotConstraint (replaceCourseCodeRef codeRef c newCode)
     -- TODO: what about the same year constraint?
     -- TODO: what about the scoped constraint?
     _ ->
@@ -183,8 +183,17 @@ checkConstraint :: Constraints.Constraint -> ConstraintChecker
 checkConstraint (Constraints.ModuleConstraint desc c) = do
   checkConstraint c -- Description is irrelevant for constraint checking, so just return the result of the nested constraint.
 
---checkConstraint (Constraints.AllConstraint codeRef constraint) = do
---
+checkConstraint (Constraints.AllConstraint codeRef constraint) = do
+  env <- ask
+  let !results = map (replaceCourseCodeRef codeRef constraint) (Set.toList $ env.scope)
+  constraintCheckResults <- mapM checkConstraint results
+  let fail = Set.member False $ Set.fromList $ map toBool constraintCheckResults
+  if fail then
+    let errorMsg = pack $ "Niet alle vakken voldoen aan de vereisten" in
+      return $ ConstraintFail { errorMsg, subResults=constraintCheckResults }
+  else
+    return ConstraintSuccess
+
 
 -- | Checks whether a coursecode is included in the ISP
 checkConstraint (Constraints.IncludedConstraint code) = do
@@ -260,7 +269,7 @@ checkConstraint (Constraints.MaxSPConstraint sp) = do
 checkConstraint (Constraints.ScopedConstraint constraint newScope) = do
   env <- ask
   let newISP = filterISP (env.isp) newScope
-  let newEnv = env { isp = newISP }
+  let newEnv = env { isp = newISP, scope = newScope }
   local (const newEnv) (checkConstraint constraint)
 
 checkConstraint (Constraints.SameYearConstraint code1 code2) = do

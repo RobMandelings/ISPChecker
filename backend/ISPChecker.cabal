@@ -1,6 +1,6 @@
 cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.36.0.
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -50,6 +50,7 @@ library
       NamedFieldPuns
       ExistentialQuantification
       DeriveGeneric
+      BangPatterns
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints.md
   build-depends:
       aeson
@@ -83,6 +84,7 @@ executable ISPChecker-exe
       NamedFieldPuns
       ExistentialQuantification
       DeriveGeneric
+      BangPatterns
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints.md -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       ISPChecker
@@ -117,6 +119,7 @@ executable scotty-server-exe
       NamedFieldPuns
       ExistentialQuantification
       DeriveGeneric
+      BangPatterns
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints.md -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       ISPChecker

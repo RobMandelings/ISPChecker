@@ -55,6 +55,7 @@ library:
     - NamedFieldPuns
     - ExistentialQuantification
     - DeriveGeneric
+    - BangPatterns
 
 executables:
   ISPChecker-exe:
@@ -70,6 +71,7 @@ executables:
       - NamedFieldPuns
       - ExistentialQuantification
       - DeriveGeneric
+      - BangPatterns
     ghc-options:
       - -threaded
       - -rtsopts
@@ -89,6 +91,7 @@ executables:
       - NamedFieldPuns
       - ExistentialQuantification
       - DeriveGeneric
+      - BangPatterns
     ghc-options:
       - -threaded
       - -rtsopts

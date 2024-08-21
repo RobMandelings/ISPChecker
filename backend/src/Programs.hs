@@ -30,7 +30,8 @@ module Programs where
         let courseStore = CC.createMapCourseStore $ parseRes.courses in
           case (Map.lookup ispName parseRes.isps) of
             Just isp ->
-              let env = CC.Env { isp, courseStore } in
+              let scope = CC.getScope mod isp in
+              let env = CC.Env { isp, courseStore, scope} in
               let res = CC.runCheckModule mod env in
                 case res of
                   Just r -> return r

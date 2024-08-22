@@ -7,6 +7,8 @@ import {fas} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import './index.css'
 
+import "preline/preline";
+
 library.add(fas)
 
 createApp(App).component("font-awesome-icon", FontAwesomeIcon).mount('#app')

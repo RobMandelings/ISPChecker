@@ -248,7 +248,7 @@ checkConstraint (Constraints.MinSPConstraint sp) = do
   if r then
     return ConstraintSuccess
   else
-    let errorMsg = pack $ "Minimum aantal studiepunten in module moet " ++ show sp ++ " zijn, en is " ++ show totalSP in
+    let errorMsg = pack $ "Minimum aantal studiepunten moet " ++ show sp ++ " zijn, en is " ++ show totalSP in
       return $ ConstraintFail {errorMsg, subResults=[]}
 --  lift Nothing -- Return would wrap the result of 'lift Nothing' in another layer of ReaderT
 
@@ -260,7 +260,7 @@ checkConstraint (Constraints.MaxSPConstraint sp) = do
   if r then
     return ConstraintSuccess
   else
-    let errorMsg = pack $ "Maximum aantal studiepunten in module moet " ++ show sp ++ " zijn, en is " ++ show totalSP in
+    let errorMsg = pack $ "Maximum aantal studiepunten moet " ++ show sp ++ " zijn, en is " ++ show totalSP in
       return $ ConstraintFail {errorMsg, subResults=[]}
 --
 ---- Const is a function that ignores its argument and returns a constant value.

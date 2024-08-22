@@ -244,9 +244,9 @@ isp1 = ISP {
 	specialisation: "A.I",
 	background: "informatica",
 	courseSelection: {
-	    passed: [BLABLA, BLA],
+	    passed: [],
         planned: [
-            [H04IOA, H04IOB]
+            [H04G0A, H0T39A, H0T91A]
 	    ],
     },
 }

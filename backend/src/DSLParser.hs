@@ -179,26 +179,6 @@ parseAllConstraint = do
   SomeValueCons courseCodeRef (SomeValueCons constraint SomeValueNil) <- parseArgsInBrackets $ SomeParserCons identifier $ SomeParserCons parseConstraint SomeParserNil
   return $ Constraints.AllConstraint courseCodeRef constraint
 
-
-parseBinaryConstraint :: Parser Constraints.Constraint
-parseBinaryConstraint = do
-  lhs <- parseSimpleConstraint
-  operator <- choice [
-    symbol "AND" *> return Constraints.AndConstraint,
-    symbol "OR" *> return Constraints.OrConstraint,
-    symbol "XOR" *> return Constraints.XorConstraint,
-    symbol "NOR" *> return Constraints.NorConstraint,
-    symbol "NAND" *> return Constraints.NandConstraint
-   ]
-  rhs <- parseConstraint
-  return $ operator lhs rhs
-
-parseUnaryConstraint :: Parser Constraints.Constraint
-parseUnaryConstraint = do
-  operator <- symbol "NOT" *> return Constraints.NotConstraint
-  constraint <- parseConstraint
-  return $ operator constraint
-
 --data SomeParser = forall a. SomeParser (Parser a)
 --data SomeValue = forall a. SomeValue a
 
@@ -275,9 +255,40 @@ parseRemainingSPConstraint = do
   (SomeValueCons sp SomeValueNil) <- parseArgsInBrackets $ SomeParserCons parseInteger SomeParserNil
   return $ Constraints.RemainingSPConstraint sp
 
+parseBinaryConstraint :: Parser Constraints.Constraint
+parseBinaryConstraint = do
+  lhs <- parseSimpleConstraint
+  operator <- choice [
+    symbol "AND" *> return Constraints.AndConstraint,
+    symbol "OR" *> return Constraints.OrConstraint,
+    symbol "XOR" *> return Constraints.XorConstraint,
+    symbol "NOR" *> return Constraints.NorConstraint,
+    symbol "NAND" *> return Constraints.NandConstraint
+   ]
+  rhs <- parseConstraint
+  return $ operator lhs rhs
+
+parseUnaryConstraint :: Parser Constraints.Constraint
+parseUnaryConstraint = do
+  operator <- symbol "NOT" *> return Constraints.NotConstraint
+  constraint <- parseConstraint
+  return $ operator constraint
+
+-- | TODO: don't allow nested scoped constraints
+parseScopedConstraint :: Parser Constraints.Constraint
+parseScopedConstraint = do
+  scope <- parseList $ identifier
+  _ <- symbol "->"
+  constraint <- parseConstraint
+  return $ Constraints.ScopedConstraint constraint $ Set.fromList scope
+
+
 parseConstraint :: Parser Constraints.Constraint
 parseConstraint = do
-  c <- choice [try parseBinaryConstraint, parseSimpleConstraint]
+  c <- choice [
+    parseScopedConstraint,
+    try parseBinaryConstraint, -- Why is this try necessary?
+    parseSimpleConstraint]
   return c
 
 parseModuleConstraint :: Parser Constraints.Constraint

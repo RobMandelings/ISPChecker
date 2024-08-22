@@ -5,6 +5,7 @@ import {fas} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 import './style.css'
+import '../node_modules/flowbite-vue/dist/index.css'
 import './index.css'
 
 library.add(fas)

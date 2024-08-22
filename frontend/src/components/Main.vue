@@ -52,13 +52,13 @@ const test = ref(module.value);
 </script>
 
 <template>
-  <div class="flex flex-row justify-between">
-    <div style="width: 800px">
+  <div>
+    <div class="w-full">
+      <ISPOverview v-if="isp" :isp="isp"></ISPOverview>
+    </div>
+    <div style="width: 1200px">
       <ModuleOverview v-if="module" :module-data="module" :courses="courses"
                       :check-result="constraintResult"></ModuleOverview>
-    </div>
-    <div style="width: 500px">
-      <ISPOverview v-if="isp" :isp="isp"></ISPOverview>
     </div>
   </div>
 </template>

@@ -24,6 +24,9 @@
 
 ### Possible improvements in the future
 
+- Consolidate both the normal constraint and activator constraint parsing in some way (because they both have unary and
+  binary constraints)
+
 - Remove the redundant komma at the end of an object definition
 - Better reference handling
 - Ability to use databases to get the course data (is now all present in the file which is not optimal)

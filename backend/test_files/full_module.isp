@@ -28,7 +28,7 @@ ING_CS = Module {
                             constraint: All(c, Included(c)),
                         }
                     ],
-                    activation: ISP.background = "informatica",
+//                    activation: ISP.background = "informatica",
                 },
                 Module {
                     name: "Bachelor verbredend pakket voor studenten met een bachelor informatica",

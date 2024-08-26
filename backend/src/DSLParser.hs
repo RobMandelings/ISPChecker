@@ -299,9 +299,48 @@ parseModuleConstraint = do
     c <- parseField "constraint" parseConstraint
     return $ Constraints.ModuleConstraint d c
 
-parseActivator :: Parser Activator.ActivatorConstraint
-parseActivator = do
-  undefined
+parseBinaryActivatorConstraint :: Parser Activator.ActivatorConstraint
+parseBinaryActivatorConstraint = do
+  lhs <- parseSimpleActivatorConstraint
+  operator <- choice [
+    symbol "AND" *> return Activator.AndConstraint,
+    symbol "OR" *> return Activator.OrConstraint,
+    symbol "XOR" *> return Activator.XorConstraint,
+    symbol "NOR" *> return Activator.NorConstraint,
+    symbol "NAND" *> return Activator.NandConstraint
+   ]
+  rhs <- parseActivatorConstraint
+  return $ operator lhs rhs
+
+parseUnaryActivatorConstraint :: Parser Activator.ActivatorConstraint
+parseUnaryActivatorConstraint = do
+  operator <- symbol "NOT" *> return Activator.NotConstraint
+  constraint <- parseActivatorConstraint
+  return $ operator constraint
+
+parseEqualActivatorConstraint :: Parser Activator.ActivatorConstraint
+parseEqualActivatorConstraint = do
+  parseField "activation" $ do
+    _ <- symbol "ISP."
+    ispRef <- identifier -- E.g. background, specialisation, ...
+    _ <- symbol "="
+    value <- stringLiteral
+    return $ Activator.EqualConstraint ispRef value
+
+parseSimpleActivatorConstraint :: Parser Activator.ActivatorConstraint
+parseSimpleActivatorConstraint = do
+  c <- choice [
+      parseUnaryActivatorConstraint,
+      parseEqualActivatorConstraint
+    ]
+  return c
+
+parseActivatorConstraint :: Parser Activator.ActivatorConstraint
+parseActivatorConstraint = do
+  c <- choice [
+    try parseBinaryActivatorConstraint, -- Why is this try necessary?
+    parseSimpleActivatorConstraint]
+  return c
 
 parseModule :: Parser StudyProgram.ModuleWRef
 parseModule = do
@@ -311,7 +350,7 @@ parseModule = do
     d <- optional parseDescription
     c <- optional $ parseListField "courses" identifier
     constraints <- optional $ parseListField "moduleConstraints" parseModuleConstraint
-    activator <- optional $ parseActivator
+    activator <- optional $ parseActivatorConstraint
   --  a <- parseActivator
   --  cs <- optional parseConstraints
     subModules <- optional parseSubmodules

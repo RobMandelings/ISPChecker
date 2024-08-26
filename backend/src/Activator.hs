@@ -1,9 +1,13 @@
 module Activator where
 
+import qualified Data.Aeson as Aeson
+import GHC.Generics (Generic)
+
 import Control.Monad.Reader
 import qualified ISP
 
 data ActivatorConstraint =
+  TrueConstraint |
   EqualConstraint String String |
   NotConstraint ActivatorConstraint |
   NandConstraint ActivatorConstraint ActivatorConstraint |
@@ -11,6 +15,10 @@ data ActivatorConstraint =
   OrConstraint ActivatorConstraint ActivatorConstraint |
   NorConstraint ActivatorConstraint ActivatorConstraint |
   XorConstraint ActivatorConstraint ActivatorConstraint
+  deriving (Show, Generic)
+
+instance Aeson.ToJSON ActivatorConstraint where
+  toEncoding = Aeson.genericToEncoding Aeson.defaultOptions
 
 data Env = Env
   {
@@ -20,6 +28,9 @@ data Env = Env
 type ActivationChecker = ReaderT Env Maybe Bool
 
 checkActive :: ActivatorConstraint -> ActivationChecker
+
+checkActive (TrueConstraint) = do
+  return True
 
 checkActive (EqualConstraint lhs rhs) = do
   env <- ask

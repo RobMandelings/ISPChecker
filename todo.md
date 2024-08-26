@@ -20,6 +20,7 @@
 ## To put in the report
 
 - The use of heterogeneous lists to parse any argument in any order
+- Explain the reasoning behind the activation of modules (function vs data structure, why?)
 
 ### Possible improvements in the future
 

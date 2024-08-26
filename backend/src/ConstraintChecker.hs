@@ -128,8 +128,7 @@ getCourses env =
 -- | Returns whether a Module is activated based on settings within the ISP
 isActive :: Module -> ISP -> Bool
 isActive mod isp =
-  let StudyProgram.ModuleActivator f = mod.commonFields.activator in
-     f $ isp.options
+  True
 
 -- | Checks the constraints of a module (and all its submodules) for constraint violations.
 checkModule :: Module -> ModuleChecker

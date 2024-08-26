@@ -14,6 +14,7 @@ import Data.Text (Text)
 import qualified Data.Text as T -- Qualified
 import qualified Data.Map as Map
 
+import qualified Activator
 import qualified Courses
 import qualified ISP
 import qualified StudyProgram
@@ -298,6 +299,10 @@ parseModuleConstraint = do
     c <- parseField "constraint" parseConstraint
     return $ Constraints.ModuleConstraint d c
 
+parseActivator :: Parser Activator.ActivatorConstraint
+parseActivator = do
+  undefined
+
 parseModule :: Parser StudyProgram.ModuleWRef
 parseModule = do
   _ <- spaceConsumer
@@ -306,6 +311,7 @@ parseModule = do
     d <- optional parseDescription
     c <- optional $ parseListField "courses" identifier
     constraints <- optional $ parseListField "moduleConstraints" parseModuleConstraint
+    activator <- optional $ parseActivator
   --  a <- parseActivator
   --  cs <- optional parseConstraints
     subModules <- optional parseSubmodules
@@ -316,7 +322,7 @@ parseModule = do
           StudyProgram.name = n,
           StudyProgram.description = maybe "" id d,
           StudyProgram.courses = maybe [] id c,
-          StudyProgram.activator = StudyProgram.trueActivator,
+          StudyProgram.activator = maybe Activator.TrueConstraint id activator,
           StudyProgram.constraints = maybe [] id constraints -- TODO fix this hardcoded stuff
         },
       StudyProgram.subModules = maybe [] id subModules

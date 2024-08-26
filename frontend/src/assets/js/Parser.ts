@@ -23,7 +23,18 @@ function parseConstraintResult(json: any): ConstraintResult {
 }
 
 export function parseModuleConstraintResult(json: any): ModuleConstraintResult {
-    const status = json.tag === "ModuleFail" ? RES_STATUS.FAILED : RES_STATUS.SUCCESS;
+    let status = null;
+    switch (json.tag) {
+        case "ModuleFail":
+            status = RES_STATUS.FAILED
+            break;
+        case "ModuleSuccess":
+            status = RES_STATUS.SUCCESS
+            break;
+        case "ModuleInactive":
+            status = RES_STATUS.INACTIVE
+            break;
+    }
     const constraintResults = (status === RES_STATUS.FAILED) ? json.constraintResults.map(parseConstraintResult) : null;
     const subModuleResults = (status === RES_STATUS.FAILED) ? json.subModuleResults.map(parseModuleConstraintResult) : null
     return {

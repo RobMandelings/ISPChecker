@@ -47,18 +47,26 @@ onMounted(() => {
             <div class="flex flex-col items-start p-1">
               <div v-for="(mConstraint, i) in moduleData.moduleConstraints">
                 <div class="text-start" v-if="checkResult">
-                  <template v-if="checkResult.status === RES_STATUS.FAILED && checkResult.constraintResults[i].failed">
-                    <fwb-tooltip>
-                      <template #trigger>
-                        <div :class="`text-${failColor}`"> {{ mConstraint.description }}</div>
-                      </template>
-                      <template #content>
-                        <ConstraintResult :constraint-result="checkResult.constraintResults[i]"></ConstraintResult>
-                      </template>
-                    </fwb-tooltip>
+                  <template v-if="checkResult.status === RES_STATUS.FAILED">
+                    <template v-if="checkResult.constraintResults[i].failed">
+                      <fwb-tooltip>
+                        <template #trigger>
+                          <div :class="`text-${failColor}`"> {{ mConstraint.description }}</div>
+                        </template>
+                        <template #content>
+                          <ConstraintResult :constraint-result="checkResult.constraintResults[i]"></ConstraintResult>
+                        </template>
+                      </fwb-tooltip>
+                    </template>
+                    <template v-else>
+                      <div :class="`text-${successColor}`"> {{ mConstraint.description }}</div>
+                    </template>
+                  </template>
+                  <template v-else-if="checkResult.status === RES_STATUS.SUCCESS">
+                    <div :class="`text-${successColor}`"> {{ mConstraint.description }}</div>
                   </template>
                   <template v-else>
-                    <div :class="`text-${successColor}`"> {{ mConstraint.description }}</div>
+                    <div> {{ mConstraint.description }}</div>
                   </template>
                 </div>
                 <div v-else>

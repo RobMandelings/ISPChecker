@@ -124,6 +124,10 @@ export function parseConstraint(json: any): Constraints.Constraint {
         let constraint = json.contents[0];
         let scope = json.contents[1];
         return new Constraints.ScopedConstraint(scope, constraint);
+    } else if (json.tag === "SameYearConstraint") {
+        let code1 = json.contents[0];
+        let code2 = json.contents[1];
+        return new Constraints.SameYearConstraint(code1, code2);
     } else {
         throw new Error("Unknown constraint type: " + json.tag);
     }

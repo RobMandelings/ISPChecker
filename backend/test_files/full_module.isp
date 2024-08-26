@@ -59,15 +59,17 @@ ING_CS = Module {
             name: "Hoofdoptie",
             description: "De student kiest 1 van de 6 mogelijke opties",
             moduleConstraints: [
-                ModuleConstraint {
-                    description: "De student vult zijn hoofdoptie aan tot die minstens 18 sp. bedraagt.",
-                    constraint: MinSP(18),
-                }
             ],
             modules: [
                 Module {
                     name: "Hoofdoptie gedistribueerde systemen",
                     description: "",
+                    moduleConstraints: [
+                        ModuleConstraint {
+                            description: "Hoofdoptie bedraagt minstens 18SP",
+                            constraint: MinSP(18),
+                        }
+                    ],
                     activation: ISP.specialisation = "distributed_systems",
                     modules: [
                         Module {
@@ -91,6 +93,12 @@ ING_CS = Module {
                 Module {
                     name: "Hoofdoptie veilige software",
                     description: "",
+                    moduleConstraints: [
+                        ModuleConstraint {
+                            description: "De student vult zijn hoofdoptie aan tot die minstens 18 sp. bedraagt.",
+                            constraint: MinSP(18),
+                        }
+                    ],
                     activation: ISP.specialisation = "veilige_software",
                     modules: [
                         Module {
@@ -114,6 +122,12 @@ ING_CS = Module {
                 Module {
                     name: "Hoofdoptie artificiele intelligentie",
                     description: "",
+                    moduleConstraints: [
+                        ModuleConstraint {
+                            description: "De student vult zijn hoofdoptie aan tot die minstens 18 sp. bedraagt.",
+                            constraint: MinSP(18),
+                        }
+                    ],
                     activation: ISP.specialisation = "artificiele_intelligentie",
                     modules: [
                         Module {
@@ -137,6 +151,12 @@ ING_CS = Module {
                 Module {
                     name: "Hoofdoptie software engineering",
                     description: "",
+                    moduleConstraints: [
+                        ModuleConstraint {
+                            description: "De student vult zijn hoofdoptie aan tot die minstens 18 sp. bedraagt.",
+                            constraint: MinSP(18),
+                        }
+                    ],
                     activation: ISP.specialisation = "software_engineering",
                     modules: [
                         Module {
@@ -160,6 +180,12 @@ ING_CS = Module {
                 Module {
                     name: "Hoofdoptie mens-machinecommunicatie",
                     description: "",
+                    moduleConstraints: [
+                        ModuleConstraint {
+                            description: "De student vult zijn hoofdoptie aan tot die minstens 18 sp. bedraagt.",
+                            constraint: MinSP(18),
+                        }
+                    ],
                     activation: ISP.specialisation = "mens_machinecommunicatie",
                     modules: [
                         Module {
@@ -234,6 +260,14 @@ ING_CS = Module {
             courses: [H09P4A, H04X2A, H00K1A, H04E0A, H04G0A, D0H36A, W0EN7A, H00K2A, W0Q19A, W0T14A, G0O00A, D0I69A, H04D8A, G0B01A, P00H0A, G0B16A, G0B68A, G0K34A, C07I6A, G0U12B, G0R44A, W0AH4A, C00M0A, H0O00A, H0T39A, H0T91A, H0P05A, W0AE0A, S0B88A, H04B3A, H04B4A],
             moduleConstraints: [
                 ModuleConstraint {
+                    description: "De student kiest opleidingsonderdelen uit onderstaande lijst voor een minimum van 8 en tot een maximum van 10 studiepunten.",
+                    constraint: RangeSP(8,10),
+                },
+                ModuleConstraint {
+                    description: "Het opleidingsonderdeel H04X2A (Project management) moet in hetzelfde jaar opgenomen worden als de Masterproef",
+                    constraint: SameYear(H04X2A, H04J4A),
+                },
+                ModuleConstraint {
                     description: "Een student kiest maximaal één van volgende opleidingsonderdelen: H04B3A (Engels in de bedrijfsomgeving) of H04B4A (Frans in de bedrijfsomgeving).",
                     constraint: Included(H04B3A) NAND Included(H04B4A),
                 }
@@ -252,9 +286,12 @@ isp1 = ISP {
 	specialisation: "distributed_systems",
 	background: "informatica",
 	courseSelection: {
-	    passed: [H04L2A, H02D1A,
+	    passed: [
+	    H04G4A, // Om hoofdoptie aan te vullen
+	    H04L2A, H02D1A,
 	    A04D5A, A08C4A, // RZL moet opgenomen worden
-	    H04J4A
+	    H04J4A,
+	    H04X2A // Project management
 	    ],
         planned: [
             [H01F2A, G0Q57A, H01L1A,

@@ -291,13 +291,15 @@ checkConstraint (Constraints.ScopedConstraint constraint newScope) = do
 
 checkConstraint (Constraints.SameYearConstraint code1 code2) = do
   env <- ask
-  let plannedPerYear = ISP.getPlannedPerYear $ env.isp.courseSelection in
-    let setsContainingBoth = filter (\s -> Set.member code1 s && Set.member code2 s) plannedPerYear in
+  let passed = env.isp.courseSelection.passed in
+    let plannedPerYear = ISP.getPlannedPerYear $ env.isp.courseSelection in
+    let setsContainingBothPassed = (Set.member code1 passed && Set.member code2 passed) in
+    let setsContainingBothPlanned = filter (\s -> Set.member code1 s && Set.member code2 s) plannedPerYear in
       -- Either they are simply not included, or both are included in that year
-      if (length setsContainingBoth == 1 || length setsContainingBoth == 0) then
-        error "SameYear constraint is not implemented yet"
+      if (not setsContainingBothPassed && length setsContainingBothPlanned == 0) then
+        return ConstraintFail { errorMsg="Vakken worden niet opgenomen in hetzelfde jaar", subResults=[] }
       else
-        error "SameYear constraint is not implemented yet"
+        return ConstraintSuccess
 
 -- | Gets all the courses that are included in this module. This includes all the courses that are in nested modules as well (recursively).
 -- The scope of a module is used to check constraints at this level.

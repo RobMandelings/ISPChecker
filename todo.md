@@ -22,6 +22,9 @@
 - The use of heterogeneous lists to parse any argument in any order
 - Explain the reasoning behind the activation of modules (function vs data structure, why?)
 
+- Encountered problem where submodule is inactive (itself does not need to check for restrictions), but the upper level
+  does need to check for all courses (with minSP) (and how I solved it)
+
 ### Possible improvements in the future
 
 - Consolidate both the normal constraint and activator constraint parsing in some way (because they both have unary and

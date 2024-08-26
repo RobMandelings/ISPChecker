@@ -297,19 +297,13 @@ checkConstraint (Constraints.SameYearConstraint code1 code2) = do
 -- E.g. MinSP(120) means that at least 120SP should be included, and all included courses within the scope contribute to the SP value.
 -- E.g. The scope of highest level module (the study program) contains all courses in the StudyProgram.
 -- The isp is necessary to check for module activation.
--- Non-active modules do not contribute to the constraint checker and the courses inside those modules should therefore not be included in the scope.
 getScope :: Module -> ISP -> Constraints.Scope
 getScope mod isp =
-  if isActive mod isp
-  then
-    let coursesInMod = Set.fromList mod.commonFields.courses in -- Courses inside the module at current level
+  let coursesInMod = Set.fromList mod.commonFields.courses in -- Courses inside the module at current level
 
-    -- Recursive fold function to get all courses that are in nested modules as well.
-    let courses = foldr (\mod acc -> Set.union (getScope mod isp) acc) coursesInMod mod.subModules in
-      courses
-
---  then Set.union (courses mod) ++ concatMap (\subMod -> getScope subMod isp) (subModules mod)
-  else Set.empty
+  -- Recursive fold function to get all courses that are in nested modules as well.
+  let courses = foldr (\mod acc -> Set.union (getScope mod isp) acc) coursesInMod mod.subModules in
+    courses
 --
 filterISP :: ISP -> Constraints.Scope -> ISP
 filterISP isp scope =

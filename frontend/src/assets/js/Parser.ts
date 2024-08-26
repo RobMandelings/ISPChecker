@@ -35,8 +35,8 @@ export function parseModuleConstraintResult(json: any): ModuleConstraintResult {
             status = RES_STATUS.INACTIVE
             break;
     }
-    const constraintResults = (status === RES_STATUS.FAILED) ? json.constraintResults.map(parseConstraintResult) : null;
-    const subModuleResults = (status === RES_STATUS.FAILED) ? json.subModuleResults.map(parseModuleConstraintResult) : null
+    const constraintResults = (status === RES_STATUS.FAILED) ? json.constraintResults.map(parseConstraintResult) : null; // Only when failed there are subconstraints that are not met
+    const subModuleResults = (status !== RES_STATUS.INACTIVE) ? json.subModuleResults.map(parseModuleConstraintResult) : null // There are only subresults with success or fail, never with inactive (subresults are implicit with inactivw)
     return {
         status: status,
         constraintResults: constraintResults,

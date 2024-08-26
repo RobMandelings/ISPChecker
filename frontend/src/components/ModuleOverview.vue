@@ -129,7 +129,7 @@ onMounted(() => {
               <div v-for="(subModule, i) in moduleData.subModules" class="w-full">
                 <ModuleOverview :module-data="subModule" :courses="courses"
                                 :isp="isp"
-                                :checkResult="!checkResult ? checkResult : (checkResult.status === RES_STATUS.FAILED ? checkResult.subModuleResults[i] : checkResult)"></ModuleOverview>
+                                :checkResult="checkResult.status !== RES_STATUS.INACTIVE ? checkResult.subModuleResults[i] : checkResult"></ModuleOverview>
               </div>
             </div>
           </div>

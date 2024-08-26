@@ -5,7 +5,7 @@ ING_CS = Module {
     moduleConstraints: [
         ModuleConstraint {
             description: "Minstens 120 studiepunten moeten opgenomen worden",
-            constraint: MaxSP(120),
+            constraint: MinSP(120),
         },
         ModuleConstraint { // Gebruikt vakken van zowel verdere optie als AVO
             description: "Een student besteedt maximum 9 studiepunten aan Bedrijfservaring, Industriële Stage en Entrepreneurship in de praktijk/in practice.",
@@ -252,9 +252,15 @@ isp1 = ISP {
 	specialisation: "distributed_systems",
 	background: "informatica",
 	courseSelection: {
-	    passed: [],
+	    passed: [H04L2A, H02D1A,
+	    A04D5A, A08C4A, // RZL moet opgenomen worden
+	    H04J4A
+	    ],
         planned: [
-            [H01F2A, G0Q57A, H01L1A]
+            [H01F2A, G0Q57A, H01L1A,
+            H04I4A, H0E96A, G0B23A, H09B5B, H04L5A,
+            H04I0A, G0K31B, H04G7A
+            ]
 	    ],
     },
 }

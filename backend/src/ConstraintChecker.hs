@@ -9,6 +9,7 @@ import Data.Maybe (mapMaybe)
 import Control.Monad.Reader
 import qualified Data.Set as Set
 import Data.Text (pack, Text)
+import qualified Activator
 
 import qualified Courses
 import StudyProgram
@@ -128,7 +129,13 @@ getCourses env =
 -- | Returns whether a Module is activated based on settings within the ISP
 isActive :: Module -> ISP -> Bool
 isActive mod isp =
-  True
+  let env = Activator.Env { isp = isp } in
+  let res = runReaderT (Activator.checkActive mod.commonFields.activator) env in
+    case res of
+      Just val ->
+        val
+      Nothing ->
+        error "Something went wrong while checking whether module is active"
 
 -- | Checks the constraints of a module (and all its submodules) for constraint violations.
 checkModule :: Module -> ModuleChecker

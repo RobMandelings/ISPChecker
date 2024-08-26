@@ -242,8 +242,15 @@ checkConstraint (Constraints.NorConstraint c1 c2) = do
 checkConstraint (Constraints.XorConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   r2 <- checkConstraint c2
-  let r = (toBool r1 || toBool r2) && toBool r1 /= toBool r2
-  return $ if r then ConstraintSuccess else ConstraintFail {errorMsg="", subResults=[r1, r2]}
+  let res1 = (toBool r1 || toBool r2)
+  let res = res1 && toBool r1 /= toBool r2
+  if res then
+    return $ ConstraintSuccess
+  else
+    if not res1 then
+      return $ ConstraintFail {errorMsg="Aan geen van beide condities is voldaan.", subResults=[r1, r2]}
+    else
+      return $ ConstraintFail {errorMsg="Het is niet toegelaten om aan beide voorwaarden tegelijkertijd te voldoen.", subResults=[r1, r2]}
 
 checkConstraint (Constraints.NotConstraint c) = do
   r <- checkConstraint c -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.

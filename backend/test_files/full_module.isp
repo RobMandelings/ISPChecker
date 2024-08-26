@@ -28,7 +28,7 @@ ING_CS = Module {
                             constraint: All(c, Included(c)),
                         }
                     ],
-                    activation: ISP.background = "informatica",
+                    activation: ISP.background = "ing",
                 },
                 Module {
                     name: "Bachelor verbredend pakket voor studenten met een bachelor informatica",
@@ -40,6 +40,7 @@ ING_CS = Module {
                             constraint: All(c, Included(c)),
                         }
                     ],
+                    activation: ISP.background = "informatica",
                 }
             ],
         },
@@ -67,6 +68,7 @@ ING_CS = Module {
                 Module {
                     name: "Hoofdoptie gedistribueerde systemen",
                     description: "",
+                    activation: ISP.specialisation = "distributed_systems",
                     modules: [
                         Module {
                             name: "Plichtgedeelte",
@@ -89,6 +91,7 @@ ING_CS = Module {
                 Module {
                     name: "Hoofdoptie veilige software",
                     description: "",
+                    activation: ISP.specialisation = "veilige_software",
                     modules: [
                         Module {
                             name: "Plichtgedeelte",
@@ -111,6 +114,7 @@ ING_CS = Module {
                 Module {
                     name: "Hoofdoptie artificiele intelligentie",
                     description: "",
+                    activation: ISP.specialisation = "artificiele_intelligentie",
                     modules: [
                         Module {
                             name: "Plichtgedeelte",
@@ -133,6 +137,7 @@ ING_CS = Module {
                 Module {
                     name: "Hoofdoptie software engineering",
                     description: "",
+                    activation: ISP.specialisation = "software_engineering",
                     modules: [
                         Module {
                             name: "Plichtgedeelte",
@@ -155,6 +160,7 @@ ING_CS = Module {
                 Module {
                     name: "Hoofdoptie mens-machinecommunicatie",
                     description: "",
+                    activation: ISP.specialisation = "mens_machinecommunicatie",
                     modules: [
                         Module {
                             name: "Plichtgedeelte",
@@ -177,6 +183,7 @@ ING_CS = Module {
                 Module {
                     name: "Hoofdoptie computationele informatica",
                     description: "",
+                    activation: ISP.specialisation = "computationele_informatica",
                     modules: [
                         Module {
                             name: "Plichtgedeelte",
@@ -242,7 +249,7 @@ ING_CS = Module {
 
 isp1 = ISP {
 	studyProgram: ING_CS,
-	specialisation: "A.I",
+	specialisation: "distributed_systems",
 	background: "informatica",
 	courseSelection: {
 	    passed: [],

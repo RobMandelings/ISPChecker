@@ -17,6 +17,10 @@ const props = defineProps({
     type: Object as PropType<Record<string, Structs.Course>>,
     required: true
   },
+  isp: {
+    type: Object as PropType<Structs.ISP>,
+    required: true
+  },
   checkResult: {
     type: Object,
   }
@@ -30,6 +34,20 @@ import ModuleAccordion from "./ModuleAccordion.vue";
 
 import {FwbTooltip} from 'flowbite-vue';
 import {RES_STATUS} from "../assets/js/Structs";
+
+const passedCourse = (courseCode) => {
+  if (!props.isp) return false;
+
+  if (props.isp.courseSelection.passed.includes(courseCode)) return true;
+  return false;
+}
+
+const plannedCourse = (courseCode) => {
+  if (!props.isp) return false;
+
+  if (props.isp.courseSelection.planned.some(p => p.includes(courseCode))) return true;
+  return false;
+}
 
 // initialize components based on data attribute selectors
 onMounted(() => {
@@ -87,7 +105,12 @@ onMounted(() => {
                       </template>
                     </fwb-tooltip>
                     <div class="flex flex-row space-x-3">
-                      <div class="font-bold">{{ courses[courseCode].code }}</div>
+                      <div class="font-bold">
+                        <font-awesome-icon v-if="passedCourse(courseCode) || plannedCourse(courseCode)"
+                                           :class="`${passedCourse(courseCode) ? 'text-green-500' : 'text-yellow-300'}`"
+                                           :icon="['fas', 'check']"/>
+                        {{ courses[courseCode].code }}
+                      </div>
                       <div>{{ courses[courseCode].name }}</div>
                     </div>
                   </div>
@@ -105,6 +128,7 @@ onMounted(() => {
             <div class="flex flex-col items-start p-1 space-y-1">
               <div v-for="(subModule, i) in moduleData.subModules" class="w-full">
                 <ModuleOverview :module-data="subModule" :courses="courses"
+                                :isp="isp"
                                 :checkResult="!checkResult ? checkResult : (checkResult.status === RES_STATUS.FAILED ? checkResult.subModuleResults[i] : checkResult)"></ModuleOverview>
               </div>
             </div>

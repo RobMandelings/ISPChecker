@@ -254,10 +254,22 @@ isp1 = ISP {
 	courseSelection: {
 	    passed: [],
         planned: [
-            [H04G0A, H0T39A, H0T91A]
+            [H01F2A, G0Q57A, H01L1A]
 	    ],
     },
 }
+
+//isp1 = ISP {
+//	studyProgram: ING_CS,
+//	specialisation: "distributed_systems",
+//	background: "informatica",
+//	courseSelection: {
+//	    passed: [],
+//        planned: [
+//            [H01F2A, H0T39A, H0T91A]
+//	    ],
+//    },
+//}
 
 Course {
 	name: "Industrial Internet Infrastructure",

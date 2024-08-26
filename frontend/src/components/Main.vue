@@ -58,6 +58,7 @@ const test = ref(module.value);
     </div>
     <div style="width: 1200px">
       <ModuleOverview v-if="module" :module-data="module" :courses="courses"
+                      :isp="isp"
                       :check-result="constraintResult"></ModuleOverview>
     </div>
   </div>

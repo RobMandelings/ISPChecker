@@ -296,7 +296,7 @@ checkConstraint (Constraints.SameYearConstraint code1 code2) = do
     let setsContainingBothPassed = (Set.member code1 passed && Set.member code2 passed) in
     let setsContainingBothPlanned = filter (\s -> Set.member code1 s && Set.member code2 s) plannedPerYear in
       -- Either they are simply not included, or both are included in that year
-      if (not setsContainingBothPassed && length setsContainingBothPlanned == 0) then
+      if ((not setsContainingBothPassed) && length setsContainingBothPlanned == 0) then
         return ConstraintFail { errorMsg="Vakken worden niet opgenomen in hetzelfde jaar", subResults=[] }
       else
         return ConstraintSuccess

@@ -10,6 +10,10 @@ ING_CS = Module {
         ModuleConstraint { // Gebruikt vakken van zowel verdere optie als AVO
             description: "Een student besteedt maximum 9 studiepunten aan Bedrijfservaring, Industriële Stage en Entrepreneurship in de praktijk/in practice.",
             constraint: [H04G0A, H0T39A, H0T91A, H04I9A] -> MaxSP(9),
+        },
+        ModuleConstraint {
+            description: "Het opleidingsonderdeel H04X2A (Project management) moet in hetzelfde jaar opgenomen worden als de Masterproef",
+            constraint: SameYear(H04X2A, H04J4A),
         }
     ],
     modules: [
@@ -264,12 +268,16 @@ ING_CS = Module {
                     constraint: RangeSP(8,10),
                 },
                 ModuleConstraint {
-                    description: "Het opleidingsonderdeel H04X2A (Project management) moet in hetzelfde jaar opgenomen worden als de Masterproef",
-                    constraint: SameYear(H04X2A, H04J4A),
-                },
-                ModuleConstraint {
                     description: "Een student kiest maximaal één van volgende opleidingsonderdelen: H04B3A (Engels in de bedrijfsomgeving) of H04B4A (Frans in de bedrijfsomgeving).",
                     constraint: Included(H04B3A) NAND Included(H04B4A),
+                },
+                ModuleConstraint {
+                    description: "Een student kiest maximaal één van volgende opleidingsonderdelen: C00M0A (Recht van de intellectuele eigendom) of G0B01A (Intellectual Property Management)..",
+                    constraint: Included(C00M0A) NAND Included(G0B01A),
+                },
+                ModuleConstraint {
+                    description: "Een student kiest, mits goedkeuring, maximaal één van volgende opleidingsonderdelen: H0T39A (Entrepreneurship in de praktijk/in practice, 3 sp) en H0T91A (Entrepreneurship in practice/service-learning, 6 sp).",
+                    constraint: Included(H0T39A) NAND Included(H0T91A),
                 }
             ],
         }
@@ -289,14 +297,15 @@ isp1 = ISP {
 	    passed: [
 	    H04G4A, // Om hoofdoptie aan te vullen
 	    H04L2A, H02D1A,
-	    A04D5A, A08C4A, // RZL moet opgenomen worden
+	    A04D5A, //A08C4A, // RZL moet opgenomen worden
 	    H04J4A,
 	    H04X2A // Project management
 	    ],
         planned: [
             [H01F2A, G0Q57A, H01L1A,
             H04I4A, H0E96A, G0B23A, H09B5B, H04L5A,
-            H04I0A, G0K31B, H04G7A
+            H04I0A, G0K31B, H04G7A,
+            G0O00A
             ]
 	    ],
     },

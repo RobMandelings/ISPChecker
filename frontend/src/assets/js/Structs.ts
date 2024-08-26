@@ -50,6 +50,12 @@ export interface Module {
  * @param json
  */
 
+export enum RES_STATUS {
+    FAILED,
+    SUCCESS,
+    INACTIVE
+}
+
 /** Not an actual constraint, just a constraint with a description attached */
 export interface ModuleConstraint {
     description: string;
@@ -86,7 +92,7 @@ export interface ConstraintResult {
 }
 
 export interface ModuleConstraintResult {
-    failed: boolean,
+    status: RES_STATUS,
     constraintResults: ConstraintResult[]
     subModuleResults: ModuleConstraintResult[]
 }

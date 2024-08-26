@@ -29,6 +29,7 @@ import {initFlowbite} from 'flowbite'
 import ModuleAccordion from "./ModuleAccordion.vue";
 
 import {FwbTooltip} from 'flowbite-vue';
+import {RES_STATUS} from "../assets/js/Structs";
 
 // initialize components based on data attribute selectors
 onMounted(() => {
@@ -46,7 +47,7 @@ onMounted(() => {
             <div class="flex flex-col items-start p-1">
               <div v-for="(mConstraint, i) in moduleData.moduleConstraints">
                 <div class="text-start" v-if="checkResult">
-                  <template v-if="checkResult.failed && checkResult.constraintResults[i].failed">
+                  <template v-if="checkResult.status === RES_STATUS.FAILED && checkResult.constraintResults[i].failed">
                     <fwb-tooltip>
                       <template #trigger>
                         <div :class="`text-${failColor}`"> {{ mConstraint.description }}</div>
@@ -96,7 +97,7 @@ onMounted(() => {
             <div class="flex flex-col items-start p-1 space-y-1">
               <div v-for="(subModule, i) in moduleData.subModules" class="w-full">
                 <ModuleOverview :module-data="subModule" :courses="courses"
-                                :checkResult="!checkResult ? checkResult : (checkResult.failed ? checkResult.subModuleResults[i] : checkResult)"></ModuleOverview>
+                                :checkResult="!checkResult ? checkResult : (checkResult.status === RES_STATUS.FAILED ? checkResult.subModuleResults[i] : checkResult)"></ModuleOverview>
               </div>
             </div>
           </div>

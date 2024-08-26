@@ -39,7 +39,9 @@ data ConstraintResult =
 -- Either successful, no extra information is needed
 -- Or failed, in which case the constraint results and sub module results are stored
 data ModuleResult =
-  ModuleSuccess |
+  ModuleSuccess {
+    subModuleResults :: [ModuleResult]
+  } |
   ModuleInactive |
   ModuleFail {
     constraintResults :: [ConstraintResult],
@@ -56,7 +58,7 @@ instance Aeson.ToJSON ModuleResult where
 
 -- | Instance to convert ModuleResult to their boolean value
 instance ToBool ModuleResult where
-  toBool ModuleSuccess = True
+  toBool (ModuleSuccess _) = True
   toBool ModuleInactive = True
   toBool (ModuleFail _ _) = False -- TODO cleaner way to handle this?
 
@@ -157,7 +159,7 @@ checkModule mod = do
     if subModuleFail || constraintFail then
         return $ ModuleFail { subModuleResults, constraintResults }
     else
-      return ModuleSuccess
+      return ModuleSuccess { subModuleResults }
     -- You provide a function that maps a result to a boolean. Then provide a list of results. You get a boolean if all the outcomes of the results are booleans.
 --    return $ all id $ Set.toList $ Set.union (Set.fromList subModuleResults) (Set.fromList results) -- (all :: (a -> Bool) -> [a] -> Bool. First argument is the predicate (in this case id function, because results are already booleans)
   else return ModuleInactive

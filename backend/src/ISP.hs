@@ -30,6 +30,14 @@ instance Aeson.ToJSON CourseSelection where
 instance Aeson.ToJSON ISP where
   toEncoding = Aeson.genericToEncoding Aeson.defaultOptions
 
+getOption :: ISP -> OptionName -> OptionValue
+getOption isp name =
+  case (Map.lookup name isp.options) of
+    Just val ->
+      val
+    Nothing ->
+      error $ "Couldn't find the option " ++ show name ++ " in the ISP"
+
 
 getIncludedCourses :: ISP -> Set CourseCode
 getIncludedCourses isp =

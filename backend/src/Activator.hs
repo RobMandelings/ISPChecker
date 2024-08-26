@@ -3,12 +3,8 @@ module Activator where
 import Control.Monad.Reader
 import qualified ISP
 
-data ActivatorVal =
-  ISPRef String |
-  Literal String
-
 data ActivatorConstraint =
-  ComparisonConstraint ActivatorVal ActivatorVal |
+  EqualConstraint String String |
   NotConstraint ActivatorConstraint |
   NandConstraint ActivatorConstraint ActivatorConstraint |
   AndConstraint ActivatorConstraint ActivatorConstraint |
@@ -24,6 +20,11 @@ data Env = Env
 type ActivationChecker = ReaderT Env Maybe Bool
 
 checkActive :: ActivatorConstraint -> ActivationChecker
+
+checkActive (EqualConstraint lhs rhs) = do
+  env <- ask
+  let optionVal = ISP.getOption env.isp lhs
+  return $ optionVal == lhs
 
 checkActive (NandConstraint c1 c2) = do
   r1 <- checkActive c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.

@@ -30,6 +30,8 @@
 - Consolidate both the normal constraint and activator constraint parsing in some way (because they both have unary and
   binary constraints)
 
+- Applicatie van vereisten over submodules
+
 - Vrijstellingen
 - Remove the redundant komma at the end of an object definition
 - Onnodige volgorde bij definities

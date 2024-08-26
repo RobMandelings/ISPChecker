@@ -17,37 +17,7 @@ ING_CS = Module {
         }
     ],
     modules: [
-        Module {
-            name: "Bachelor verbredend pakket",
-            description: "Studenten nemen verplicht elk opleidingsonderdeel op, waarvan de behandelde materie niet aan bod kwam in voorafgaande opleidingen.",
-            courses: [],
-            modules: [
-                Module {
-                    name: "Bachelor verbredend pakket voor studenten met een bachelor in de ingenieurswetenschappen: computerwetenschappen",
-                    description: "",
-                    courses: [H04H5B, H04J9B, H0O07A, H04H0B],
-                    moduleConstraints: [
-                        ModuleConstraint {
-                            description: "Alle opleidingsonderdelen zijn verplicht",
-                            constraint: All(c, Included(c)),
-                        }
-                    ],
-                    activation: ISP.background = "ing",
-                },
-                Module {
-                    name: "Bachelor verbredend pakket voor studenten met een bachelor informatica",
-                    description: "",
-                    courses: [H01F2A, G0Q57A, H01L1A],
-                    moduleConstraints: [
-                        ModuleConstraint {
-                            description: "Alle opleidingsonderdelen zijn verplicht",
-                            constraint: All(c, Included(c)),
-                        }
-                    ],
-                    activation: ISP.background = "informatica",
-                }
-            ],
-        },
+        verbredend,
         Module {
             name: "Verplicht deel",
             description: "Cool",
@@ -59,183 +29,7 @@ ING_CS = Module {
                 }
             ],
         },
-        Module {
-            name: "Hoofdoptie",
-            description: "De student kiest 1 van de 6 mogelijke opties",
-            moduleConstraints: [
-            ],
-            modules: [
-                Module {
-                    name: "Hoofdoptie gedistribueerde systemen",
-                    description: "",
-                    moduleConstraints: [
-                        ModuleConstraint {
-                            description: "Hoofdoptie bedraagt minstens 18SP",
-                            constraint: MinSP(18),
-                        }
-                    ],
-                    activation: ISP.specialisation = "distributed_systems",
-                    modules: [
-                        Module {
-                            name: "Plichtgedeelte",
-                            description: "Hey how",
-                            courses: [H04I0A, G0K31B, H04G7A],
-                            moduleConstraints: [
-                                ModuleConstraint {
-                                    description: "Alle opleidingsonderdelen zijn verplicht",
-                                    constraint: All(c, Included(c)),
-                                }
-                            ],
-                        },
-                        Module {
-                            name: "Keuzegedeelte",
-                            description: "",
-                            courses: [H04L2A, H04G4A, H0A12A],
-                        }
-                    ],
-                },
-                Module {
-                    name: "Hoofdoptie veilige software",
-                    description: "",
-                    moduleConstraints: [
-                        ModuleConstraint {
-                            description: "De student vult zijn hoofdoptie aan tot die minstens 18 sp. bedraagt.",
-                            constraint: MinSP(18),
-                        }
-                    ],
-                    activation: ISP.specialisation = "veilige_software",
-                    modules: [
-                        Module {
-                            name: "Plichtgedeelte",
-                            description: "",
-                            courses: [H04K5A, H04G4A, H05M8B],
-                            moduleConstraints: [
-                                ModuleConstraint {
-                                    description: "Alle opleidingsonderdelen zijn verplicht",
-                                    constraint: All(c, Included(c)),
-                                }
-                            ],
-                        },
-                        Module {
-                            name: "Keuzegedeelte",
-                            description: "",
-                            courses: [H04L2A, G0K32A, H04H8B, H0Q31A, H04I0A, G0K31B, H05D9A, H0A12A],
-                        }
-                    ],
-                },
-                Module {
-                    name: "Hoofdoptie artificiele intelligentie",
-                    description: "",
-                    moduleConstraints: [
-                        ModuleConstraint {
-                            description: "De student vult zijn hoofdoptie aan tot die minstens 18 sp. bedraagt.",
-                            constraint: MinSP(18),
-                        }
-                    ],
-                    activation: ISP.specialisation = "artificiele_intelligentie",
-                    modules: [
-                        Module {
-                            name: "Plichtgedeelte",
-                            description: "",
-                            courses: [H02C6A, H0T25A, H05N0A],
-                            moduleConstraints: [
-                                ModuleConstraint {
-                                    description: "Alle opleidingsonderdelen zijn verplicht",
-                                    constraint: All(c, Included(c)),
-                                }
-                            ],
-                        },
-                        Module {
-                            name: "Keuzegedeelte",
-                            description: "",
-                            courses: [H02D1A, H02A3A, H02C3A, H02C8B, H00Y4A],
-                        }
-                    ],
-                },
-                Module {
-                    name: "Hoofdoptie software engineering",
-                    description: "",
-                    moduleConstraints: [
-                        ModuleConstraint {
-                            description: "De student vult zijn hoofdoptie aan tot die minstens 18 sp. bedraagt.",
-                            constraint: MinSP(18),
-                        }
-                    ],
-                    activation: ISP.specialisation = "software_engineering",
-                    modules: [
-                        Module {
-                            name: "Plichtgedeelte",
-                            description: "",
-                            courses: [G0K32A, G0L15B, H0A12A],
-                            moduleConstraints: [
-                                ModuleConstraint {
-                                    description: "Alle opleidingsonderdelen zijn verplicht",
-                                    constraint: All(c, Included(c)),
-                                }
-                            ],
-                        },
-                        Module {
-                            name: "Keuzegedeelte",
-                            description: "",
-                            courses: [H04L2A, H04H8B, H04K5A, G0K31B],
-                        }
-                    ],
-                },
-                Module {
-                    name: "Hoofdoptie mens-machinecommunicatie",
-                    description: "",
-                    moduleConstraints: [
-                        ModuleConstraint {
-                            description: "De student vult zijn hoofdoptie aan tot die minstens 18 sp. bedraagt.",
-                            constraint: MinSP(18),
-                        }
-                    ],
-                    activation: ISP.specialisation = "mens_machinecommunicatie",
-                    modules: [
-                        Module {
-                            name: "Plichtgedeelte",
-                            description: "",
-                            courses: [G0Q55A, G0Q66D, H0O60A],
-                            moduleConstraints: [
-                                ModuleConstraint {
-                                    description: "Alle opleidingsonderdelen zijn verplicht",
-                                    constraint: All(c, Included(c)),
-                                }
-                            ],
-                        },
-                        Module {
-                            name: "Keuzegedeelte",
-                            description: "",
-                            courses: [G0B36A, H09J2A, H04I2A, H02C8B, H0O61A],
-                        }
-                    ],
-                },
-                Module {
-                    name: "Hoofdoptie computationele informatica",
-                    description: "",
-                    activation: ISP.specialisation = "computationele_informatica",
-                    modules: [
-                        Module {
-                            name: "Plichtgedeelte",
-                            description: "",
-                            courses: [H03F9A, G0Q63B, H03F0B],
-                            moduleConstraints: [
-                                ModuleConstraint {
-                                    description: "Alle opleidingsonderdelen zijn verplicht",
-                                    constraint: All(c, Included(c)),
-                                }
-                            ],
-                        },
-                        Module {
-                            name: "Keuzegedeelte",
-                            description: "",
-                            courses: [H01G1A, H03F7A, H02D1A],
-                        }
-                    ],
-                }
-            ],
-        },
-
+        hoofdoptie,
         Module {
             name: "Verdere optie",
             description: "",
@@ -278,6 +72,215 @@ ING_CS = Module {
                 ModuleConstraint {
                     description: "Een student kiest, mits goedkeuring, maximaal één van volgende opleidingsonderdelen: H0T39A (Entrepreneurship in de praktijk/in practice, 3 sp) en H0T91A (Entrepreneurship in practice/service-learning, 6 sp).",
                     constraint: Included(H0T39A) NAND Included(H0T91A),
+                }
+            ],
+        }
+    ],
+}
+
+verbredend = Module {
+     name: "Bachelor verbredend pakket",
+     description: "Studenten nemen verplicht elk opleidingsonderdeel op, waarvan de behandelde materie niet aan bod kwam in voorafgaande opleidingen.",
+     courses: [],
+     modules: [
+         Module {
+             name: "Bachelor verbredend pakket voor studenten met een bachelor in de ingenieurswetenschappen: computerwetenschappen",
+             description: "",
+             courses: [H04H5B, H04J9B, H0O07A, H04H0B],
+             moduleConstraints: [
+                 ModuleConstraint {
+                     description: "Alle opleidingsonderdelen zijn verplicht",
+                     constraint: All(c, Included(c)),
+                 }
+             ],
+             activation: ISP.background = "ing",
+         },
+         Module {
+             name: "Bachelor verbredend pakket voor studenten met een bachelor informatica",
+             description: "",
+             courses: [H01F2A, G0Q57A, H01L1A],
+             moduleConstraints: [
+                 ModuleConstraint {
+                     description: "Alle opleidingsonderdelen zijn verplicht",
+                     constraint: All(c, Included(c)),
+                 }
+             ],
+             activation: ISP.background = "informatica",
+         }
+     ],
+}
+
+hoofdoptie = Module {
+    name: "Hoofdoptie",
+    description: "De student kiest 1 van de 6 mogelijke opties",
+    moduleConstraints: [
+    ],
+    modules: [
+        Module {
+            name: "Hoofdoptie gedistribueerde systemen",
+            description: "",
+            moduleConstraints: [
+                ModuleConstraint {
+                    description: "Hoofdoptie bedraagt minstens 18SP",
+                    constraint: MinSP(18),
+                }
+            ],
+            activation: ISP.specialisation = "distributed_systems",
+            modules: [
+                Module {
+                    name: "Plichtgedeelte",
+                    description: "Hey how",
+                    courses: [H04I0A, G0K31B, H04G7A],
+                    moduleConstraints: [
+                        ModuleConstraint {
+                            description: "Alle opleidingsonderdelen zijn verplicht",
+                            constraint: All(c, Included(c)),
+                        }
+                    ],
+                },
+                Module {
+                    name: "Keuzegedeelte",
+                    description: "",
+                    courses: [H04L2A, H04G4A, H0A12A],
+                }
+            ],
+        },
+        Module {
+            name: "Hoofdoptie veilige software",
+            description: "",
+            moduleConstraints: [
+                ModuleConstraint {
+                    description: "De student vult zijn hoofdoptie aan tot die minstens 18 sp. bedraagt.",
+                    constraint: MinSP(18),
+                }
+            ],
+            activation: ISP.specialisation = "veilige_software",
+            modules: [
+                Module {
+                    name: "Plichtgedeelte",
+                    description: "",
+                    courses: [H04K5A, H04G4A, H05M8B],
+                    moduleConstraints: [
+                        ModuleConstraint {
+                            description: "Alle opleidingsonderdelen zijn verplicht",
+                            constraint: All(c, Included(c)),
+                        }
+                    ],
+                },
+                Module {
+                    name: "Keuzegedeelte",
+                    description: "",
+                    courses: [H04L2A, G0K32A, H04H8B, H0Q31A, H04I0A, G0K31B, H05D9A, H0A12A],
+                }
+            ],
+        },
+        Module {
+            name: "Hoofdoptie artificiele intelligentie",
+            description: "",
+            moduleConstraints: [
+                ModuleConstraint {
+                    description: "De student vult zijn hoofdoptie aan tot die minstens 18 sp. bedraagt.",
+                    constraint: MinSP(18),
+                }
+            ],
+            activation: ISP.specialisation = "artificiele_intelligentie",
+            modules: [
+                Module {
+                    name: "Plichtgedeelte",
+                    description: "",
+                    courses: [H02C6A, H0T25A, H05N0A],
+                    moduleConstraints: [
+                        ModuleConstraint {
+                            description: "Alle opleidingsonderdelen zijn verplicht",
+                            constraint: All(c, Included(c)),
+                        }
+                    ],
+                },
+                Module {
+                    name: "Keuzegedeelte",
+                    description: "",
+                    courses: [H02D1A, H02A3A, H02C3A, H02C8B, H00Y4A],
+                }
+            ],
+        },
+        Module {
+            name: "Hoofdoptie software engineering",
+            description: "",
+            moduleConstraints: [
+                ModuleConstraint {
+                    description: "De student vult zijn hoofdoptie aan tot die minstens 18 sp. bedraagt.",
+                    constraint: MinSP(18),
+                }
+            ],
+            activation: ISP.specialisation = "software_engineering",
+            modules: [
+                Module {
+                    name: "Plichtgedeelte",
+                    description: "",
+                    courses: [G0K32A, G0L15B, H0A12A],
+                    moduleConstraints: [
+                        ModuleConstraint {
+                            description: "Alle opleidingsonderdelen zijn verplicht",
+                            constraint: All(c, Included(c)),
+                        }
+                    ],
+                },
+                Module {
+                    name: "Keuzegedeelte",
+                    description: "",
+                    courses: [H04L2A, H04H8B, H04K5A, G0K31B],
+                }
+            ],
+        },
+        Module {
+            name: "Hoofdoptie mens-machinecommunicatie",
+            description: "",
+            moduleConstraints: [
+                ModuleConstraint {
+                    description: "De student vult zijn hoofdoptie aan tot die minstens 18 sp. bedraagt.",
+                    constraint: MinSP(18),
+                }
+            ],
+            activation: ISP.specialisation = "mens_machinecommunicatie",
+            modules: [
+                Module {
+                    name: "Plichtgedeelte",
+                    description: "",
+                    courses: [G0Q55A, G0Q66D, H0O60A],
+                    moduleConstraints: [
+                        ModuleConstraint {
+                            description: "Alle opleidingsonderdelen zijn verplicht",
+                            constraint: All(c, Included(c)),
+                        }
+                    ],
+                },
+                Module {
+                    name: "Keuzegedeelte",
+                    description: "",
+                    courses: [G0B36A, H09J2A, H04I2A, H02C8B, H0O61A],
+                }
+            ],
+        },
+        Module {
+            name: "Hoofdoptie computationele informatica",
+            description: "",
+            activation: ISP.specialisation = "computationele_informatica",
+            modules: [
+                Module {
+                    name: "Plichtgedeelte",
+                    description: "",
+                    courses: [H03F9A, G0Q63B, H03F0B],
+                    moduleConstraints: [
+                        ModuleConstraint {
+                            description: "Alle opleidingsonderdelen zijn verplicht",
+                            constraint: All(c, Included(c)),
+                        }
+                    ],
+                },
+                Module {
+                    name: "Keuzegedeelte",
+                    description: "",
+                    courses: [H01G1A, H03F7A, H02D1A],
                 }
             ],
         }

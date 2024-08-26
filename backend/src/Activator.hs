@@ -4,6 +4,7 @@ import qualified Data.Aeson as Aeson
 import GHC.Generics (Generic)
 
 import Control.Monad.Reader
+import Debug.Trace
 import qualified ISP
 
 data ActivatorConstraint =
@@ -35,7 +36,8 @@ checkActive (TrueConstraint) = do
 checkActive (EqualConstraint lhs rhs) = do
   env <- ask
   let optionVal = ISP.getOption env.isp lhs
-  return $ optionVal == lhs
+--  trace ("isActive? " ++ show optionVal ++ " vs " ++ show lhs) $
+  return $ optionVal == rhs
 
 checkActive (NandConstraint c1 c2) = do
   r1 <- checkActive c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.

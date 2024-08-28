@@ -10,8 +10,8 @@ import qualified ISP
 -- | Each module may optionally have an activator constraint. This constraint is evaluated at runtime given a filled-in ISP.
 -- A module activation can be composed of several activation 'functions', allowing for complex activations if necessary.
 data ActivatorConstraint =
-  TrueConstraint |
-  EqualConstraint String String |
+  TrueConstraint | -- Trivial activator constraint: always returns True upon checking
+  EqualConstraint String String | -- Checks the value on the RHS with the ISPOption value on the LHS
   NotConstraint ActivatorConstraint |
   NandConstraint ActivatorConstraint ActivatorConstraint |
   AndConstraint ActivatorConstraint ActivatorConstraint |

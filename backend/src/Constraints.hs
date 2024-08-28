@@ -24,19 +24,15 @@ data Constraint =
   XorConstraint Constraint Constraint |
   MinSPConstraint Int |
   MaxSPConstraint Int |
-  RemainingSPConstraint Int |
   SameYearConstraint CourseCode CourseCode |
   ScopedConstraint Constraint Scope | -- Nested constraint only applies to given scope
   ModuleConstraint Text Constraint -- ModuleConstraint essentially wraps a constraint and adds a description for this constraint.
   deriving (Show, Generic)
 
--- Derived constraints
-
+-- Used to convert any constraint into json format, to be used in the front-end
 instance Aeson.ToJSON Constraint where
   toEncoding = Aeson.genericToEncoding Aeson.defaultOptions
 
-createAggregateAndConstraint :: [Constraint] -> Constraint
-createAggregateAndConstraint constraints = undefined
-
+-- A built-in constraint combinator to combine both the MinSPConstraint with the MaxSPConstraint
 rangeSPConstraint :: Int -> Int -> Constraint
 rangeSPConstraint minSP maxSP = AndConstraint (MinSPConstraint minSP) (MaxSPConstraint maxSP)

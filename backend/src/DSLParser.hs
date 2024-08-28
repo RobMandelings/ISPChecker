@@ -29,13 +29,14 @@ import qualified Preparation
 import Control.Monad.Reader
 
 -- Parsec is the core parser type in Megaparsec. Represents a parser that can consume input and produce a result.
--- Void: error type (don't care about custom error information; TODO later)
+-- Void: error type (don't care about custom error information;
 -- Text: type of input the parser works on (string/bytestring/text)
--- TODO difference Text and String?
 type Parser = Parsec Void Text
 
+-- | The results of parsing an entire file is stored in parse objects.
 data ParseObj = ISPObj ISP.ISP | ModuleObj StudyProgram.ModuleWRef | CourseObj Courses.Course | ConstraintObj Constraints.Constraint deriving (Show)
 
+-- | Entire parsing result of parsing a single file
 data ParseResult = ParseResult
   { isps :: Map.Map String ISP.ISP
   , modules :: Map.Map String StudyProgram.Module
@@ -43,15 +44,19 @@ data ParseResult = ParseResult
   , constraints :: Map.Map String Constraints.Constraint
   } deriving (Show, Generic)
 
+-- | Used to convert the type into json format for use in front-end
 instance Aeson.ToJSON ParseResult where
   toEncoding = Aeson.genericToEncoding Aeson.defaultOptions
 
+-- | Parses a single line comment
 singleLineComment :: Parser ()
 singleLineComment = L.skipLineComment "//"
 
+-- | Parses multiple line comments
 multiLineComment :: Parser ()
 multiLineComment = L.skipBlockComment "/*" "*/"
 
+-- | Used to consume empty spaces (including singleLineComment and multiLineComment). Usually done after parsing meaningful data.
 spaceConsumer :: Parser ()
 spaceConsumer = L.space space1 singleLineComment multiLineComment
 
@@ -69,20 +74,18 @@ symbol :: Text -> Parser Text
 -- So essentially what we do here is currying
 symbol = L.symbol spaceConsumer
 
+-- | Parses a single character (excluding the quotation character)
 charLiteralExclQuotation :: Parser Char
 charLiteralExclQuotation = satisfy (\c -> c /= '"')
 
+-- | Parses an integer
 parseInteger :: Parser Int
 parseInteger = lexeme $ L.signed (return ()) (L.decimal <* notFollowedBy (char '.'))
 
+-- | Parses a string literal
 stringLiteral :: Parser String
+stringLiteral = between (char '"') (char '"') (many charLiteralExclQuotation) -- Composed of parsing many char literals
 
- -- >> is to discard the first monadic action and return the result of the second monadic acion (chaining two monadic actions and discarding the first one)
-
--- first version
---stringLiteral = char '"' >> manyTill L.charLiteral (char '"')
-
-stringLiteral = between (char '"') (char '"') (many charLiteralExclQuotation)
 
 {- | (:) is the cons operator. Adds an element to a list at the front (prepend)
   <$> infix form of fmap (applies function to the result of the functor) -> in this case (:) applied to result of letterChar
@@ -91,33 +94,32 @@ stringLiteral = between (char '"') (char '"') (many charLiteralExclQuotation)
 identifier :: Parser String
 identifier = lexeme ((:) <$> letterChar <*> many (alphaNumChar <|> char '_'))
 
---pIdentifier :: Parser String
---pIdentifier = try (
---  do
---    _ <- string "Module"
---    failure "Reserved keyword 'Module' cannot be used as an identifier"
---) <|> pIdentifier
-
--- TODO allow parsing with spaces between the field and the value
-
+-- | Parses a field in the dsl. A field is a combination of key and value pairs
 parseField :: Text -> Parser a -> Parser a
 parseField fieldName fieldParser = symbol fieldName >> symbol ":" >> (lexeme $ fieldParser) <* symbol ","
 
+-- | Parses a field of type string (a literal string, such as "hello")
 parseStringField :: Text -> Parser String
 parseStringField fieldName = parseField fieldName stringLiteral
 
+-- | Parses a field that has an identifier as value (e.g. key: hello), instead of literal "hello". This is used to check for references within the dsl (e.g. course identifier that refers a to a course object defined in the DSL
 parseIdentifierField :: Text -> Parser String
 parseIdentifierField fieldName = parseField fieldName identifier
 
+-- | Parses a field of type list (e.g. [1, 2, 3] where 1, 2, 3 are course identifiers)
 parseListField :: Text -> Parser a -> Parser [a]
 parseListField fieldName parser = parseField fieldName $ parseList $ parser
 
+-- | Parses a name string field
 parseName :: Parser String
 parseName = parseField "name" stringLiteral
 
+-- | Parses a description string field
 parseDescription :: Parser String
 parseDescription = parseField "description" stringLiteral
 
+-- | Parses a list of submodules. A submodule can either be a nested module (which is defined inline) or a reference to a module
+-- | Identifiers are used to split module definition into multiple high-level definitions, which makes the code in the DSL much more readable.
 parseSubmodules :: Parser [Either String StudyProgram.ModuleWRef]
 parseSubmodules = parseListField "modules" $ do {
   choice
@@ -127,23 +129,25 @@ parseSubmodules = parseListField "modules" $ do {
     ]
   }
 
+-- | Parses a list of elements separated by a comma
 parseList :: Parser a -> Parser [a]
 parseList p = between (symbol "[") (symbol "]") (p `sepBy` symbol ",")
 
+-- | Parses an object with a specific name (e.g. Module, ModuleConstraint, Course, ISP)
 parseObject :: Text -> Parser a -> Parser a
 parseObject name p = do
   _ <- symbol name
   parseNested p -- No need to use the return keyword because this is already a monadic action that results the result
 
+-- | Parses the object that is within the curly braces
 parseNested :: Parser a -> Parser a
 parseNested = between (symbol "{") (symbol "}")
 
-parseComma :: Parser Text
-parseComma = symbol ","
-
+-- | Parses a single integer
 parseInt :: Parser Int
 parseInt = L.decimal
 
+-- | Parses a period (First, Second, AllYear)
 parsePeriod :: Parser Courses.Period
 parsePeriod = choice
   [ symbol "First" *> return Courses.FirstSem
@@ -151,9 +155,8 @@ parsePeriod = choice
   ,  symbol "AllYear" *> return Courses.AllYear
   ]
 
---parseActivator :: Parser String
---parseActivator = lexeme $ string "active:" >> manyTill anySingle (try $ lookAhead (symbol "\n" <|> symbol "}"))
-
+-- | Parses an assignment. Assignments are used to define references to objects in the DSL (at the top level).
+-- | These references can then be used in the definition of another object.
 parseAssignment :: Parser a -> Parser (String, a)
 parseAssignment p = do
   lhs <- identifier
@@ -161,6 +164,7 @@ parseAssignment p = do
   rhs <- p
   return (lhs, rhs)
 
+-- | Parses a constraint that maximally has one nested constraint.
 parseSimpleConstraint :: Parser Constraints.Constraint
 parseSimpleConstraint = do
   c <- choice [
@@ -174,6 +178,7 @@ parseSimpleConstraint = do
     ]
   return c
 
+-- | Parses a constraint that requires all courses within the scope to satisfy the constraint (see AllConstraint)
 parseAllConstraint :: Parser Constraints.Constraint
 parseAllConstraint = do
   _ <- symbol "All"
@@ -208,33 +213,25 @@ parseArgs (SomeParserCons parser restParsers) = do
       restResults <- parseArgs restParsers
       return (SomeValueCons res restResults)
 
---parseArgs :: [SomeParser] -> Parser [SomeValue]
---parseArgs [] = return []
---parseArgs [SomeParser p] = do
---  res <- p
---  return [SomeValue res]
---
---parseArgs (SomeParser p:ps) = do
---  res <- p
---  _ <- symbol ","
---  rest <- parseArgs ps
---  return (SomeValue res : rest)
-
+-- | Parses the arguments within brackets (including commas). This is a very flexible function that may parse arguments of any type (e.g. SameYear(H04X2A, H04J4A))
 parseArgsInBrackets :: SomeParser ts -> Parser (SomeValue ts)
 parseArgsInBrackets argParsers = lexeme $ between (char '(') (char ')') $ parseArgs argParsers
 
+-- | Parses a constraint that checks whether a course is included in the ISP
 parseIncludedConstraint :: Parser Constraints.Constraint
 parseIncludedConstraint = do
   _ <- symbol "Included"
   SomeValueCons courseCode SomeValueNil <- parseArgsInBrackets $ SomeParserCons identifier SomeParserNil
   return $ Constraints.IncludedConstraint courseCode
 
+-- | Parses a constraint that checks whether two courses are included in the same year
 parseSameYearConstraint :: Parser Constraints.Constraint
 parseSameYearConstraint = do
   _ <- symbol "SameYear"
   (SomeValueCons code1 (SomeValueCons code2 SomeValueNil)) <- parseArgsInBrackets $ SomeParserCons identifier $ SomeParserCons identifier SomeParserNil
   return $ Constraints.SameYearConstraint code1 code2
 
+-- | Parses a constraint that checks whether the study points of a course are within a certain range (depending on what is written in the dsl, this can either be min or max)
 parseMinMaxSPConstraint :: Parser Constraints.Constraint
 parseMinMaxSPConstraint = do
   minMaxConstraint <- choice [
@@ -244,12 +241,14 @@ parseMinMaxSPConstraint = do
   (SomeValueCons sp SomeValueNil) <- parseArgsInBrackets $ SomeParserCons parseInteger SomeParserNil
   return $ minMaxConstraint sp
 
+-- | Parses a constraint that checks whether the study points of a course are within a certain range
 parseRangeSPConstraint :: Parser Constraints.Constraint
 parseRangeSPConstraint = do
   _ <- symbol "RangeSP"
   (SomeValueCons min (SomeValueCons max SomeValueNil)) <- parseArgsInBrackets $ SomeParserCons parseInteger $ SomeParserCons parseInteger SomeParserNil
   return $ Constraints.rangeSPConstraint min max
 
+-- | Parses a constraint that checks whether the remaining study points are maximally
 parseRemainingSPConstraint :: Parser Constraints.Constraint
 parseRemainingSPConstraint = do
   _ <- symbol "RemainingSP"

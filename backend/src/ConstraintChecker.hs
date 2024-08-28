@@ -159,8 +159,6 @@ replaceCourseCodeRef codeRef constraint newCode =
     Constraints.NorConstraint c1 c2 -> Constraints.NorConstraint (replaceCourseCodeRef codeRef c1 newCode) (replaceCourseCodeRef codeRef c2 newCode)
     Constraints.XorConstraint c1 c2 -> Constraints.XorConstraint (replaceCourseCodeRef codeRef c1 newCode) (replaceCourseCodeRef codeRef c2 newCode)
     Constraints.NotConstraint c -> Constraints.NotConstraint (replaceCourseCodeRef codeRef c newCode)
-    -- TODO: what about the same year constraint?
-    -- TODO: what about the scoped constraint?
     _ ->
       constraint
 

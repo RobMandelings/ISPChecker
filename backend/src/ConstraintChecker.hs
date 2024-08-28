@@ -67,13 +67,6 @@ instance ToBool ConstraintResult where
   toBool ConstraintSuccess = True
   toBool (ConstraintFail _ _) = False
 
--- TODO
--- the lhs defines the type constraint for this typeclass.
--- Any m that is an instance of the CourseStore type class, should also be an instance of the Monad typeclass
-
---class Monad m => CourseStore m where
---  getCourse :: Courses.CourseCode -> m (Maybe Courses.Course)
-
 -- | CourseStore type where a function getCourse can be provided. This is because there might be different implementations of this function that should be abstracted. (e.g. database vs in-memory)
 data CourseStore = CourseStore { getCourse :: Courses.CourseCode -> Maybe Courses.Course }
 
@@ -90,8 +83,6 @@ createDBCourseStore :: String -> CourseStore
 createDBCourseStore dbName =
   CourseStore { getCourse = (\courseCode -> Nothing) }
 
--- Instances don't work because they will always return a monad and you still need to know how to execute it and pass the proper parameters.
-
 -- | Environment used to run the constraint checker.
 data Env = Env
   {
@@ -105,19 +96,6 @@ type ModuleChecker = ReaderT Env Maybe ModuleResult
 
 -- | Monad used to run the constraint checker
 type ConstraintChecker = ReaderT Env Maybe ConstraintResult
---
----- check whether module is active
----- evaluate subModules
---
----- create and constraint merging all constraints together
----- get the scope (course codes)
----- wrap the andConstraint in a scopedConstraint (todo for organisational purposes maybe its better to iterate over the constraints?)
----- evaluate this constraint
---
-
--- No need to use a monad here, just use getCourses
--- No monad because its not easy to change the monad type with a different environment. You use need to use runReader to extract the values, but then that would be the same as just having an argument.
--- If the monadic context for getCourses is used in recursive calls, then you might want to reconsider using a monad. Otherwise I wouldn't see the point.
 
 -- | Retrieves a list of courses that are included in the ISP (not the codes, but actual courses)
 getCourses :: Env -> [Courses.Course]
@@ -193,10 +171,15 @@ checkConstraint :: Constraints.Constraint -> ConstraintChecker
 checkConstraint (Constraints.ModuleConstraint desc c) = do
   checkConstraint c -- Description is irrelevant for constraint checking, so just return the result of the nested constraint.
 
+-- | Checks whether for all courses in the current scope, the constraint holds (e.g. for all courses: Included(course)
 checkConstraint (Constraints.AllConstraint codeRef constraint) = do
   env <- ask
-  let !results = map (replaceCourseCodeRef codeRef constraint) (Set.toList $ env.scope)
+  -- Map every course code in the scope to a constraint that replaces the code reference (the placeholder course) with the course code
+  -- This yields a list of constraints where in each constraint, the placeholder has been replaced by a specific course code.
+  let results = map (replaceCourseCodeRef codeRef constraint) (Set.toList $ env.scope)
   constraintCheckResults <- mapM checkConstraint results
+
+  -- If at least one of the constraint fails, then the parent constraint fails as well (AllConstraint)
   let fail = Set.member False $ Set.fromList $ map toBool constraintCheckResults
   if fail then
     let errorMsg = pack $ "Niet alle vakken voldoen aan de vereisten" in
@@ -205,7 +188,7 @@ checkConstraint (Constraints.AllConstraint codeRef constraint) = do
     return ConstraintSuccess
 
 
--- | Checks whether a coursecode is included in the ISP
+-- | Checks whether a courseCode is included in the ISP
 checkConstraint (Constraints.IncludedConstraint code) = do
   env <- ask
   let res = Set.member code $ ISP.getIncludedCourses env.isp
@@ -215,35 +198,40 @@ checkConstraint (Constraints.IncludedConstraint code) = do
     let errorMsg = pack $ "Het vak '" ++ code ++ "' is niet opgenomen in het ISP." in
       return $ ConstraintFail {errorMsg, subResults=[]}
 
+-- | Checks whether two constraints are not simultaneously satisfied
 checkConstraint (Constraints.NandConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   r2 <- checkConstraint c2
   let r = not (toBool r1 && toBool r2)
   return $ if r then ConstraintSuccess else ConstraintFail {errorMsg="", subResults=[r1, r2]}
 
+-- | Checks whether two constraints are simultaneously satisfied
 checkConstraint (Constraints.AndConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   r2 <- checkConstraint c2
   let r = toBool r1 && toBool r2
   return $ if r then ConstraintSuccess else ConstraintFail {errorMsg="", subResults=[r1, r2]}
 
+-- | Checks whether one of the constraints are satisfied
 checkConstraint (Constraints.OrConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   r2 <- checkConstraint c2
   let r = toBool r1 || toBool r2
   return $ if r then ConstraintSuccess else ConstraintFail {errorMsg="", subResults=[r1, r2]}
 
+-- | Checks whether none of the constraints are satisfied
 checkConstraint (Constraints.NorConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   r2 <- checkConstraint c2
   let r = not (toBool r1 || toBool r2)
   return $ if r then ConstraintSuccess else ConstraintFail {errorMsg="", subResults=[r1, r2]}
 
+-- | Checks whether exactly one of the constraints are satisfied
 checkConstraint (Constraints.XorConstraint c1 c2) = do
   r1 <- checkConstraint c1 -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   r2 <- checkConstraint c2
   let res1 = (toBool r1 || toBool r2)
-  let res = res1 && toBool r1 /= toBool r2
+  let res = res1 && toBool r1 /= toBool r2 -- Checks for exclusion
   if res then
     return $ ConstraintSuccess
   else
@@ -252,11 +240,13 @@ checkConstraint (Constraints.XorConstraint c1 c2) = do
     else
       return $ ConstraintFail {errorMsg="Het is niet toegelaten om aan beide voorwaarden tegelijkertijd te voldoen.", subResults=[r1, r2]}
 
+-- | Checks whether a constraint is not satisfied
 checkConstraint (Constraints.NotConstraint c) = do
   r <- checkConstraint c -- If checkConstraint returns Nothing, the do block short-circuits and Nothing is returned instead. If it returns Just x, then x is binded to r1. With let r1 = checkConstraint ... we don't extract x.
   let res = not $ toBool r
   return $ if res then ConstraintSuccess else ConstraintFail {errorMsg="", subResults=[]}
 
+-- | Checks whether a minimum number of studypoints is included from the courses in the current scope
 checkConstraint (Constraints.MinSPConstraint sp) = do
   env <- ask
   let courses = ConstraintChecker.getCourses env
@@ -269,6 +259,7 @@ checkConstraint (Constraints.MinSPConstraint sp) = do
       return $ ConstraintFail {errorMsg, subResults=[]}
 --  lift Nothing -- Return would wrap the result of 'lift Nothing' in another layer of ReaderT
 
+-- | Checks whether a maximum number of studypoints is included from the courses in the current scope
 checkConstraint (Constraints.MaxSPConstraint sp) = do
   env <- ask
   let courses = ConstraintChecker.getCourses env
@@ -279,24 +270,30 @@ checkConstraint (Constraints.MaxSPConstraint sp) = do
   else
     let errorMsg = pack $ "Maximum aantal studiepunten moet " ++ show sp ++ " zijn, en is " ++ show totalSP in
       return $ ConstraintFail {errorMsg, subResults=[]}
---
----- Const is a function that ignores its argument and returns a constant value.
----- We require const here because local expects a function that takes in an env and returns an adjusted environment.
----- But we have already created the newEnv via different variable, so we can just return that value.
+
+-- | Applies a scope of courseCodes to the nested constraints. This is implicit in modules, but they can also be explicitly defined in the DSL.
 checkConstraint (Constraints.ScopedConstraint constraint newScope) = do
   env <- ask
   let newISP = filterISP (env.isp) newScope
   let newEnv = env { isp = newISP, scope = newScope }
+  ---- Const is a function that ignores its argument and returns a constant value.
+  ---- We require const here because local expects a function that takes in an env and returns an adjusted environment.
+  ---- But we have already created the newEnv via different variable, so we can just return that value.
   local (const newEnv) (checkConstraint constraint)
 
+-- | Checks whether two courses are included in the same year
 checkConstraint (Constraints.SameYearConstraint code1 code2) = do
   env <- ask
   let passed = env.isp.courseSelection.passed in
     let plannedPerYear = ISP.getPlannedPerYear $ env.isp.courseSelection in
+    let includedCourses = ISP.getIncludedCourses env.isp in
     let setsContainingBothPassed = (Set.member code1 passed && Set.member code2 passed) in
     let setsContainingBothPlanned = filter (\s -> Set.member code1 s && Set.member code2 s) plannedPerYear in
+
+      if (not (Set.member code1 includedCourses) || not (Set.member code2 includedCourses)) then
+        return ConstraintSuccess -- Rule does not apply if one (or both) courses are not included in the ISP
       -- Either they are simply not included, or both are included in that year
-      if ((not setsContainingBothPassed) && length setsContainingBothPlanned == 0) then
+      else if ((not setsContainingBothPassed) && length setsContainingBothPlanned == 0) then
         return ConstraintFail { errorMsg="Vakken worden niet opgenomen in hetzelfde jaar", subResults=[] }
       else
         return ConstraintSuccess
@@ -313,7 +310,9 @@ getScope mod isp =
   -- Recursive fold function to get all courses that are in nested modules as well.
   let courses = foldr (\mod acc -> Set.union (getScope mod isp) acc) coursesInMod mod.subModules in
     courses
---
+
+-- | Filters the ISP to the given scope. This affects functions like getIncludedCourses to only return courses that are within the scope.
+-- | ISP's are therefore trimmed when they go down the tree of modules, as each module has a different scope (the top level module is the study program, where the scope is unaffected)
 filterISP :: ISP -> Constraints.Scope -> ISP
 filterISP isp scope =
   let
@@ -321,9 +320,11 @@ filterISP isp scope =
   passed = courseSel.passed
   planned = courseSel.planned in
     let
-    filteredPassed = Set.intersection scope passed
-    filteredPlanned = map (Set.intersection scope) planned in
+    filteredPassed = Set.intersection scope passed -- Take the intersection of the new scope limit and the courses that are passed
+    filteredPlanned = map (Set.intersection scope) planned in -- Since planned is a list of sets (because each set represents a year), we need to map over this list to take the intersection
       isp { ISP.courseSelection = ISP.CourseSelection { ISP.passed = filteredPassed, ISP.planned = filteredPlanned } }
 
+-- | Run the constraint checker for the given Module, in the given environment (where the ISP is defined).
+-- | The module result is then a structure that provides information on which constraints are violated.
 runCheckModule :: Module -> Env -> Maybe ModuleResult
 runCheckModule mod env = runReaderT (checkModule mod) env

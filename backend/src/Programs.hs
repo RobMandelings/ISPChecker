@@ -13,6 +13,7 @@ module Programs where
   import qualified ConstraintChecker as CC
   import qualified ISP
 
+  -- | Pares the DSL code within a file and returns the result
   parseDSL :: String -> IO DSLParser.ParseResult
   parseDSL filePath = do
     content <- T.readFile filePath
@@ -20,8 +21,9 @@ module Programs where
     case result of
       Left err -> error $ errorBundlePretty err
       Right parseRes ->
-        return parseRes
+        return parseRes -- The result of parsing the entire file
 
+  -- | Given a file path, module name and name of isp (references to objects within the dsl code), run the constraint checker and return the result for the top-level module (e.g. the study program)
   runConstraintChecker :: String -> String -> String -> IO CC.ModuleResult
   runConstraintChecker filePath moduleName ispName = do
     parseRes <- parseDSL filePath

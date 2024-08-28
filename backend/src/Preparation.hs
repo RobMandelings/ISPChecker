@@ -5,14 +5,12 @@ module Preparation where
   import Control.Monad.Reader
   import Control.Monad ( (>=>))
 
-  -- | TODO optimization: only retrieve references to modules when necessary (i.e. if module is activated). Otherwise there is no need to retrieve reference.
-  -- For now we will not handle this case yet.
-
   -- | The parser is able to handle references to modules that are defined somewhere in the file.
   -- I need to make sure that these references are dealt with when checking a modules
-
   data Env = Env { modMap :: (Map.Map String StudyProgram.ModuleWRef) }
 
+  -- | Given a module or a reference to a module, return the actual module.
+  -- | In case a module is given, nothing needs to happen, but in case a reference is provided, the module that is referenced needs to be returned.
   getModule :: Either String StudyProgram.ModuleWRef -> Reader Env StudyProgram.ModuleWRef
   getModule mod = do
     env <- ask
@@ -23,12 +21,14 @@ module Preparation where
         }
       Right modWRef -> return modWRef
 
+  -- | Given a module that might contain references, build the module by resolving the references.
   buildModule :: StudyProgram.ModuleWRef -> Reader Env StudyProgram.Module
   buildModule mod = do
     env <- ask
     subModules <- mapM (getModule >=> buildModule) mod.subModules
     return $ StudyProgram.Module { commonFields = mod.commonFields, subModules }
 
+  -- | Given a map of modules, build all modules by resolving the references within each module.
   buildModules :: Map.Map String StudyProgram.ModuleWRef -> Reader Env (Map.Map String StudyProgram.Module)
   buildModules modMap = do
     env <- ask

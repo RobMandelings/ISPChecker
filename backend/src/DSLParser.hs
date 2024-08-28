@@ -178,6 +178,9 @@ parseSimpleConstraint = do
     ]
   return c
 
+parseSet :: (Ord a) => Parser [a] -> Parser (Set.Set a)
+parseSet p = Set.fromList <$> p
+
 -- | Parses a constraint that requires all courses within the scope to satisfy the constraint (see AllConstraint)
 parseAllConstraint :: Parser Constraints.Constraint
 parseAllConstraint = do
@@ -255,6 +258,7 @@ parseRemainingSPConstraint = do
   (SomeValueCons sp SomeValueNil) <- parseArgsInBrackets $ SomeParserCons parseInteger SomeParserNil
   return $ Constraints.RemainingSPConstraint sp
 
+-- | Parses a binary constraint (AND, OR, XOR, NOR, NAND)
 parseBinaryConstraint :: Parser Constraints.Constraint
 parseBinaryConstraint = do
   lhs <- parseSimpleConstraint
@@ -268,13 +272,14 @@ parseBinaryConstraint = do
   rhs <- parseConstraint
   return $ operator lhs rhs
 
+-- | Parses a unary constraint (NOT)
 parseUnaryConstraint :: Parser Constraints.Constraint
 parseUnaryConstraint = do
   operator <- symbol "NOT" *> return Constraints.NotConstraint
   constraint <- parseConstraint
   return $ operator constraint
 
--- | TODO: don't allow nested scoped constraints
+-- | Parses a constraint that is scoped to a specific set of courses. This is an explicitly defined scope, scopedConstraints are implicitly added with modules as well.
 parseScopedConstraint :: Parser Constraints.Constraint
 parseScopedConstraint = do
   scope <- parseList $ identifier
@@ -282,15 +287,17 @@ parseScopedConstraint = do
   constraint <- parseConstraint
   return $ Constraints.ScopedConstraint constraint $ Set.fromList scope
 
-
+-- | Parses any (non-module) constraint
 parseConstraint :: Parser Constraints.Constraint
 parseConstraint = do
   c <- choice [
     parseScopedConstraint,
-    try parseBinaryConstraint, -- Why is this try necessary?
+    try parseBinaryConstraint, -- explain this in the report: why did you have to add this thing here.
     parseSimpleConstraint]
   return c
 
+-- | Parses a module constraint. ]
+-- A module constraint is a constraint that has a description which is shown on the front-end (with given message) and has a nested constraint that is used to actually check the validity of the constraint.
 parseModuleConstraint :: Parser Constraints.Constraint
 parseModuleConstraint = do
   parseObject "ModuleConstraint" $ do
@@ -298,6 +305,7 @@ parseModuleConstraint = do
     c <- parseField "constraint" parseConstraint
     return $ Constraints.ModuleConstraint d c
 
+-- | Parses a constraint. A constraint can be any of the following:
 parseBinaryActivatorConstraint :: Parser Activator.ActivatorConstraint
 parseBinaryActivatorConstraint = do
   lhs <- parseSimpleActivatorConstraint
@@ -311,12 +319,14 @@ parseBinaryActivatorConstraint = do
   rhs <- parseActivatorConstraint
   return $ operator lhs rhs
 
+-- | Parses a unary activator constraint (NOT)
 parseUnaryActivatorConstraint :: Parser Activator.ActivatorConstraint
 parseUnaryActivatorConstraint = do
   operator <- symbol "NOT" *> return Activator.NotConstraint
   constraint <- parseActivatorConstraint
   return $ operator constraint
 
+-- | Parses a constraint that checks whether a certain field in the ISP is equal to a certain value
 parseEqualActivatorConstraint :: Parser Activator.ActivatorConstraint
 parseEqualActivatorConstraint = do
   parseField "activation" $ do
@@ -326,6 +336,7 @@ parseEqualActivatorConstraint = do
     value <- stringLiteral
     return $ Activator.EqualConstraint ispRef value
 
+-- | Parses a simple activator constraint (either a unary or equal constraint)
 parseSimpleActivatorConstraint :: Parser Activator.ActivatorConstraint
 parseSimpleActivatorConstraint = do
   c <- choice [
@@ -334,6 +345,7 @@ parseSimpleActivatorConstraint = do
     ]
   return c
 
+-- | Parses an activator constraint. An activator constraint is a constraint that is used to check whether a module is activated or not.
 parseActivatorConstraint :: Parser Activator.ActivatorConstraint
 parseActivatorConstraint = do
   c <- choice [
@@ -341,6 +353,7 @@ parseActivatorConstraint = do
     parseSimpleActivatorConstraint]
   return c
 
+-- | Parses a module. A module is a collection of courses and constraints that are grouped together. Other metadata such as the name and description are also included.
 parseModule :: Parser StudyProgram.ModuleWRef
 parseModule = do
   _ <- spaceConsumer
@@ -350,8 +363,6 @@ parseModule = do
     c <- optional $ parseListField "courses" identifier
     constraints <- optional $ parseListField "moduleConstraints" parseModuleConstraint
     activator <- optional $ parseActivatorConstraint
-  --  a <- parseActivator
-  --  cs <- optional parseConstraints
     subModules <- optional parseSubmodules
     return StudyProgram.ModuleWRef
       {
@@ -364,11 +375,9 @@ parseModule = do
           StudyProgram.constraints = maybe [] id constraints -- TODO fix this hardcoded stuff
         },
       StudyProgram.subModules = maybe [] id subModules
-  --      constraints = []
-  --    , constraints = maybe [] id cs
-  --    , subModules = maybe [] id subModules
       }
 
+-- | Parses a course. A course is a single course that is part of the study program. It has a name, code, description, period and study points.
 parseCourse :: Parser Courses.Course
 parseCourse = do
   parseObject "Course" $ do
@@ -385,6 +394,7 @@ parseCourse = do
     , Courses.studyPoints = sp
     }
 
+-- | Parses the options that are provided in the ISP. These options are specific to the study program and can be used to customise the ISP.
 parseISPOptions :: Parser ISP.ISPOptions
 parseISPOptions = do
   spec <- parseStringField "specialisation"
@@ -392,9 +402,7 @@ parseISPOptions = do
   let ispOptions = Map.fromList[("background", bg), ("specialisation", spec)]
   return ispOptions
 
-parseSet :: (Ord a) => Parser [a] -> Parser (Set.Set a)
-parseSet p = Set.fromList <$> p
-
+-- | Parses a course selection. A course selection is a collection of courses that are either passed or planned.
 parseCourseSelection :: Parser ISP.CourseSelection
 parseCourseSelection = do
   passed <- optional $ parseSet $ parseListField "passed" $ identifier
@@ -404,6 +412,7 @@ parseCourseSelection = do
   , ISP.planned = maybe [] id planned
   }
 
+-- | Parses an ISP. An ISP contains a collection of courses that a student has passed or planned. It also contains options that are specific to the study program.
 parseISP :: Parser ISP.ISP
 parseISP = parseObject "ISP" $ do
   studyProgram <- parseIdentifierField "studyProgram"
@@ -415,6 +424,7 @@ parseISP = parseObject "ISP" $ do
   , ISP.courseSelection = courseSel
   }
 
+-- | Parses a list of objects (e.g. courses, modules, ISPs, constraints). Objects in the dsl can be defined in any order, and references to objects can be used before the object is defined.
 parseObjects :: Parser [(String, ParseObj)]
 parseObjects = do
   _ <- spaceConsumer
@@ -423,7 +433,7 @@ parseObjects = do
       course <- parseCourse;
       return (course.code, CourseObj course)
     },
-    parseAssignment $ do { -- TODO make sure that you can parse in all cases and have proper error handling (no usage of tries because this eliminates errors). E.g. you can't parse something with 'Course' as name
+    parseAssignment $ do {
         res <- choice [
           ISPObj <$> parseISP,
           ConstraintObj <$> parseModuleConstraint, -- The order has been explicitly thought about because switching Module parsing with ModuleConstraint parsing leads to problem
@@ -434,6 +444,8 @@ parseObjects = do
     ]
   return parsedObjs
 
+-- | Creates a parse result from a list of parse objects. The parse result contains a map of ISPs, modules, courses and constraints.
+-- | We first need to parse the objects in a list to allow for any order, after which we can create a map for each type of object.
 createParseResultFromObjs :: [(String, ParseObj)] -> ParseResult
 createParseResultFromObjs objs =
   let isps = Map.fromList $ foldr (\(n, obj) acc -> case obj of
@@ -456,6 +468,7 @@ createParseResultFromObjs objs =
     ParseResult { isps = isps, modules = modules, courses = courses, constraints = constraints }
 
 
+-- | Parses everything into a ParseResult.
 parse :: Parser ParseResult
 parse = do
   parseObjs <- parseObjects
@@ -464,13 +477,14 @@ parse = do
     Nothing ->
       return $ createParseResultFromObjs parseObjs
 
-
+-- | Creates an error message based on the redefinitions that were found.
 createErrorMessage :: [(String, ParseObj)] -> String
 createErrorMessage grp =
   let name = fst $ head grp in
   let count = length grp in
     "Redefinitions: the name " ++ name ++ " occurs " ++ show count ++ " times"
 
+-- | Checks for redefinitions and returns a list of error messages if redefinitions are found. Otherwise returns Nothing.
 checkRedefinitions :: [(String, ParseObj)] -> Maybe [String]
 checkRedefinitions pairs =
   let grouped = groupBy ((==) `on` fst) $ sortOn fst pairs in

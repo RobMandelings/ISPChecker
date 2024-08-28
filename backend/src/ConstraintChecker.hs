@@ -319,7 +319,7 @@ filterISP isp scope =
   planned = courseSel.planned in
     let
     filteredPassed = Set.intersection scope passed -- Take the intersection of the new scope limit and the courses that are passed
-    filteredPlanned = map (Set.intersection scope) planned in -- Since planned is a list of sets (because each set represents a year), we need to map over this list to take the intersection
+    filteredPlanned = map (Set.intersection scope) planned in -- Since planned is a list of sets (because each set represents a semester), we need to map over this list to take the intersection
       isp { ISP.courseSelection = ISP.CourseSelection { ISP.passed = filteredPassed, ISP.planned = filteredPlanned } }
 
 -- | Run the constraint checker for the given Module, in the given environment (where the ISP is defined).

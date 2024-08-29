@@ -204,7 +204,8 @@ data SomeValue (ts :: [*]) where
     SomeValueNil :: SomeValue '[]
     SomeValueCons :: a -> SomeValue as -> SomeValue (a ': as) -- It knows that by giving these two types, the result will be in a type-level list
 
-parseArgs :: SomeParser ts -> Parser (SomeValue ts) -- Heterogeneous list (type-level list, we don't know the exact type here). But we do know that the types involved in the list are the same!
+-- | Heterogeneous list (type-level list, we don't know the exact type here). But we do know that the types involved in the list are the same!
+parseArgs :: SomeParser ts -> Parser (SomeValue ts)
 parseArgs SomeParserNil = return SomeValueNil
 parseArgs (SomeParserCons parser restParsers) = do
   res <- parser

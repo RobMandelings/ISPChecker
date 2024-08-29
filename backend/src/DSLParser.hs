@@ -191,9 +191,9 @@ parseAllConstraint = do
 --data SomeValue = forall a. SomeValue a
 
 -- Define type-level lists
-data HList (ts :: [*]) where
-    HNil :: HList '[]
-    HCons :: t -> HList ts -> HList (t ': ts)
+--data HList (ts :: [*]) where
+--    HNil :: HList '[]
+--    HCons :: t -> HList ts -> HList (t ': ts)
 
 -- Define SomeParser and SomeValue for HLists
 data SomeParser (ts :: [*]) where

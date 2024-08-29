@@ -7,6 +7,8 @@ import Data.Text (Text)
 import qualified Data.Aeson as Aeson
 import GHC.Generics (Generic)
 
+-- TODO remainingSPConstraint
+
 type Scope = Set.Set CourseCode
 
 data Constraint =

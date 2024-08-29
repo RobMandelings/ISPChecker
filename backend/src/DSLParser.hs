@@ -173,7 +173,6 @@ parseSimpleConstraint = do
       parseSameYearConstraint,
       parseMinMaxSPConstraint,
       parseRangeSPConstraint,
-      parseRemainingSPConstraint,
       parseAllConstraint
     ]
   return c
@@ -250,13 +249,6 @@ parseRangeSPConstraint = do
   _ <- symbol "RangeSP"
   (SomeValueCons min (SomeValueCons max SomeValueNil)) <- parseArgsInBrackets $ SomeParserCons parseInteger $ SomeParserCons parseInteger SomeParserNil
   return $ Constraints.rangeSPConstraint min max
-
--- | Parses a constraint that checks whether the remaining study points are maximally
-parseRemainingSPConstraint :: Parser Constraints.Constraint
-parseRemainingSPConstraint = do
-  _ <- symbol "RemainingSP"
-  (SomeValueCons sp SomeValueNil) <- parseArgsInBrackets $ SomeParserCons parseInteger SomeParserNil
-  return $ Constraints.RemainingSPConstraint sp
 
 -- | Parses a binary constraint (AND, OR, XOR, NOR, NAND)
 parseBinaryConstraint :: Parser Constraints.Constraint

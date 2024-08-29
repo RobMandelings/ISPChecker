@@ -300,7 +300,7 @@ isp1 = ISP {
 	    passed: [
 	    H04G4A, // Om hoofdoptie aan te vullen
 	    H04L2A, H02D1A,
-	    A04D5A, //A08C4A, // RZL moet opgenomen worden
+	    A04D5A, A08C4A, // RZL moet opgenomen worden
 	    H04J4A,
 	    H04X2A // Project management
 	    ],

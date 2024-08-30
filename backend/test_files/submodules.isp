@@ -37,12 +37,6 @@ hoi = Module {
     description: "Cool",
     courses: [],
 }
-//
-//hoi2 = Module {
-//    name: "Subonderdeel 2",
-//    description: "Heel cool",
-//    courses: [H04IOA],
-//}
 
 Course {
 	name: "Industrial Internet Infrastructure",
@@ -57,23 +51,3 @@ Course {
 	period: Second,
 	studyPoints: 5,
 }
-//
-//h = Module {
-//    name: "Verdere optie",
-//    description: "Hellowkes",
-//    courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A],
-//}
-//
-//hello = Module {
-//    name: "Verdere optie",
-//    description: "Hellowkes",
-//    courses: [A04D5A, A08C4A, H0505A, HO5UGA, H04G9B, H0419A, H04K9A, HO5U7A],
-//}
-//
-//Course {
-//    name: "",
-//    description: "This is a course on databases",
-//    code: H01F2A,
-//    period: First, // Second, AllYear
-//    studyPoints: 5,
-//}

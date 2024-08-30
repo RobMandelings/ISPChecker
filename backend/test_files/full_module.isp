@@ -17,7 +17,7 @@ ING_CS = Module {
         }
     ],
     modules: [
-        verbredend,
+        verbredend, // Reference to another sub-module instead of inline definition
         Module {
             name: "Verplicht deel",
             description: "Cool",
@@ -29,7 +29,7 @@ ING_CS = Module {
                 }
             ],
         },
-        hoofdoptie,
+        hoofdoptie, // Reference to another sub-module instead of inline definition
         Module {
             name: "Verdere optie",
             description: "",
@@ -287,10 +287,6 @@ hoofdoptie = Module {
     ],
 }
 
-//alleVerplicht = ModuleConstraint {
-//    description: "Alle opleidingsonderdelen zijn verplicht",
-//    constraint: All(c, Included(c)),
-//}
 
 isp1 = ISP {
 	studyProgram: ING_CS,
@@ -300,7 +296,7 @@ isp1 = ISP {
 	    passed: [
 	    H04G4A, // Om hoofdoptie aan te vullen
 	    H04L2A, H02D1A,
-	    A04D5A, A08C4A, // RZL moet opgenomen worden
+	    A04D5A, // RZL moet opgenomen worden
 	    H04J4A,
 	    H04X2A // Project management
 	    ],
@@ -313,18 +309,6 @@ isp1 = ISP {
 	    ],
     },
 }
-
-//isp1 = ISP {
-//	studyProgram: ING_CS,
-//	specialisation: "distributed_systems",
-//	background: "informatica",
-//	courseSelection: {
-//	    passed: [],
-//        planned: [
-//            [H01F2A, H0T39A, H0T91A]
-//	    ],
-//    },
-//}
 
 Course {
 	name: "Industrial Internet Infrastructure",
